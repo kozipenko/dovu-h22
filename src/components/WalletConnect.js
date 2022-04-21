@@ -1,5 +1,4 @@
-import { ActionIcon, Button, Modal, TextInput, Divider, Stack, Loader, Center, Text, Group, Anchor } from "@mantine/core";
-import { Link } from "react-router-dom";
+import { ActionIcon, Button, Modal, TextInput, Stack, Loader, Center, Text, Group, Anchor } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { Copy, Help } from "tabler-icons-react";
