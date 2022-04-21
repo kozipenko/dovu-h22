@@ -1,52 +1,39 @@
-import { Badge, Button, Card, createStyles, Group, Image, Progress, Stack, Text } from "@mantine/core";
+import { Badge, Card, createStyles, Group, Image, Stack, Text } from "@mantine/core";
 
 const useStyles = createStyles(theme => ({
-  section: {
-    borderBottom: `1px solid ${theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]}`
+  root: {
+    padding: theme.spacing.md,
+    borderRadius: theme.radius.md,
+    boxShadow: theme.shadows.sm,
+    transition: "all .1s ease-in-out",
+    cursor: "pointer",
+    ":hover": { transform: "scale(1.015)" }
   }
 }));
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard2({ project }) {
   const { classes } = useStyles();
 
   return (
-    <Card p="md" shadow="sm" radius="md">
+    <Card className={classes.root}>
       <Card.Section>
-        <Image src={project.img} height={180} />
+        <Image src={project.img} height={160} />
       </Card.Section>
-
-      <Card.Section mt="sm" px="sm" >
-        <Group position="apart">
-          <Text size="sm" weight={500}>{project.name}</Text>
-          <Badge radius="xs" size="sm">{project.type}</Badge>
-        </Group>
-      </Card.Section>
-
-      <Card.Section mt="sm" px="sm" pb="sm" className={classes.section}>
-        <Group>
-          <Badge size="sm" radius="xs" variant="outline">{project.apy_1y}% APY 1Y</Badge>
-          <Badge size="sm" radius="xs" variant="outline">{project.apy_2y}% APY 2Y</Badge>
-        </Group>
-      </Card.Section>
-
-      <Card.Section mt="sm" px="sm" pb="sm" className={classes.section}>
+      
+      <Card.Section p="md">
         <Stack spacing="xs">
-          <div>
-            <Text size="xs" color="dimmed">Carbon available</Text>
-            <Progress mt={4} size="xl" color="green" label={`${project.remaining_carbon}%`} value={project.remaining_carbon} />
-          </div>
-          <div>
-            <Text size="xs" color="dimmed">Collateral Risk</Text>
-            <Progress mt={4} size="xl" color="blue" label={`${project.collateral_risk}%`} value={project.collateral_risk} />
-          </div>
+          <Group position="apart">
+            <Text weight={500}>{project.name}</Text>
+            <Text align="center" size="sm" weight={900} color="indigo">
+              {project.apy_max}% <Text size="xs" color="dimmed">APY</Text>
+            </Text>
+          </Group>
+          <Group spacing="xs">
+            <Badge radius="xs" size="xs" color="cyan">New</Badge>
+            <Badge radius="xs" size="xs" color="green">In Stock</Badge>
+            <Badge radius="xs" size="xs" color="indigo">Multipliers</Badge>
+          </Group>
         </Stack>
-      </Card.Section>
-
-      <Card.Section mt="sm" px="sm" pb="sm">
-        <Group position="center">
-          <Button size="xs" color="green" variant="light">Purchase</Button>
-          <Button size="xs" color="blue" variant="light">Delegate</Button>
-        </Group>
       </Card.Section>
     </Card>
   );
