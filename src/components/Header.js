@@ -3,7 +3,7 @@ import { useWallet } from "../store/wallet";
 import Logo from "./Logo";
 import ThemeButton from "./ThemeButton";
 import WalletMenu from "./WalletMenu";
-import WalletConnect from "./WalletConnect";
+import WalletModal from "./WalletModal";
 
 const useStyles = createStyles(theme => ({
   root: {
@@ -29,7 +29,7 @@ export default function Header() {
         <Logo />
 
         <Group>
-          {wallet.isConnected ? <WalletMenu /> : <WalletConnect />}
+          {wallet.isConnected ? <WalletMenu /> : <WalletModal />}
           <ThemeButton />
         </Group>
       </Container>

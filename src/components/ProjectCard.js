@@ -11,21 +11,21 @@ const useStyles = createStyles(theme => ({
   }
 }));
 
-export default function ProjectCard2({ project }) {
+export default function ProjectCard({ name, coverImg, maxApy, onSelect }) {
   const { classes } = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} onClick={onSelect}>
       <Card.Section>
-        <Image src={project.img} height={160} />
+        <Image src={coverImg} height={160} />
       </Card.Section>
       
       <Card.Section p="md">
         <Stack spacing="xs">
           <Group position="apart">
-            <Text weight={500}>{project.name}</Text>
+            <Text weight={500}>{name}</Text>
             <Text align="center" size="sm" weight={900} color="indigo">
-              {project.apy_max}% <Text size="xs" color="dimmed">APY</Text>
+              {maxApy}% <Text size="xs" color="dimmed">APY</Text>
             </Text>
           </Group>
           <Group spacing="xs">
