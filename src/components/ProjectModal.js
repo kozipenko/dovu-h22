@@ -1,10 +1,10 @@
 import { Box, Modal, SegmentedControl, Text } from "@mantine/core";
 import { useState } from "react";
-import { useProject } from "../store/project";
+import { useProjects } from "../store/projects";
 
 export default function ProjectModal() {
   const [display, setDisplay] = useState("Offsets");
-  const project = useProject();
+  const projects = useProjects();
 
   const renderOffsets = () => (
     <Box mt="md">
@@ -20,9 +20,9 @@ export default function ProjectModal() {
 
   return (
     <Modal
-      title={<Text weight={700}>{project.data.name}</Text>}
-      opened={project.isModalOpen}
-      onClose={project.close}
+      title={<Text weight={700}>{projects.activeProject.name}</Text>}
+      opened={projects.isProjectOpen}
+      onClose={projects.closeProject}
     >
       <SegmentedControl
         fullWidth

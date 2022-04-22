@@ -16,7 +16,7 @@ export default function Layout() {
     <div className={classes.root}>
       <Header />
       <main>
-        <Container size="xl" p="lg">
+        <Container size="xl" p="md">
           <Outlet />
         </Container>
       </main>

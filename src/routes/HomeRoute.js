@@ -1,36 +1,39 @@
 import { SimpleGrid } from "@mantine/core";
-import { useProject } from "../store/project";
+import { useProjects } from "../store/projects";
 import ProjectCard from "../components/ProjectCard";
 import ProjectModal from "../components/ProjectModal";
-import projects from "../data/projects";
+import ProjectFilters from "../components/ProjectFilters";
 
 export default function HomeRoute() {
-  const project = useProject();
+  const projects = useProjects();
 
   return (
-    <div>
+    <>
+      <ProjectFilters />
+
       <SimpleGrid
-        spacing="lg"
+        spacing="xl"
+        mt="md"
         cols={4}
         breakpoints={[
           { maxWidth: "xs", cols: 1 },
           { maxWidth: "sm", cols: 2 },
           { maxWidth: "md", cols: 3 },
-          { maxWidth: "lg", cols: 4 },
+          { maxWidth: "lg", cols: 3 },
         ]}
       >
-        {projects.map(p =>
+        {projects.data.map(p =>
           <ProjectCard
             key={p.id}
             name={p.name}
             coverImg={p.coverImg}
             maxApy={p.maxApy}
-            onSelect={() => project.open(p)}
+            onSelect={() => projects.openProject(p.id)}
           />
         )}
       </SimpleGrid>
 
       <ProjectModal />
-    </div>
+    </>
   );
 }
