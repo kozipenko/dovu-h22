@@ -27,28 +27,30 @@ export default function ProjectsFilters() {
         opened={opened}
         onClose={() => setOpened(false)}
       >
-        <Text size="sm" mt="xl" color="dimmed" weight={700}>Price</Text>
+        <Text size="sm" mt="xl" color="dimmed" weight={700}>Carbon Offset Price</Text>
         <Group position="apart" mt="sm" mb="xs">
-          <Text size="xs" weight={700}>${prices[0]}</Text>
-          <Text size="xs" weight={700}>${prices[1]}</Text>
+          <Text size="xs" weight={700}>Min: ${prices[0]}</Text>
+          <Text size="xs" weight={700}>Max: ${prices[1]}</Text>
         </Group>
         <RangeSlider
           min={0}
           max={50}
+          minRange={1}
           label={null}
           value={prices}
           onChange={(value) => setPrices(value)}
           onChangeEnd={(value) => projects.filterByPrice(value)}
         />
 
-        <Text mt="xl" size="sm" color="dimmed" weight={700}>Total Supply</Text>
+        <Text mt="xl" size="sm" color="dimmed" weight={700}>Total Carbon Supply</Text>
         <Group position="apart" mt="sm" mb="xs">
-          <Text size="xs" weight={700}>{supplies[0]} tonnes</Text>
-          <Text size="xs" weight={700}>{supplies[1]} tonnes</Text>
+          <Text size="xs" weight={700}>Min: {supplies[0]}t</Text>
+          <Text size="xs" weight={700}>Max: {supplies[1]}t</Text>
         </Group>
         <RangeSlider
           min={0}
-          max={50}
+          max={100}
+          minRange={1}
           label={null}
           value={supplies}
           onChange={(value) => setSupplies(value)}
