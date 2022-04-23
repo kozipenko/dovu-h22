@@ -1,4 +1,4 @@
-import { Box, Modal, SegmentedControl, Text } from "@mantine/core";
+import { Box, Image, Modal, SegmentedControl, Text } from "@mantine/core";
 import { useState } from "react";
 import { useProjects } from "../../store/projects";
 
@@ -24,8 +24,11 @@ export default function ProjectDialog() {
       opened={projects.selected !== null}
       onClose={projects.deselect}
     >
+      <Image radius="md" src={projects?.selected?.coverImg} height={160} />
+
       <SegmentedControl
         fullWidth
+        mt="md"
         color="indigo"
         value={display}
         onChange={setDisplay}

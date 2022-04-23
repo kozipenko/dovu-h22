@@ -29,9 +29,9 @@ export default function Project({ project, onSelect }) {
             </Text>
           </Group>
           <Group spacing="xs">
-            <Badge radius="xs" size="xs" color="cyan">New</Badge>
-            <Badge radius="xs" size="xs" color="green">In Stock</Badge>
-            <Badge radius="xs" size="xs" color="indigo">Multipliers</Badge>
+            <Badge radius="xs" size="sm" color="cyan">New</Badge>
+            <Badge radius="xs" size="sm" color="green">In Stock</Badge>
+            <Badge radius="xs" size="sm" color="indigo">Multipliers</Badge>
           </Group>
         </Stack>
       </Card.Section>
