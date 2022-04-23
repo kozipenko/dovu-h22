@@ -3,31 +3,19 @@ import projects from "../data/projects";
 
 export const state = proxy({
   data: projects,
-  activeProject: {},
-  filters: {
-    prices: [0, 50],
-    supplies: [0, 100]
-  },
-  isProjectOpen: false,
-  isFiltersOpen: false,
+  selected: null,
 
-  openProject: (id) => {
-    state.activeProject = projects.find(p => p.id === id);
-    state.isProjectOpen = true;
-  },
+  select: (id) => state.selected = state.data.find(p => p.id === id),
 
-  closeProject: () => {
-    state.activeProject = {};
-    state.isProjectOpen = false;
-  },
+  deselect: () => state.selected = null,
 
-  openFilters: () => state.isFiltersOpen = true,
-
-  closeFilters: () => state.isFiltersOpen = false,
-
-  setPriceFilter: (prices) => state.filters.prices = prices,
-
-  setSuppliesFilter: (supplies) => state.filters.supplies = supplies
+  filterByPrice: (prices) =>
+    state.data = projects.filter(p => p.price >= prices[0] && p.price <= prices[1]),
+  
+  filterBySupply: (supplies) =>
+    state.data = projects.filter(p => p.supply >= supplies[0] && p.supply <= supplies[1]),
+  
+  resetFilters: () => state.data = projects
 });
 
 export const useProjects = () => useSnapshot(state);

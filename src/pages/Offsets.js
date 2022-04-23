@@ -1,4 +1,4 @@
-export default function OffsetsRoute() {
+export default function Offsets() {
   return (
     <span>Offsets</span>
   );

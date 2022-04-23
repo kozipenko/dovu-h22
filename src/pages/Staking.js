@@ -1,4 +1,4 @@
-export default function StakingRoute() {
+export default function Staking() {
   return (
     <span>Staking</span>
   );
