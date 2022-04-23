@@ -14,6 +14,12 @@ export const state = proxy({
   
   filterBySupply: (supplies) =>
     state.data = projects.filter(p => p.supply >= supplies[0] && p.supply <= supplies[1]),
+
+  filterByApy: (apy) =>
+    state.data = projects.filter(p => p.maxApy >= apy[0] && p.maxApy <= apy[1]),
+
+  filterByText: (text) =>
+    state.data = projects.filter(p => p.name.toLowerCase().includes(text)),
   
   resetFilters: () => state.data = projects
 });
