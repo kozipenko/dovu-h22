@@ -5,5 +5,5 @@ import WalletDialog from "./WalletDialog";
 export default function Wallet() {
   const wallet = useWallet();
 
-  return wallet.isConnected ? <WalletMenu /> : <WalletDialog />
+  return wallet.data.pairedAccount ? <WalletMenu /> : <WalletDialog />
 }

@@ -1,42 +1,18 @@
-import { Box, Image, Modal, SegmentedControl, Text } from "@mantine/core";
-import { useState } from "react";
+import { Group, Modal, Text } from "@mantine/core";
 import { useProjects } from "../../store/projects";
 
 export default function ProjectDialog() {
-  const [display, setDisplay] = useState("Offsets");
   const projects = useProjects();
-
-  const renderOffsets = () => (
-    <Box mt="md">
-      <Text>Offsets</Text>
-    </Box>
-  );
-
-  const renderStaking = () => (
-    <Box mt="md">
-      <Text>Staking</Text>
-    </Box>
-  );
 
   return (
     <Modal
-      title={<Text weight={700}>{projects?.selected?.name}</Text>}
+      title={projects?.selected?.name}
       opened={projects.selected !== null}
       onClose={projects.deselect}
     >
-      <Image radius="md" src={projects?.selected?.coverImg} height={160} />
-
-      <SegmentedControl
-        fullWidth
-        mt="md"
-        color="indigo"
-        value={display}
-        onChange={setDisplay}
-        data={["Offsets","Staking"]}
-      />
-
-      {display === "Offsets" && renderOffsets()}
-      {display === "Staking" && renderStaking()}
+      <Group position="apart">
+        
+      </Group>
     </Modal>
   );
 }

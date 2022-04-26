@@ -1,67 +1,64 @@
 import { proxy, subscribe, useSnapshot } from "valtio";
-import { subscribeKey } from "valtio/utils";
-import { HashConnect } from "hashconnect";
-
-const appMeta = { name: "DOVU", description: "Testing" };
-const network = "testnet";
-
-const hashConnect = new HashConnect();
+import { initHashConnect } from "../services/hashconnect";
+import { getAccountBalance } from "../services/hashgraph";
 
 const initialData = {
   topic: "",
-  privateKey: null,
+  privateKey: "",
   pairingString: "",
-  pairedAccount: "",
+  pairedAccount: null,
   pairedWalletData: null
-}
+};
 
-const getLocalData = () => {
+const loadInitialData = () => {
   const local = localStorage.getItem("hashconnect");
   return local ? JSON.parse(local) : initialData;
 };
 
 export const state = proxy({
-  data: getLocalData() || initialData,
+  data: loadInitialData(),
+  DOV: null,
   extensions: [],
-  isConnected: false,
   isModalOpen: false,
 
-  toggleModal: () => state.isModalOpen = !state.isModalOpen,
-
   init: async () => {
-    if (state.data.pairedWalletData) {
-      await hashConnect.init(appMeta, state.data.privateKey);
-      await hashConnect.connect(state.data.topic, state.data.pairedWalletData);
-      state.isConnected = true;
-    } else {
-      const init = await hashConnect.init(appMeta);
-      const conn = await hashConnect.connect();
-      const pairingString = hashConnect.generatePairingString(conn, network, false);
-      state.data = { ...state.data, pairingString, topic: conn.topic, privateKey: init.privKey };
-      hashConnect.findLocalWallets();
-    }
+    const connection = await initHashConnect(
+      state.data.pairedWalletData,
+      state.data.privateKey, 
+      state.data.topic,
+      state.handlePairing,
+      state.handleExtension
+    );
 
-    hashConnect.pairingEvent.on(event => {
-      state.isConnected = true;
-      state.isModalOpen = false;
-      state.data = { ...state.data, pairedAccount: event.accountIds[0], pairedWalletData: event.metadata };
-    });
-
-    hashConnect.foundExtensionEvent.on(extension => {
-      if (!state.extensions.includes(extension))
-        state.extensions.push(extension);
-    })
+    state.data.pairingString = connection.pairingString;
+    state.data.privateKey = connection.privateKey;
+    state.data.topic = connection.topic;
   },
 
   disconnect: () => {
-    state.isConnected = false;
-    state.data = initialData;
+    state.data.pairedAccount = null;
+    state.data.pairedWalletData = null;
   },
 
-  connect: (extension) => hashConnect.connectToLocalWallet(state.data.pairingString, extension)
+  handlePairing: async (e) => {
+    state.isModalOpen = false;
+    state.data.pairedAccount = e.accountIds[0];
+    state.data.pairedWalletData = e.metadata;
+  },
+
+  handleExtension: (e) => {
+    if (!state.extensions.includes(e))
+      state.extensions.push(e);
+  },
+
+  toggleModal: () => state.isModalOpen = !state.isModalOpen,
+
+  loadAccountBalance: async () => {
+    const balance = JSON.parse(await getAccountBalance(state.data.pairedAccount));
+    state.DOV = balance.tokens.find(t => t.tokenId === "0.0.30875555");
+  }
 });
 
 export const useWallet = () => useSnapshot(state);
 
-subscribeKey(state, "data", () =>
-  localStorage.setItem("hashconnect", JSON.stringify(state.data)));
+subscribe(state.data, () => localStorage.setItem("hashconnect", JSON.stringify(state.data)));

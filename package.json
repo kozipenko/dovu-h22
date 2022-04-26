@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@hashgraph/sdk": "^2.13.1",
     "@mantine/core": "^4.1.4",
     "@mantine/hooks": "^4.1.4",
     "@mantine/notifications": "^4.1.4",
