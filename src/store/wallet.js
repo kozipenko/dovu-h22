@@ -1,5 +1,5 @@
 import { proxy, subscribe, useSnapshot } from "valtio";
-import { initHashConnect } from "../services/hashconnect";
+import { initHashConnect, connectToLocalWallet } from "../services/hashconnect";
 import { getAccountBalance } from "../services/hashgraph";
 
 const initialData = {
@@ -34,6 +34,8 @@ export const state = proxy({
     state.data.privateKey = connection.privateKey;
     state.data.topic = connection.topic;
   },
+
+  connect: (extension) => connectToLocalWallet(state.data.pairingString, extension),
 
   disconnect: () => {
     state.data.pairedAccount = null;
