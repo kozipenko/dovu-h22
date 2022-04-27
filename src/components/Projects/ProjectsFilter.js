@@ -5,22 +5,7 @@ import { useProjects } from "../../store/projects";
 
 export default function ProjectsFilters() {
   const [opened, setOpened] = useState(false);
-  const [search, setSearch] = useState("");
-  const [prices, setPrices] = useState([0, 50]);
-  const [supplies, setSupplies] = useState([0, 100]);
-  const [apy, setApy] = useState([0, 100]);
   const projects = useProjects();
-
-  const resetFilters = () => {
-    projects.resetFilters();
-    setPrices([0, 50]);
-    setSupplies([0, 100]);
-  }
-
-  const handleSearch = (text) => {
-    setSearch(text);
-    projects.filterByText(text);
-  }
 
   return (
     <>
@@ -31,14 +16,14 @@ export default function ProjectsFilters() {
 
         <TextInput
           placeholder="Search"
-          value={search}
+          value={projects.filters.search}
           icon={<Search size={18} />}
-          rightSection={search && (
-            <ActionIcon onClick={() => handleSearch("")}>
+          rightSection={projects.filters.search && (
+            <ActionIcon onClick={() => projects.setSearchFilter("")}>
               <X size={18} />
             </ActionIcon>
           )}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={(e) => projects.setSearchFilter(e.target.value)}
         />
       </Group>
 
@@ -49,50 +34,51 @@ export default function ProjectsFilters() {
         opened={opened}
         onClose={() => setOpened(false)}
       >
-        <Text size="sm" mt="xl" color="dimmed" weight={700}>Carbon Offset Price</Text>
-        <Group position="apart" mt="sm" mb="xs">
-          <Text size="xs" weight={700}>Min: ${prices[0]}</Text>
-          <Text size="xs" weight={700}>Max: ${prices[1]}</Text>
-        </Group>
+        <Text size="sm" mt="xl" weight={500}>Carbon Offset Price</Text>
         <RangeSlider
+          mt="xs"
           min={0}
           max={50}
           minRange={1}
           label={null}
-          value={prices}
-          onChange={(value) => setPrices(value)}
-          onChangeEnd={(value) => projects.filterByPrice(value)}
+          value={projects.filters.price}
+          onChange={projects.setPriceFilter}
+        
         />
-
-        <Text mt="xl" size="sm" color="dimmed" weight={700}>Total Carbon Supply</Text>
-        <Group position="apart" mt="sm" mb="xs">
-          <Text size="xs" weight={700}>Min: {supplies[0]}t</Text>
-          <Text size="xs" weight={700}>Max: {supplies[1]}t</Text>
+        <Group position="apart" mt="xs">
+          <Text size="xs" color="dimmed" weight={500}>${projects.filters.price[0]}</Text>
+          <Text size="xs" color="dimmed" weight={500}>${projects.filters.price[1]}</Text>
         </Group>
+          
+        <Text mt="xl" size="sm" weight={500}>Carbon Supply Remaining</Text>
         <RangeSlider
+          mt="xs"
           min={0}
           max={100}
           minRange={1}
           label={null}
-          value={supplies}
-          onChange={(value) => setSupplies(value)}
-          onChangeEnd={(value) => projects.filterBySupply(value)}
+          value={projects.filters.supply}
+          onChange={projects.setSupplyFilter}
         />
-
-        <Text mt="xl" size="sm" color="dimmed" weight={700}>Staking APY</Text>
-        <Group position="apart" mt="sm" mb="xs">
-          <Text size="xs" weight={700}>Min: {apy[0]}%</Text>
-          <Text size="xs" weight={700}>Max: {apy[1]}%</Text>
+        <Group position="apart" mt="xs">
+          <Text size="xs" color="dimmed" weight={500}>{projects.filters.supply[0]}t</Text>
+          <Text size="xs" color="dimmed" weight={500}>{projects.filters.supply[1]}t</Text>
         </Group>
+
+        <Text mt="xl" size="sm" weight={500}>Staking APY</Text>
         <RangeSlider
+          mt="xs"
           min={0}
-          max={100}
+          max={50}
           minRange={1}
           label={null}
-          value={apy}
-          onChange={(value) => setApy(value)}
-          onChangeEnd={(value) => projects.filterByApy(value)}
+          value={projects.filters.maxApy}
+          onChange={projects.setMaxApyFilter}
         />
+        <Group position="apart" mt="xs">
+          <Text size="xs" color="dimmed" weight={500}>{projects.filters.maxApy[0]}%</Text>
+          <Text size="xs" color="dimmed" weight={500}>{projects.filters.maxApy[1]}%</Text>
+        </Group>
 
         <Text mt="xl" size="sm" color="dimmed" weight={700}>Measurement</Text>
         <CheckboxGroup mt="sm" defaultValue={["agrecalc", "cool-farm-tool"]}>
@@ -103,7 +89,7 @@ export default function ProjectsFilters() {
         <Text mt="xl" size="sm" color="dimmed" weight={700}>Carbon Proofs</Text>
         <Checkbox mt="sm" label="Yes" />
 
-        <Button mt="xl" onClick={resetFilters}>Reset</Button>
+        <Button mt="xl" onClick={projects.resetFilters}>Reset</Button>
       </Drawer>
     </>
   );

@@ -1,27 +1,45 @@
-import { proxy, useSnapshot } from "valtio";
+import { proxy, subscribe, useSnapshot } from "valtio";
 import projects from "../data/projects";
+
+const initialFilters = {
+  price: [0, 50],
+  supply: [0, 100],
+  maxApy: [0, 50],
+  search: ""
+};
 
 export const state = proxy({
   data: projects,
   selected: null,
+  filters: { price: [0, 50], supply: [0, 100], maxApy: [0, 50], search: "" },
 
   select: (id) => state.selected = state.data.find(p => p.id === id),
 
   deselect: () => state.selected = null,
 
-  filterByPrice: (prices) =>
-    state.data = projects.filter(p => p.price >= prices[0] && p.price <= prices[1]),
-  
-  filterBySupply: (supplies) =>
-    state.data = projects.filter(p => p.supply >= supplies[0] && p.supply <= supplies[1]),
+  setPriceFilter: (price) => state.filters.price = price,
 
-  filterByApy: (apy) =>
-    state.data = projects.filter(p => p.maxApy >= apy[0] && p.maxApy <= apy[1]),
+  setSupplyFilter: (supply) => state.filters.supply = supply,
 
-  filterByText: (text) =>
-    state.data = projects.filter(p => p.name.toLowerCase().includes(text)),
+  setMaxApyFilter: (maxApy) => state.filters.maxApy = maxApy,
+
+  setSearchFilter: (search) => state.filters.search = search,
   
-  resetFilters: () => state.data = projects
+  resetFilters: () => {
+    state.data = projects;
+    state.filters.price = [0, 50];
+    state.filters.supply = [0, 100];
+    state.filters.maxApy = [0, 50];
+    state.filters.search = "";
+  }
 });
 
 export const useProjects = () => useSnapshot(state);
+
+subscribe(state.filters, () =>
+  state.data = projects
+  .filter(p => p.price >= state.filters.price[0] && p.price <= state.filters.price[1])
+  .filter(p => p.supply >= state.filters.supply[0] && p.supply <= state.filters.supply[1])
+  .filter(p => p.maxApy >= state.filters.maxApy[0] && p.maxApy <= state.filters.maxApy[1])
+  .filter(p => p.name.toLowerCase().includes(state.filters.search))
+);
