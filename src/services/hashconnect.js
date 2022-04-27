@@ -19,12 +19,12 @@ export const initHashConnect = async (pairedWalletData, privateKey, topic, onPai
 export const connectToLocalWallet = (pairingString, extension) =>
   hashConnect.connectToLocalWallet(pairingString, extension);
 
-export const sendTransaction = async (topic, accountId, txnBytes) => {
+export const sendTransaction = async (topic, byteArray, accountToSign) => {
   return await hashConnect.sendTransaction(topic, {
     topic,
-    byteArray: txnBytes,
+    byteArray,
     metadata: {
-      accountToSign: accountId,
+      accountToSign,
       returnTransaction: false
     }
   });

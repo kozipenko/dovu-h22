@@ -1,6 +1,6 @@
 import { proxy, subscribe, useSnapshot } from "valtio";
 import { initHashConnect, connectToLocalWallet, sendTransaction } from "../services/hashconnect";
-import { createAccountBalanceTxn, getAccountBalance } from "../services/hashgraph";
+import { createTestTransaction, getAccountBalance } from "../services/hashgraph";
 
 const initialData = {
   topic: "",
@@ -58,6 +58,13 @@ export const state = proxy({
   loadAccountBalance: async () => {
     const balance = JSON.parse(await getAccountBalance(state.data.pairedAccount));
     state.DOV = balance.tokens.find(t => t.tokenId === "0.0.30875555");
+  },
+
+  sendTestTransaction: async () => {
+    const bytes = createTestTransaction();
+    const response = await sendTransaction(state.data.topic, bytes, state.data.pairedAccount);
+
+    console.log(response);
   }
 });
 

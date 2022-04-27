@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Menu, Text } from "@mantine/core";
+import { Button, Divider, Group, Menu, Text } from "@mantine/core";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Gift, Leaf, Logout} from "tabler-icons-react";
@@ -9,13 +9,15 @@ export default function WalletMenu() {
 
   useEffect(() => {
     wallet.loadAccountBalance()
+    //wallet.sendTestTransaction()
   }, []);
 
   return (
-    <Menu control={<Button>{wallet.data.pairedAccount}</Button>}>
-      <Box p="md">
-        <Text size="xs" weight={500}>{wallet?.DOV?.balance/1000000} DOV</Text>
-      </Box>
+    <Menu control={<Button>{wallet.data.pairedAccount}</Button>} zIndex={1000}>
+      <Group position="apart" px="sm" py="xs">
+        <Text size="xs" weight={500}>Balance:</Text>
+        <Text size="xs" weight={500}>{Math.round(wallet?.DOV?.balance/1000000)} DOV</Text>
+      </Group>
       <Divider />
       <Menu.Item to="/offsets" component={Link} icon={<Leaf size={18} />}>
         Offsets
