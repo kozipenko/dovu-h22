@@ -45,6 +45,7 @@ export default function ProjectsFilters() {
       <Drawer
         title="Filters"
         padding="md"
+        zIndex={1000}
         opened={opened}
         onClose={() => setOpened(false)}
       >

@@ -1,4 +1,4 @@
-import { Group, Modal, Text } from "@mantine/core";
+import { Group, Modal } from "@mantine/core";
 import { useProjects } from "../../store/projects";
 
 export default function ProjectDialog() {
@@ -6,6 +6,7 @@ export default function ProjectDialog() {
 
   return (
     <Modal
+      zIndex={1000}
       title={projects?.selected?.name}
       opened={projects.selected !== null}
       onClose={projects.deselect}

@@ -20,7 +20,12 @@ export default function WalletDialog() {
     <>
       <Button onClick={wallet.toggleModal}>Connect</Button>
 
-      <Modal title="Connect Hedera Wallet" opened={wallet.isModalOpen} onClose={wallet.toggleModal}>
+      <Modal
+        title="Connect Hedera Wallet"
+        zIndex={1000}
+        opened={wallet.isModalOpen}
+        onClose={wallet.toggleModal}
+      >
         <Text size="sm" mb="md" color="dimmed">
           For more information please see
           <Anchor href="https://www.hashpack.app/hashconnect" size="sm" ml={4}>
