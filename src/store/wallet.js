@@ -1,6 +1,6 @@
 import { proxy, subscribe, useSnapshot } from "valtio";
-import { initHashConnect, connectToLocalWallet } from "../services/hashconnect";
-import { getAccountBalance } from "../services/hashgraph";
+import { initHashConnect, connectToLocalWallet, sendTransaction } from "../services/hashconnect";
+import { createAccountBalanceTxn, getAccountBalance } from "../services/hashgraph";
 
 const initialData = {
   topic: "",

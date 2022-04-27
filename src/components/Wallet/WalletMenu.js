@@ -8,7 +8,7 @@ export default function WalletMenu() {
   const wallet = useWallet();
 
   useEffect(() => {
-    wallet.loadAccountBalance();
+    wallet.loadAccountBalance()
   }, []);
 
   return (
