@@ -6,9 +6,14 @@ import Wallet from "../Wallet/Wallet";
 
 const useStyles = createStyles(theme => ({
   root: {
+    position: "sticky",
+    top: 0,
+    left: 0,
+    right: 0,
     height: 64,
     backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.white,
-    boxShadow: theme.shadows.xs
+    boxShadow: theme.shadows.xs,
+    zIndex: 999
   },
   container: {
     display: "flex",

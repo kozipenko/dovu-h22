@@ -1,4 +1,4 @@
-import { Badge, Card, createStyles, Group, Image, Stack, Text } from "@mantine/core";
+import { Badge, Card, createStyles, Divider, Group, Image, Stack, Text } from "@mantine/core";
 
 const useStyles = createStyles(theme => ({
   root: {
@@ -15,23 +15,24 @@ export default function Project({ project, onSelect }) {
   const { classes } = useStyles();
   
   return (
-    <Card className={classes.root} onClick={onSelect}>
+    <Card p={0} className={classes.root} onClick={onSelect}>
       <Card.Section>
         <Image src={project.coverImg} height={160} />
       </Card.Section>
-      
+
       <Card.Section p="md">
-        <Stack spacing="xs">
+        <Stack>
+          <Text weight={500}>{project.name}</Text>
           <Group position="apart">
-            <Text weight={500}>{project.name}</Text>
-            <Text align="center" size="sm" weight={900} color="indigo">
-              {project.maxApy}% <Text size="xs" color="dimmed">APY</Text>
+            <Text align="center" size="sm" color="green" weight={900}>
+              <Text size="xs" color="dimmed" weight={500}>PRICE</Text> ${project.price}
             </Text>
-          </Group>
-          <Group spacing="xs">
-            <Badge radius="xs" size="sm" color="cyan">New</Badge>
-            <Badge radius="xs" size="sm" color="green">In Stock</Badge>
-            <Badge radius="xs" size="sm" color="indigo">Multipliers</Badge>
+            <Text align="center" size="sm" color="cyan" weight={900}>
+              <Text size="xs" color="dimmed" weight={500}>SUPPLY</Text> {project.supplyRemaining}t
+            </Text>
+            <Text align="center" size="sm" color="indigo" weight={900}>
+              <Text size="xs" color="dimmed" weight={500}>APY</Text> {project.maxApy}%
+            </Text>
           </Group>
         </Stack>
       </Card.Section>
