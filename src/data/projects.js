@@ -6,6 +6,7 @@ export default [
     price: 30,
     supply: 90,
     supplyRemaining: 80,
+    apy: [5, 7, 10, 12, 15, 17, 20, 25, 30, 40],
     maxApy: 40,
     stakers: 200,
     collateral: 90
@@ -18,7 +19,8 @@ export default [
     price: 25,
     supply: 100,
     supplyRemaining: 50,
-    maxApy: 35,
+    apy: [5, 7, 10, 12, 15, 17, 20, 25, 30, 38],
+    maxApy: 38,
     stakers: 115,
     collateral: 75
   },
@@ -30,7 +32,8 @@ export default [
     price: 28,
     supply: 50,
     supplyRemaining: 10,
-    maxApy: 20,
+    apy: [5, 7, 10, 12, 15, 17, 20, 25, 30, 42],
+    maxApy: 42,
     stakers: 25,
     collateral: 10
   },
@@ -42,7 +45,8 @@ export default [
     price: 20,
     supply: 75,
     supplyRemaining: 65,
-    maxApy: 22,
+    apy: [5, 7, 10, 12, 15, 17, 20, 25, 30, 32],
+    maxApy: 32,
     stakers: 90,
     collateral: 30
   },
@@ -53,7 +57,8 @@ export default [
     price: 30,
     supply: 80,
     supplyRemaining: 20,
-    maxApy: 33,
+    apy: [5, 7, 10, 12, 15, 17, 20, 25, 30, 35],
+    maxApy: 35,
     stakers: 120,
     collateral: 35
   },
@@ -64,7 +69,8 @@ export default [
     price: 25,
     supply: 10,
     supplyRemaining: 0,
-    maxApy: 27,
+    apy: [5, 7, 10, 12, 15, 17, 20, 25, 30, 48],
+    maxApy: 48,
     stakers: 16,
     collateral: 100
   },
@@ -75,7 +81,8 @@ export default [
     price: 20,
     supply: 35,
     supplyRemaining: 12,
-    maxApy: 38,
+    apy: [5, 7, 10, 12, 15, 17, 20, 25, 30, 37],
+    maxApy: 37,
     stakers: 42,
     collateral: 38
   },
@@ -86,7 +93,8 @@ export default [
     price: 26,
     supply: 15,
     supplyRemaining: 0,
-    maxApy: 40,
+    apy: [5, 7, 10, 12, 15, 17, 20, 25, 30, 49],
+    maxApy: 49,
     stakers: 21,
     collateral: 88
   }

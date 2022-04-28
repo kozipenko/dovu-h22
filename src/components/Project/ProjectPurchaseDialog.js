@@ -1,4 +1,4 @@
-import { Button, Group, Modal, Progress, Select, TextInput } from "@mantine/core";
+import { Button, Group, Modal, Select, TextInput } from "@mantine/core";
 import { useProjects } from "../../store/projects";
 
 export default function ProjectPurchaseDialog() {
@@ -11,8 +11,6 @@ export default function ProjectPurchaseDialog() {
       opened={projects.isPurchaseDialogOpen}
       onClose={projects.closeDialog}
     >
-      <Progress size="lg" color="green" value={70} />
-
       <TextInput
         mt="md"
         placeholder="Amount"
@@ -20,6 +18,7 @@ export default function ProjectPurchaseDialog() {
         rightSection={(
           <Select
             zIndex={1000}
+            value="usd"
             data={[
               { value: "dov", label: "DOV" },
               { value: "tonnes", label: "TONNES" },
