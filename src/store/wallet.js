@@ -17,7 +17,7 @@ const loadInitialData = () => {
 
 export const state = proxy({
   data: loadInitialData(),
-  DOV: null,
+  balance: null,
   extensions: [],
   isModalOpen: false,
 
@@ -57,11 +57,11 @@ export const state = proxy({
 
   loadAccountBalance: async () => {
     const balance = JSON.parse(await getAccountBalance(state.data.pairedAccount));
-    state.DOV = balance.tokens.find(t => t.tokenId === "0.0.30875555");
+    state.balance = balance.tokens.find(t => t.tokenId === "0.0.30875555");
   },
 
   sendTestTransaction: async () => {
-    const bytes = createTestTransaction();
+    const bytes = createTestTransaction(state.data.pairedAccount);
     const response = await sendTransaction(state.data.topic, bytes, state.data.pairedAccount);
 
     console.log(response);

@@ -1,21 +1,28 @@
 import { proxy, subscribe, useSnapshot } from "valtio";
 import projects from "../data/projects";
 
-const initialFilters = {
-  price: [0, 50],
-  supply: [0, 100],
-  maxApy: [0, 50],
-  search: ""
-};
-
 export const state = proxy({
   data: projects,
   selected: null,
+  isPurchaseDialogOpen: false,
+  isDelegateDialogOpen: false,
   filters: { price: [0, 50], supply: [0, 100], maxApy: [0, 50], search: "" },
 
-  select: (id) => state.selected = state.data.find(p => p.id === id),
+  openPurchaseDialog: (id) => {
+    state.selected = state.data.find(p => p.id === id);
+    state.isPurchaseDialogOpen = true;
+  },
 
-  deselect: () => state.selected = null,
+  openDelegateDialog: (id) => {
+    state.selected = state.data.find(p => p.id === id);
+    state.isDelegateDialogOpen = true;
+  },
+
+  closeDialog: () => {
+    state.selected = null;
+    state.isPurchaseDialogOpen = false;
+    state.isDelegateDialogOpen = false;
+  },
 
   setPriceFilter: (price) => state.filters.price = price,
 

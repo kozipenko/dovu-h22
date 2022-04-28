@@ -16,7 +16,7 @@ export default function WalletMenu() {
     <Menu control={<Button>{wallet.data.pairedAccount}</Button>} zIndex={1000}>
       <Group position="apart" px="sm" py="xs">
         <Text size="xs" weight={500}>Balance:</Text>
-        <Text size="xs" weight={500}>{Math.round(wallet?.DOV?.balance/1000000)} DOV</Text>
+        <Text size="xs" weight={500}>{Math.round(wallet?.balance?.balance/1000000) || 0} DOV</Text>
       </Group>
       <Divider />
       <Menu.Item to="/offsets" component={Link} icon={<Leaf size={18} />}>
