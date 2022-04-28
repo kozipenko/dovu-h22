@@ -1,15 +1,18 @@
 import { Button, Divider, Group, Menu, Text } from "@mantine/core";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Gift, Leaf, Logout} from "tabler-icons-react";
+import { Feather, Gift, Leaf, Logout} from "tabler-icons-react";
 import { useWallet } from "../../store/wallet";
 
 export default function WalletMenu() {
   const wallet = useWallet();
 
+  const handleClaimDov = () => {
+    // TODO: claim testDOV from contract here
+  }
+
   useEffect(() => {
     wallet.loadAccountBalance()
-    //wallet.sendTestTransaction()
   }, []);
 
   return (
@@ -19,6 +22,9 @@ export default function WalletMenu() {
         <Text size="xs" weight={500}>{Math.round(wallet?.balance?.balance/1000000) || 0} DOV</Text>
       </Group>
       <Divider />
+      <Menu.Item icon={<Feather size={18} />} onClick={handleClaimDov}>
+        Claim DOV
+      </Menu.Item>
       <Menu.Item to="/offsets" component={Link} icon={<Leaf size={18} />}>
         Offsets
       </Menu.Item>
