@@ -1,6 +1,6 @@
 import { proxy, subscribe, useSnapshot } from "valtio";
 import { initHashConnect, connectToLocalWallet, sendTransaction } from "../services/hashconnect";
-import { createTestTransaction, getAccountBalance } from "../services/hashgraph";
+import { claimDemoTokensForStaking, getAccountBalance } from "../services/hashgraph";
 
 const initialData = {
   topic: "",
@@ -19,7 +19,7 @@ export const state = proxy({
   data: loadInitialData(),
   balance: null,
   extensions: [],
-  isModalOpen: false,
+  isConnectDialogOpen: false,
 
   init: async () => {
     const connection = await initHashConnect(
@@ -43,7 +43,7 @@ export const state = proxy({
   },
 
   handlePairing: async (e) => {
-    state.isModalOpen = false;
+    state.isConnectDialogOpen = false;
     state.data.pairedAccount = e.accountIds[0];
     state.data.pairedWalletData = e.metadata;
   },
@@ -53,17 +53,18 @@ export const state = proxy({
       state.extensions.push(e);
   },
 
-  toggleModal: () => state.isModalOpen = !state.isModalOpen,
+  toggleConnectDialog: () => state.isConnectDialogOpen = !state.isConnectDialogOpen,
 
   loadAccountBalance: async () => {
-    const balance = JSON.parse(await getAccountBalance(state.data.pairedAccount));
-    state.balance = balance.tokens.find(t => t.tokenId === "0.0.30875555");
+    const response = JSON.parse(await getAccountBalance(state.data.pairedAccount));
+    const DOV = response.tokens.find(t => t.tokenId === "0.0.30875555");
+    state.balance = Math.round(DOV.balance/1000000).toLocaleString() || 0;
   },
 
-  sendTestTransaction: async () => {
-    const bytes = createTestTransaction(state.data.pairedAccount);
-    const response = await sendTransaction(state.data.topic, bytes, state.data.pairedAccount);
-
+  claimTokens: async () => {
+    const txnBytes = claimDemoTokensForStaking();
+    console.log(txnBytes)
+    const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
     console.log(response);
   }
 });

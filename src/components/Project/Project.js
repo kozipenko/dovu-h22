@@ -1,4 +1,5 @@
 import { Badge, Button, Card, createStyles, Group, Image, Stack, Text } from "@mantine/core";
+import { useProject } from "../../store/project";
 
 const useStyles = createStyles(theme => ({
   root: {
@@ -14,33 +15,34 @@ const useStyles = createStyles(theme => ({
   }
 }));
 
-export default function Project({ project, onPurchase, onStake }) {
+export default function Project({ data }) {
   const { classes } = useStyles();
+  const project = useProject();
   
   return (
     <Card p={0} className={classes.root}>
       <Card.Section>
-        <Image src={project.coverImg} height={160} />
+        <Image src={data.coverImg} height={160} />
       </Card.Section>
 
       <Card.Section p="md">
         <Stack>
-          <Text weight={500}>{project.name}</Text>
+          <Text weight={500}>{data.name}</Text>
           <Group spacing="xs">
             <Badge
               size="sm"
               radius="xs"
               variant="filled"
-              color={project.supplyRemaining === 0 ? "red" : "green"}
+              color={data.supplyRemaining === 0 ? "red" : "green"}
               >
-                {project.supplyRemaining === 0 ? "No Stock" : "In Stock"}
+                {data.supplyRemaining === 0 ? "No Stock" : "In Stock"}
               </Badge>
-            <Badge size="sm" variant="filled" radius="xs">Price ${project.price}</Badge>
-            <Badge size="sm" variant="filled" radius="xs">APY {project.maxApy}%</Badge>
+            <Badge size="sm" variant="filled" radius="xs">Price ${data.price}</Badge>
+            <Badge size="sm" variant="filled" radius="xs">APY {data.maxApy}%</Badge>
           </Group>
           <Group spacing="xs">
-            <Badge size="sm" variant="filled" radius="xs">{project.stakers} Stakers</Badge>
-            <Badge size="sm" variant="filled" radius="xs">Collateral {project.collateral}%</Badge>
+            <Badge size="sm" variant="filled" radius="xs">{data.stakers} Stakers</Badge>
+            <Badge size="sm" variant="filled" radius="xs">Collateral {data.collateral}%</Badge>
           </Group>
         </Stack>
       </Card.Section>
@@ -51,8 +53,8 @@ export default function Project({ project, onPurchase, onStake }) {
             size="xs"
             color="green"
             variant="light"
-            disabled={project.supplyRemaining === 0}
-            onClick={onPurchase}
+            disabled={data.supplyRemaining === 0}
+            onClick={() => project.openPurchaseDialog(data.id)}
           >
             Purchase
           </Button>
@@ -60,8 +62,8 @@ export default function Project({ project, onPurchase, onStake }) {
             size="xs"
             color="blue"
             variant="light"
-            disabled={project.supplyRemaining === 0}
-            onClick={onStake}
+            disabled={data.supplyRemaining === 0}
+            onClick={() => project.openStakeDialog(data.id)}
           >
             Stake
           </Button>

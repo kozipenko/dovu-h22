@@ -1,35 +1,37 @@
 import { Button, Divider, Group, Menu, Text } from "@mantine/core";
+import { showNotification } from "@mantine/notifications";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Feather, Gift, Leaf, Logout} from "tabler-icons-react";
+import { ChartPie, Gift, Logout } from "tabler-icons-react";
 import { useWallet } from "../../store/wallet";
 
 export default function WalletMenu() {
   const wallet = useWallet();
 
-  const handleClaimDov = () => {
-    // TODO: claim testDOV from contract here
+  const handleClaim = () => {
+    wallet.claimTokens();
+
+    showNotification({
+      title: `10 DOV has been successfully sent to ${wallet.data.pairedAccount}`
+    });
   }
 
   useEffect(() => {
     wallet.loadAccountBalance()
-  }, []);
+  }, [wallet]);
 
   return (
     <Menu control={<Button>{wallet.data.pairedAccount}</Button>} zIndex={1000}>
       <Group position="apart" px="sm" py="xs">
         <Text size="xs" weight={500}>Balance:</Text>
-        <Text size="xs" weight={500}>{Math.round(wallet?.balance?.balance/1000000) || 0} DOV</Text>
+        <Text size="xs" weight={500}>{wallet.balance} DOV</Text>
       </Group>
       <Divider />
-      <Menu.Item icon={<Feather size={18} />} onClick={handleClaimDov}>
-        Claim DOV
+      <Menu.Item icon={<Gift size={18} />} onClick={handleClaim}>
+        Claim
       </Menu.Item>
-      <Menu.Item to="/offsets" component={Link} icon={<Leaf size={18} />}>
-        Offsets
-      </Menu.Item>
-      <Menu.Item to="/staking" component={Link} icon={<Gift size={18} />}>
-        Staking
+      <Menu.Item to="/stats" component={Link} icon={<ChartPie size={18} />}>
+        Statistics
       </Menu.Item>
       <Divider />
       <Menu.Item icon={<Logout size={18} />} onClick={wallet.disconnect}>

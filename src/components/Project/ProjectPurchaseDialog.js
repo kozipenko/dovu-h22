@@ -1,15 +1,15 @@
 import { Button, Group, Modal, Select, TextInput } from "@mantine/core";
-import { useProjects } from "../../store/projects";
+import { useProject } from "../../store/project";
 
 export default function ProjectPurchaseDialog() {
-  const projects = useProjects();
+  const project = useProject();
 
   return (
     <Modal
       zIndex={1000}
-      title={projects?.selected?.name}
-      opened={projects.isPurchaseDialogOpen}
-      onClose={projects.closeDialog}
+      title={project?.data?.name}
+      opened={project.isPurchaseDialogOpen}
+      onClose={project.closeDialogs}
     >
       <TextInput
         mt="md"

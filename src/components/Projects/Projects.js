@@ -26,12 +26,7 @@ export default function Projects() {
         ]}
       >
         {projects.data.map(project => (
-          <Project
-            key={project.id}
-            project={project}
-            onPurchase={() => projects.openPurchaseDialog(project.id)}
-            onStake={() => projects.openStakeDialog(project.id)}
-          />
+          <Project key={project.id} data={project} />
         ))}
       </SimpleGrid>
     </>

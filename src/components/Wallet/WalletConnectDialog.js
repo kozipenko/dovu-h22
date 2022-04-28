@@ -3,7 +3,6 @@ import { showNotification } from "@mantine/notifications";
 import { useClipboard } from "@mantine/hooks";
 import { Copy, Help } from "tabler-icons-react";
 import { useWallet } from "../../store/wallet";
-import { useEffect } from "react";
 
 export default function WalletDialog() {
   const clipboard = useClipboard();
@@ -17,19 +16,15 @@ export default function WalletDialog() {
     });
   }
 
-  useEffect(() => {
-    wallet.init();
-  }, []);
-
   return (
     <>
-      <Button onClick={wallet.toggleModal}>Connect</Button>
+      <Button onClick={wallet.toggleConnectDialog}>Connect</Button>
 
       <Modal
         title="Connect Hedera Wallet"
         zIndex={1000}
-        opened={wallet.isModalOpen}
-        onClose={wallet.toggleModal}
+        opened={wallet.isConnectDialogOpen}
+        onClose={wallet.toggleConnectDialog}
       >
         <Text size="sm" mb="md" color="dimmed">
           For more information please see

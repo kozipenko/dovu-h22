@@ -1,20 +1,18 @@
 import { useState } from "react";
 import { Button, Checkbox, Group, Modal, NumberInput, Select, Text } from "@mantine/core";
-import { useWallet } from "../../store/wallet";
-import { useProjects } from "../../store/projects";
+import { useProject } from "../../store/project";
 
 export default function ProjectStakeDialog() {
   const [amount, setAmount] = useState(null);
   const [term, setTerm] = useState("1");
-  const wallet = useWallet();
-  const projects = useProjects();
+  const project = useProject();
 
   return (
     <Modal
       zIndex={1000}
-      title={projects?.selected?.name}
-      opened={projects.isStakeDialogOpen}
-      onClose={projects.closeDialog}
+      title={project?.data?.name}
+      opened={project.isStakeDialogOpen}
+      onClose={project.closeDialogs}
     >
       <Group spacing="xs">
         <NumberInput

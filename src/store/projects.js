@@ -3,10 +3,12 @@ import projects from "../data/projects";
 
 export const state = proxy({
   data: projects,
-  selected: null,
-  isPurchaseDialogOpen: false,
-  isStakeDialogOpen: false,
-  filters: { price: [0, 50], supply: [0, 100], maxApy: [0, 50], search: "" },
+  filters: {
+    price: [0, 50],
+    supply: [0, 100],
+    maxApy: [0, 50],
+    search: ""
+  },
 
   openPurchaseDialog: (id) => {
     state.selected = state.data.find(p => p.id === id);

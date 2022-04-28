@@ -1,5 +1,5 @@
 export default function Staking() {
   return (
-    <span>Staking</span>
+    <span>Staking and offset stats</span>
   );
 }
