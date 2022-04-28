@@ -2,7 +2,7 @@ import { SimpleGrid } from "@mantine/core";
 import { useProjects } from "../../store/projects";
 import Project from "../Project/Project";
 import ProjectPurchaseDialog from "../Project/ProjectPurchaseDialog";
-import ProjectDelegateDialog from "../Project/ProjectDelegateDialog";
+import ProjectStakeDialog from "../Project/ProjectStakeDialog";
 import ProjectsFilter from "./ProjectsFilter";
 
 export default function Projects() {
@@ -12,7 +12,7 @@ export default function Projects() {
     <>
       <ProjectsFilter />
       <ProjectPurchaseDialog />
-      <ProjectDelegateDialog />
+      <ProjectStakeDialog />
 
       <SimpleGrid
         spacing="md"
@@ -30,7 +30,7 @@ export default function Projects() {
             key={project.id}
             project={project}
             onPurchase={() => projects.openPurchaseDialog(project.id)}
-            onDelegate={() => projects.openDelegateDialog(project.id)}
+            onStake={() => projects.openStakeDialog(project.id)}
           />
         ))}
       </SimpleGrid>

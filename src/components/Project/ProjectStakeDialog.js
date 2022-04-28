@@ -3,7 +3,7 @@ import { Button, Checkbox, Group, Modal, NumberInput, Select, Text } from "@mant
 import { useWallet } from "../../store/wallet";
 import { useProjects } from "../../store/projects";
 
-export default function ProjectDelegateDialog() {
+export default function ProjectStakeDialog() {
   const [amount, setAmount] = useState(null);
   const [term, setTerm] = useState("1");
   const wallet = useWallet();
@@ -13,7 +13,7 @@ export default function ProjectDelegateDialog() {
     <Modal
       zIndex={1000}
       title={projects?.selected?.name}
-      opened={projects.isDelegateDialogOpen}
+      opened={projects.isStakeDialogOpen}
       onClose={projects.closeDialog}
     >
       <Group spacing="xs">

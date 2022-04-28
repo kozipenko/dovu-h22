@@ -14,7 +14,7 @@ const useStyles = createStyles(theme => ({
   }
 }));
 
-export default function Project({ project, onPurchase, onDelegate }) {
+export default function Project({ project, onPurchase, onStake }) {
   const { classes } = useStyles();
   
   return (
@@ -61,9 +61,9 @@ export default function Project({ project, onPurchase, onDelegate }) {
             color="blue"
             variant="light"
             disabled={project.supplyRemaining === 0}
-            onClick={onDelegate}
+            onClick={onStake}
           >
-            Delegate
+            Stake
           </Button>
         </Group>
       </Card.Section>

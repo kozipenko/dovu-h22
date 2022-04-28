@@ -5,7 +5,7 @@ export const state = proxy({
   data: projects,
   selected: null,
   isPurchaseDialogOpen: false,
-  isDelegateDialogOpen: false,
+  isStakeDialogOpen: false,
   filters: { price: [0, 50], supply: [0, 100], maxApy: [0, 50], search: "" },
 
   openPurchaseDialog: (id) => {
@@ -13,15 +13,15 @@ export const state = proxy({
     state.isPurchaseDialogOpen = true;
   },
 
-  openDelegateDialog: (id) => {
+  openStakeDialog: (id) => {
     state.selected = state.data.find(p => p.id === id);
-    state.isDelegateDialogOpen = true;
+    state.isStakeDialogOpen = true;
   },
 
   closeDialog: () => {
     state.selected = null;
     state.isPurchaseDialogOpen = false;
-    state.isDelegateDialogOpen = false;
+    state.isStakeDialogOpen = false;
   },
 
   setPriceFilter: (price) => state.filters.price = price,
