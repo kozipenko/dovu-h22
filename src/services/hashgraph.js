@@ -10,8 +10,13 @@ const client = Client
 export const getAccountBalance = async (accountId) =>
   await new AccountBalanceQuery({ accountId }).execute(client);
 
-export const claimDemoTokensForStaking = () => new ContractCallQuery()
-  .setContractId("0.0.34204135")
-  .setGas(600)
-  .setFunction("claimDemoTokensForStaking", new ContractFunctionParameters().addInt64(10))
-  .toBytes();
+export const claimDemoTokensForStaking = (amount=10) => {
+  const params = new ContractFunctionParameters()
+    .addInt64(amount);
+
+  return new ContractCallQuery()
+    .setContractId("0.0.0")
+    .setGas(1000)
+    .setFunction("claimDemoTokensForStaking", params)
+    .toBytes();
+}

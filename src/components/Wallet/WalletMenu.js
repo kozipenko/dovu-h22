@@ -8,8 +8,8 @@ import { useWallet } from "../../store/wallet";
 export default function WalletMenu() {
   const wallet = useWallet();
 
-  const handleClaim = () => {
-    wallet.claimTokens();
+  const handleClaimDemoTokens = () => {
+    wallet.claimDemoTokens();
 
     showNotification({
       title: `10 DOV has been successfully sent to ${wallet.data.pairedAccount}`
@@ -27,7 +27,7 @@ export default function WalletMenu() {
         <Text size="xs" weight={500}>{wallet.balance} DOV</Text>
       </Group>
       <Divider />
-      <Menu.Item icon={<Gift size={18} />} onClick={handleClaim}>
+      <Menu.Item icon={<Gift size={18} />} onClick={handleClaimDemoTokens}>
         Claim
       </Menu.Item>
       <Menu.Item to="/stats" component={Link} icon={<ChartPie size={18} />}>

@@ -58,10 +58,10 @@ export const state = proxy({
   loadAccountBalance: async () => {
     const response = JSON.parse(await getAccountBalance(state.data.pairedAccount));
     const DOV = response.tokens.find(t => t.tokenId === "0.0.30875555");
-    state.balance = Math.round(DOV.balance/1000000).toLocaleString() || 0;
+    state.balance = DOV ? Math.round(DOV.balance/1000000).toLocaleString() : 0;
   },
 
-  claimTokens: async () => {
+  claimDemoTokens: async () => {
     const txnBytes = claimDemoTokensForStaking();
     console.log(txnBytes)
     const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
