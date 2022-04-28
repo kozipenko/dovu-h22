@@ -3,6 +3,7 @@ import { showNotification } from "@mantine/notifications";
 import { useClipboard } from "@mantine/hooks";
 import { Copy, Help } from "tabler-icons-react";
 import { useWallet } from "../../store/wallet";
+import { useEffect } from "react";
 
 export default function WalletDialog() {
   const clipboard = useClipboard();
@@ -15,6 +16,10 @@ export default function WalletDialog() {
       message: "Paste pairing string into HashPack to connect."
     });
   }
+
+  useEffect(() => {
+    wallet.init();
+  }, []);
 
   return (
     <>
