@@ -66,14 +66,6 @@ async function sendTransaction(transactionBytes) {
   });
 }
 
-// helper to create transaction bytes
-async function makeBytes(transaction) {
-  transaction.setTransactionId(TransactionId.generate(wallet.connection.pairedAccount));
-  transaction.setNodeAccountIds([new AccountId(3)]);
-  await transaction.freeze();
-  return transaction.toBytes();
-}
-
 // helper to create transaction
 async function createContractExecuteTransaction(func, params) {
   const transaction = new ContractExecuteTransaction()
@@ -81,9 +73,13 @@ async function createContractExecuteTransaction(func, params) {
   .setGas(100000)
   .setPayableAmount(new Hbar(10))
   .setFunction(func, params)
-  .setMaxTransactionFee(new Hbar(0.75));
+  .setMaxTransactionFee(new Hbar(0.75))
+  .setTransactionId(TransactionId.generate(wallet.connection.pairedAccount))
+  .setNodeAccountIds([new AccountId(3)]);
 
-  return await makeBytes(transaction);
+  await transaction.freeze();
+
+  return transaction.toBytes();
 }
 
 // load saved connection first from local storage or set initial connection
