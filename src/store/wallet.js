@@ -1,6 +1,6 @@
 import { proxy, subscribe, useSnapshot } from "valtio";
 import { initHashConnect, connectToLocalWallet, sendTransaction } from "../services/hashconnect";
-import { claimDemoTokensForStaking, getAccountBalance } from "../services/hashgraph";
+import { buildTestTransaction, buildClaimTokensTransaction, getAccountBalance } from "../services/hashgraph";
 
 const initialData = {
   topic: "",
@@ -61,9 +61,14 @@ export const state = proxy({
     state.balance = DOV ? Math.round(DOV.balance/1000000).toLocaleString() : 0;
   },
 
+  testTransaction: async () => {
+    const txnBytes = buildTestTransaction();
+    const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
+    console.log(response);
+  },
+
   claimDemoTokens: async () => {
-    const txnBytes = claimDemoTokensForStaking();
-    console.log(txnBytes)
+    const txnBytes = buildClaimTokensTransaction();
     const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
     console.log(response);
   }

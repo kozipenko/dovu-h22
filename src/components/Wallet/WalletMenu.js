@@ -9,7 +9,10 @@ export default function WalletMenu() {
   const wallet = useWallet();
 
   const handleClaimDemoTokens = () => {
-    wallet.claimDemoTokens();
+    // This works
+    wallet.testTransaction();
+    // This does not!?
+    //wallet.claimDemoTokens();
 
     showNotification({
       title: `10 DOV has been successfully sent to ${wallet.data.pairedAccount}`
