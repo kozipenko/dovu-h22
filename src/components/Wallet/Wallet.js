@@ -7,7 +7,7 @@ export default function Wallet() {
 
   return (
     <>
-      {wallet.data.pairedAccount ? <WalletMenu /> : <WalletConnectDialog />}
+      {wallet.connection.pairedAccount ? <WalletMenu /> : <WalletConnectDialog />}
     </>
   );
 }

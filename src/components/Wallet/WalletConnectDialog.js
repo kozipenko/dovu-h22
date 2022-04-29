@@ -2,14 +2,14 @@ import { ActionIcon, Anchor, Button, Center, Group, Loader, Modal, Stack, Text, 
 import { showNotification } from "@mantine/notifications";
 import { useClipboard } from "@mantine/hooks";
 import { Copy, Help } from "tabler-icons-react";
-import { useWallet } from "../../store/wallet";
+import { connectToLocalWallet, toggleConnectDialog, useWallet } from "../../store/wallet";
 
-export default function WalletDialog() {
+export default function WalletConnectDialog() {
   const clipboard = useClipboard();
   const wallet = useWallet();
 
   const handleCopy = () => {
-    clipboard.copy(wallet.data.pairingString);
+    clipboard.copy(wallet.connection.pairingString);
     showNotification({
       title: "Copied to clipboard",
       message: "Paste pairing string into HashPack to connect."
@@ -18,18 +18,18 @@ export default function WalletDialog() {
 
   return (
     <>
-      <Button onClick={wallet.toggleConnectDialog}>Connect</Button>
+      <Button onClick={toggleConnectDialog}>Connect</Button>
 
       <Modal
         title="Connect Hedera Wallet"
         zIndex={1000}
-        opened={wallet.isConnectDialogOpen}
-        onClose={wallet.toggleConnectDialog}
+        opened={wallet.isConnecting}
+        onClose={toggleConnectDialog}
       >
         <Text size="sm" mb="md" color="dimmed">
           For more information please see
           <Anchor href="https://www.hashpack.app/hashconnect" size="sm" ml={4}>
-            HashConnect.
+            HashConnect
           </Anchor>
         </Text>
         <Stack spacing="xs">
@@ -37,7 +37,7 @@ export default function WalletDialog() {
           <TextInput
             readOnly
             variant="filled"
-            value={wallet.data.pairingString}
+            value={wallet.connection.pairingString}
             onFocus={e => e.target.select()}
             rightSection={
               <ActionIcon>
@@ -49,7 +49,7 @@ export default function WalletDialog() {
           <Text size="sm" weight={500}>Extension</Text>
 
           {wallet.extensions.map(extension => (
-            <Button onClick={() => wallet.connect(extension)}>
+            <Button onClick={() => connectToLocalWallet(extension)}>
               {extension.name}
             </Button>
           ))}
