@@ -1,6 +1,16 @@
 import { proxy, subscribe, useSnapshot } from "valtio";
 import { initHashConnect, connectToLocalWallet, sendTransaction } from "../services/hashconnect";
-import { buildTestTransaction, buildClaimTokensTransaction, getAccountBalance } from "../services/hashgraph";
+import { 
+  claimDemoTokensForStakingTx,
+  getAccountBalance,
+  getCollateralRiskTx,
+  getTreasuryBalanceTx,
+  getUserTokensStakedToProjectTx,
+  getVerifiedCarbonForProjectTx,
+  numberOfTokensStakedToProjectTx,
+  stakeTokensToProjectTx,
+  unstakeTokensFromProjectTx 
+} from "../services/hashgraph";
 
 const initialData = {
   topic: "",
@@ -61,14 +71,50 @@ export const state = proxy({
     state.balance = DOV ? Math.round(DOV.balance/1000000).toLocaleString() : 0;
   },
 
-  testTransaction: async () => {
-    const txnBytes = buildTestTransaction();
+  claimDemoTokensForStaking: async () => {
+    const txnBytes = claimDemoTokensForStakingTx();
     const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
     console.log(response);
   },
 
-  claimDemoTokens: async () => {
-    const txnBytes = buildClaimTokensTransaction();
+  stakeTokensToProject: async (id, amount) => {
+    const txnBytes = stakeTokensToProjectTx(id, amount);
+    const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
+    console.log(response);
+  },
+  
+  unstakeTokensFromProject: async (id, amount) => {
+    const txnBytes = unstakeTokensFromProjectTx(id, amount);
+    const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
+    console.log(response);
+  },
+
+  getTreasuryBalance: async () => {
+    const txnBytes = getTreasuryBalanceTx();
+    const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
+    console.log(response);
+  },
+
+  getVerifiedCarbonForProject : async (id) => {
+    const txnBytes = getVerifiedCarbonForProjectTx(id);
+    const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
+    console.log(response);
+  },
+
+  getCollateralRisk : async (id) => {
+    const txnBytes = getCollateralRiskTx(id);
+    const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
+    console.log(response);
+  },
+
+  numberOfTokensStakedToProject : async (id) => {
+    const txnBytes = numberOfTokensStakedToProjectTx(id);
+    const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
+    console.log(response);
+  },
+
+  getUserTokensStakedToProject : async (id) => {
+    const txnBytes = getUserTokensStakedToProjectTx(id);
     const response = await sendTransaction(state.data.pairedAccount, state.data.topic, txnBytes);
     console.log(response);
   }
