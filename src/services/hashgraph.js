@@ -11,41 +11,41 @@ const client = Client
 export const getAccountBalance = async (accountId) =>
   await new AccountBalanceQuery({ accountId }).execute(client);
 
-const contractCallQueryTx = (func, params) => new ContractCallQuery()
+const contractCallQueryTxn = (func, params) => new ContractCallQuery()
   .setContractId(CONTRACT_ID)
   .setGas(500000)
   .setFunction(func, params)
   .setMaxQueryPayment(new Hbar(0.00000001))
   .toBytes();
 
-export const claimDemoTokensForStakingTx = (amount=1) =>
-  contractCallQueryTx("claimDemoTokensForStaking", new ContractFunctionParameters()
+export const claimDemoTokensForStakingTxn = (amount=1) =>
+  contractCallQueryTxn("claimDemoTokensForStaking", new ContractFunctionParameters()
     .addInt64(amount));
 
-export const stakeTokensToProjectTx = (id, amount) => 
-  contractCallQueryTx("stakeTokensToProject", new ContractFunctionParameters()
+export const stakeTokensToProjectTxn = (id, amount) => 
+  contractCallQueryTxn("stakeTokensToProject", new ContractFunctionParameters()
     .addString(id)
     .addInt64(amount));
 
-export const unstakeTokensFromProjectTx = (id, amount) =>
-  contractCallQueryTx("unstakeTokensFromProject", new ContractFunctionParameters()
+export const unstakeTokensFromProjectTxn = (id, amount) =>
+  contractCallQueryTxn("unstakeTokensFromProject", new ContractFunctionParameters()
     .addString(id)
     .addInt64(amount));
 
-export const getTreasuryBalanceTx = () =>
-  contractCallQueryTx("getTreasuryBalance");
+export const getTreasuryBalanceTxn = () =>
+  contractCallQueryTxn("getTreasuryBalance");
 
-export const getVerifiedCarbonForProjectTx = (id) =>
-  contractCallQueryTx("getVerifiedCarbonForProject", new ContractFunctionParameters()
+export const getVerifiedCarbonForProjectTxn = (id) =>
+  contractCallQueryTxn("getVerifiedCarbonForProject", new ContractFunctionParameters()
     .addString(id));
 
-export const getCollateralRiskTx = (id) =>
-  contractCallQueryTx("getCollateralRisk");
+export const getCollateralRiskTxn = (id) =>
+  contractCallQueryTxn("getCollateralRisk");
 
-export const numberOfTokensStakedToProjectTx = (id) =>
-  contractCallQueryTx("numberOfTokensStakedToProject", new ContractFunctionParameters()
+export const numberOfTokensStakedToProjectTxn = (id) =>
+  contractCallQueryTxn("numberOfTokensStakedToProject", new ContractFunctionParameters()
     .addString(id));
 
-export const getUserTokensStakedToProjectTx = (id) =>
-  contractCallQueryTx("getUserTokensStakedToProject", new ContractFunctionParameters()
+export const getUserTokensStakedToProjectTxn = (id) =>
+  contractCallQueryTxn("getUserTokensStakedToProject", new ContractFunctionParameters()
     .addString(id));
