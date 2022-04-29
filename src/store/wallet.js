@@ -47,12 +47,12 @@ export const wallet = proxy({
   isConnecting: false
 });
 
+// use to access wallet store from components
+export const useWallet = () => useSnapshot(wallet);
+
 // save wallet connection to local storage when wallet connection changes
 subscribe(wallet.connection, () =>
   localStorage.setItem("hashconnect", JSON.stringify(wallet.connection)));
-
-// use in components to access store
-export const useWallet = () => useSnapshot(wallet);
 
 // send transaction bytes over hashconnect
 async function sendTransaction(transactionBytes) {

@@ -1,5 +1,5 @@
 import { Badge, Button, Card, createStyles, Group, Image, Stack, Text } from "@mantine/core";
-import { useProject } from "../../store/project";
+import { openStakeDialog, openPurchaseDialog } from "../../store/projects";
 
 const useStyles = createStyles(theme => ({
   root: {
@@ -17,7 +17,6 @@ const useStyles = createStyles(theme => ({
 
 export default function Project({ data }) {
   const { classes } = useStyles();
-  const project = useProject();
   
   return (
     <Card p={0} className={classes.root}>
@@ -54,7 +53,7 @@ export default function Project({ data }) {
             color="green"
             variant="light"
             disabled={data.supplyRemaining === 0}
-            onClick={() => project.openPurchaseDialog(data.id)}
+            onClick={() => openPurchaseDialog(data.id)}
           >
             Purchase
           </Button>
@@ -63,7 +62,7 @@ export default function Project({ data }) {
             color="blue"
             variant="light"
             disabled={data.supplyRemaining === 0}
-            onClick={() => project.openStakeDialog(data.id)}
+            onClick={() => openStakeDialog(data.id)}
           >
             Stake
           </Button>

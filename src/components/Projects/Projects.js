@@ -25,7 +25,7 @@ export default function Projects() {
           { maxWidth: "lg", cols: 3 },
         ]}
       >
-        {projects.data.map(project => (
+        {projects.filtered.map(project => (
           <Project key={project.id} data={project} />
         ))}
       </SimpleGrid>

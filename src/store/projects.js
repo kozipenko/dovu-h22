@@ -1,54 +1,75 @@
 import { proxy, subscribe, useSnapshot } from "valtio";
-import projects from "../data/projects";
+import projectsData from "../data/projects";
 
-export const state = proxy({
-  data: projects,
+// projects store
+export const projects = proxy({
+  active: null,
+  filtered: projectsData,
+  isStakeDialogOpen: false,
+  isPurchaseDialogOpen: false,
   filters: {
     price: [0, 50],
     supply: [0, 100],
     maxApy: [0, 50],
     search: ""
-  },
-
-  openPurchaseDialog: (id) => {
-    state.selected = state.data.find(p => p.id === id);
-    state.isPurchaseDialogOpen = true;
-  },
-
-  openStakeDialog: (id) => {
-    state.selected = state.data.find(p => p.id === id);
-    state.isStakeDialogOpen = true;
-  },
-
-  closeDialog: () => {
-    state.selected = null;
-    state.isPurchaseDialogOpen = false;
-    state.isStakeDialogOpen = false;
-  },
-
-  setPriceFilter: (price) => state.filters.price = price,
-
-  setSupplyFilter: (supply) => state.filters.supply = supply,
-
-  setMaxApyFilter: (maxApy) => state.filters.maxApy = maxApy,
-
-  setSearchFilter: (search) => state.filters.search = search,
-  
-  resetFilters: () => {
-    state.data = projects;
-    state.filters.price = [0, 50];
-    state.filters.supply = [0, 100];
-    state.filters.maxApy = [0, 50];
-    state.filters.search = "";
   }
 });
 
-export const useProjects = () => useSnapshot(state);
+// use to access projects store from components
+export const useProjects = () => useSnapshot(projects);
 
-subscribe(state.filters, () =>
-  state.data = projects
-  .filter(p => p.price >= state.filters.price[0] && p.price <= state.filters.price[1])
-  .filter(p => p.supply >= state.filters.supply[0] && p.supply <= state.filters.supply[1])
-  .filter(p => p.maxApy >= state.filters.maxApy[0] && p.maxApy <= state.filters.maxApy[1])
-  .filter(p => p.name.toLowerCase().includes(state.filters.search))
+// update filtered projects any filter changes
+subscribe(projects.filters, () =>
+  projects.filtered = projectsData
+  .filter(p => p.price >= projects.filters.price[0] && p.price <= projects.filters.price[1])
+  .filter(p => p.supply >= projects.filters.supply[0] && p.supply <= projects.filters.supply[1])
+  .filter(p => p.maxApy >= projects.filters.maxApy[0] && p.maxApy <= projects.filters.maxApy[1])
+  .filter(p => p.name.toLowerCase().includes(projects.filters.search))
 );
+
+// open project stake dialog
+export function openStakeDialog(id) {
+  projects.active = projectsData.find(p => p.id === id);
+  projects.isStakeDialogOpen = true;
+}
+
+// open project purchase dialog
+export function openPurchaseDialog(id) {
+  projects.active = projectsData.find(p => p.id === id);
+  projects.isPurchaseDialogOpen = true;
+}
+
+// close all dialogs
+export function closeDialogs() {
+  projects.active = null;
+  projects.isStakeDialogOpen = false;
+  projects.isPurchaseDialogOpen = false;
+}
+
+// set price filter
+export function setPriceFilter(price) {
+  projects.filters.price = price;
+}
+
+// set max apy filter
+export function setMaxApyFilter(maxApy) {
+  projects.filters.maxApy = maxApy;
+}
+
+// set supply filter
+export function setSupplyFilter(supply) {
+  projects.filters.supply = supply;
+}
+
+// set search filter
+export function setSearchFilter(search) {
+  projects.filters.search = search;
+}
+
+// reset all filters
+export function resetFilters() {
+  projects.priceFilter = [0, 50];
+  projects.maxApyFilter = [0, 50];
+  projects.supplyFilter = [0, 100];
+  projects.searchFilter = "";
+}

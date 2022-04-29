@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ActionIcon, Button, Checkbox, CheckboxGroup, Drawer, Group, RangeSlider, Text, TextInput } from "@mantine/core";
 import { Filter, Search, X } from "tabler-icons-react";
-import { useProjects } from "../../store/projects";
+import { resetFilters, setMaxApyFilter, setPriceFilter, setSearchFilter, setSupplyFilter, useProjects } from "../../store/projects";
 
 export default function ProjectsFilters() {
   const [opened, setOpened] = useState(false);
@@ -19,11 +19,11 @@ export default function ProjectsFilters() {
           value={projects.filters.search}
           icon={<Search size={18} />}
           rightSection={projects.filters.search && (
-            <ActionIcon onClick={() => projects.setSearchFilter("")}>
+            <ActionIcon onClick={() => setSearchFilter("")}>
               <X size={18} />
             </ActionIcon>
           )}
-          onChange={(e) => projects.setSearchFilter(e.target.value)}
+          onChange={(e) => setSearchFilter(e.target.value)}
         />
       </Group>
 
@@ -42,7 +42,7 @@ export default function ProjectsFilters() {
           minRange={1}
           label={null}
           value={projects.filters.price}
-          onChange={projects.setPriceFilter}
+          onChange={setPriceFilter}
         
         />
         <Group position="apart" mt="xs">
@@ -58,7 +58,7 @@ export default function ProjectsFilters() {
           minRange={1}
           label={null}
           value={projects.filters.supply}
-          onChange={projects.setSupplyFilter}
+          onChange={setSupplyFilter}
         />
         <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed" weight={500}>{projects.filters.supply[0]}t</Text>
@@ -73,7 +73,7 @@ export default function ProjectsFilters() {
           minRange={1}
           label={null}
           value={projects.filters.maxApy}
-          onChange={projects.setMaxApyFilter}
+          onChange={setMaxApyFilter}
         />
         <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed" weight={500}>{projects.filters.maxApy[0]}%</Text>
@@ -89,7 +89,7 @@ export default function ProjectsFilters() {
         <Text mt="xl" size="sm" color="dimmed" weight={700}>Carbon Proofs</Text>
         <Checkbox mt="sm" label="Yes" />
 
-        <Button mt="xl" onClick={projects.resetFilters}>Reset</Button>
+        <Button mt="xl" onClick={resetFilters}>Reset</Button>
       </Drawer>
     </>
   );
