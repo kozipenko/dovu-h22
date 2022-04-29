@@ -18,7 +18,7 @@ export const projects = proxy({
 // use to access projects store from components
 export const useProjects = () => useSnapshot(projects);
 
-// update filtered projects any filter changes
+// update filtered projects when filters change
 subscribe(projects.filters, () =>
   projects.filtered = projectsData
   .filter(p => p.price >= projects.filters.price[0] && p.price <= projects.filters.price[1])
