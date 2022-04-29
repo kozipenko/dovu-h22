@@ -11,19 +11,26 @@ import {
   TransactionId
 } from "@hashgraph/sdk";
 
+// testnet account needed for account balance queries
 const ACCOUNT_ID = process.env.REACT_APP_ACCOUNT_ID;
 const PRIVATE_KEY =  process.env.REACT_APP_PRIVATE_KEY;
 const NETWORK = "testnet";
+// token used for staking
 const TOKEN_ID = "0.0.30875555";
-const APP_META = { name: "Hackathon", description: "Testing" };
+// stakable contract id
 const STAKABLE_CONTRACT_ID = "0.0.34353158";
+// wallet meta data for displaying in extensions (HashPack)
+const APP_META = { name: "Hackathon", description: "Testing" };
 
+// client needed for account balance queries
 const client = Client
   .forName(NETWORK)
   .setOperator(AccountId.fromString(ACCOUNT_ID), PrivateKey.fromString(PRIVATE_KEY));
 
+// hashconnect instance
 const hashConnect = new HashConnect(true);
 
+// initial wallet connection settings
 const initialConnection = {
   topic: "",
   privateKey: "",
@@ -32,6 +39,7 @@ const initialConnection = {
   pairedWalletData: null
 };
 
+// wallet store
 export const wallet = proxy({
   balance: null,
   extensions: [],
@@ -39,11 +47,14 @@ export const wallet = proxy({
   isConnecting: false
 });
 
+// save wallet connection to local storage when wallet connection changes
 subscribe(wallet.connection, () =>
   localStorage.setItem("hashconnect", JSON.stringify(wallet.connection)));
 
+// use in components to access store
 export const useWallet = () => useSnapshot(wallet);
 
+// send transaction bytes over hashconnect
 async function sendTransaction(transactionBytes) {
   return await hashConnect.sendTransaction(wallet.connection.topic, {
     topic: wallet.connection.topic,
@@ -55,6 +66,7 @@ async function sendTransaction(transactionBytes) {
   });
 }
 
+// helper to create transaction bytes
 async function makeBytes(transaction) {
   transaction.setTransactionId(TransactionId.generate(wallet.connection.pairedAccount));
   transaction.setNodeAccountIds([new AccountId(3)]);
@@ -62,6 +74,7 @@ async function makeBytes(transaction) {
   return transaction.toBytes();
 }
 
+// helper to create transaction
 async function createContractExecuteTransaction(func, params) {
   const transaction = new ContractExecuteTransaction()
   .setContractId(STAKABLE_CONTRACT_ID)
@@ -73,22 +86,26 @@ async function createContractExecuteTransaction(func, params) {
   return await makeBytes(transaction);
 }
 
+// load saved connection first from local storage or set initial connection
 function loadInitialConnection() {
   const local = localStorage.getItem("hashconnect");
   return local ? JSON.parse(local) : initialConnection;
 };
 
+// wallet pairing event
 function handlePairingEvent(e) {
   wallet.isConnecting = false;
   wallet.connection.pairedAccount = e.accountIds[0];
   wallet.connection.pairedWalletData = e.metadata;
 }
 
+// chrome extension found event
 function handleFoundExtensionEvent(e) {
   if (!wallet.extensions.includes(e))
     wallet.extensions.push(e);
 }
 
+// query account balance and retrieve token balance
 export async function queryTokenBalance() {
   const response = await new AccountBalanceQuery()
     .setAccountId(wallet.connection.pairedAccount)
@@ -98,10 +115,14 @@ export async function queryTokenBalance() {
   wallet.balance = DOV ? Math.round(DOV.balance/1000000).toLocaleString() : 0;
 }
 
+// toggle wallet connect dialog
 export function toggleConnectDialog() {
   wallet.isConnecting = !wallet.isConnecting;
 }
 
+// contract call to claim tokens
+// receiving "CONTRACT_REVERT_EXECUTED"
+// WHY?
 export async function claimDemoTokensForStaking(amount=1) {
   const func = "claimDemoTokensForStaking";
   const params = new ContractFunctionParameters().addInt64(amount);
@@ -112,6 +133,7 @@ export async function claimDemoTokensForStaking(amount=1) {
   console.log(response);
 }
 
+// initialize hashconnect first from localstorage or initial connection
 export async function initializeHashConnect() {
   const init = await hashConnect.init(APP_META, wallet.connection.privateKey);
   const conn = await hashConnect.connect(wallet.connection.topic, wallet.connection.pairedWalletData);
@@ -126,10 +148,12 @@ export async function initializeHashConnect() {
   wallet.connection.topic = conn.topic;
 }
 
+// connect to chrome extension (HashPack)
 export function connectToLocalWallet(extension) {
   hashConnect.connectToLocalWallet(wallet.connection.pairingString, extension);
 }
 
+// disconnect from chrome extension (HashPack)
 export function disconnectLocalWallet() {
   wallet.connection.pairedAccount = null;
   wallet.connection.pairedWalletData = null;
