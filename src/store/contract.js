@@ -12,14 +12,18 @@ import {
   TransactionId
 } from "@hashgraph/sdk";
 
+// TODO: Remove below
+// DUMMY SC  - 0.0.34359634
+// TODO: Update to official
+// Stakable (modified with no checks, for debugging) - 0.0.34359589
 // testnet account needed for account balance queries
 const ACCOUNT_ID = process.env.REACT_APP_ACCOUNT_ID;
-const PRIVATE_KEY =  process.env.REACT_APP_PRIVATE_KEY;
+const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY;
 const NETWORK = "testnet";
 // token used for staking
-const TOKEN_ID = "0.0.34185686";
+const TOKEN_ID = "0.0.34185686"; // Token ID is the one sent for testing 0.0.34185686
 // stakable contract id
-const CONTRACT_ID = "0.0.34353158";
+const CONTRACT_ID = "0.0.34359589"; // in testing - project.id -> 0.0.169290 in contract
 
 // client needed for account balance queries
 const client = Client
@@ -45,7 +49,6 @@ async function callContract(method, params) {
   const transaction = await new ContractExecuteTransaction()
   .setContractId(CONTRACT_ID)
   .setGas(3000000)
-  .setPayableAmount(new Hbar(10))
   .setFunction(method, params)
   .setMaxTransactionFee(new Hbar(0.75))
   .setTransactionId(TransactionId.generate(wallet.connection.pairedAccount))
@@ -73,6 +76,35 @@ export async function getTreasuryBalance() {
 export async function claimDemoTokensForStaking(amount=1) {
   const params = new ContractFunctionParameters().addInt64(amount);
   const response = await callContract("claimDemoTokensForStaking", params);
+
+  console.log(response);
+}
+
+export async function changeStateOfTestContract(amount) {
+  const func = "addTokens";
+  const params = new ContractFunctionParameters().addInt64(amount);
+  const transactionBytes = await callContract(func, params);
+
+  const response = await sendTransaction(transactionBytes);
+  console.log(response);
+}
+
+export async function addProjectForStaking(name) {
+  const func = "addProject";
+  const params = new ContractFunctionParameters().addString(name).addInt64(5);
+  const transactionBytes = await callContract(func, params);
+
+  const response = await sendTransaction(transactionBytes);
+
+  console.log(response);
+}
+
+export async function addTokensToTreasury(amount) {
+  const func = "addTokensToTreasury";
+  const params = new ContractFunctionParameters().addInt64(amount);
+  const transactionBytes = await callContract(func, params);
+  
+  const response = await sendTransaction(transactionBytes);
 
   console.log(response);
 }

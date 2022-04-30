@@ -4,17 +4,43 @@ import { showNotification } from "@mantine/notifications";
 import { Link } from "react-router-dom";
 import { ChartPie, Gift, Logout } from "tabler-icons-react";
 import { disconnectLocalWallet, useWallet } from "../../store/wallet";
-import { claimDemoTokensForStaking, getAccountBalance, useContract } from "../../store/contract";
+import { claimDemoTokensForStaking, getAccountBalance, useContract, changeStateOfTestContract, addProjectForStaking, addTokensToTreasury } from "../../store/contract";
 
 export default function WalletMenu() {
   const wallet = useWallet();
   const contract = useContract();
 
-  const handleClaimDemoTokens = () => {
-    claimDemoTokensForStaking();
+  const handleChangeStateOfTestContract = () => {
+    changeStateOfTestContract(100);
 
     showNotification({
-      title: `1 DOV has been successfully sent to ${wallet.connection.pairedAccount}`
+      title: `Changed state of contract.`
+    });
+  }
+
+  const handleClaimDemoTokens = () => {
+    claimDemoTokensForStaking(10);
+
+    showNotification({
+      title: `10 DOV has been successfully sent to ${wallet.connection.pairedAccount}`
+    });
+  }
+
+  const handleAddProject = () => {
+    const account_id = '0.0.1' + Math.floor(Math.random() * 100000)
+    console.log("Trying to add project: ", account_id)
+    addProjectForStaking(account_id);
+
+    showNotification({
+      title: `Added new project.`
+    });
+  }
+
+  const handleAddTokenstoTreasury = () => {
+    console.log("Adding tokens to treasury...");
+    addTokensToTreasury(1000000);
+    showNotification({
+      title: `Adding tokens to treasury.`
     });
   }
 
