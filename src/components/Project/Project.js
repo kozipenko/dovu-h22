@@ -25,7 +25,7 @@ export default function Project({ data }) {
       </Card.Section>
 
       <Card.Section p="md">
-        <Stack>
+        <Stack spacing="xs">
           <Text weight={500}>{data.name}</Text>
           <Group spacing="xs">
             <Badge
@@ -47,7 +47,7 @@ export default function Project({ data }) {
       </Card.Section>
 
       <Card.Section className={classes.buttons}>
-        <Group position="right" spacing="xs">
+        <Group grow spacing="xs">
           <Button
             size="xs"
             color="green"

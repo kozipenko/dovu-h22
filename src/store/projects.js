@@ -68,8 +68,8 @@ export function setSearchFilter(search) {
 
 // reset all filters
 export function resetFilters() {
-  projects.priceFilter = [0, 50];
-  projects.maxApyFilter = [0, 50];
-  projects.supplyFilter = [0, 100];
-  projects.searchFilter = "";
+  projects.filters.price = [0, 50];
+  projects.filters.maxApy = [0, 50];
+  projects.filters.supply = [0, 100];
+  projects.filters.search = "";
 }

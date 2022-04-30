@@ -7,7 +7,7 @@ export default function ProjectPurchaseDialog() {
   return (
     <Modal
       zIndex={1000}
-      title={projects?.active?.name}
+      title={projects.active?.name}
       opened={projects.isPurchaseDialogOpen}
       onClose={closeDialogs}
     >
