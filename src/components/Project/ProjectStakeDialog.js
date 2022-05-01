@@ -3,7 +3,7 @@ import { Button, Checkbox, Group, Modal, NumberInput, Select, Text } from "@mant
 import { closeDialogs, useProjects } from "../../store/projects";
 
 export default function ProjectStakeDialog() {
-  const [amount, setAmount] = useState(null);
+  const [amount, setAmount] = useState(0);
   const [term, setTerm] = useState("1");
   const projects = useProjects();
 
@@ -36,11 +36,6 @@ export default function ProjectStakeDialog() {
       <Text mt="md" size="xs" color="dimmed">Rewards (DOV)</Text>
       <Group mt="xs" position="apart">
         <Text align="center" size="xs" weight={500}>
-          APY
-          <Text size="lg" color="indigo" weight={700}>24%</Text>
-        </Text>
-
-        <Text align="center" size="xs" weight={500}>
           Daily
           <Text size="lg" color="indigo" weight={700}>200</Text>
         </Text>
@@ -58,6 +53,10 @@ export default function ProjectStakeDialog() {
         <Text align="center" size="xs" weight={500}>
           Total
           <Text size="lg" color="indigo" weight={700}>500</Text>
+        </Text>
+        <Text align="center" size="xs" weight={500}>
+          APY
+          <Text size="lg" color="indigo" weight={700}>24%</Text>
         </Text>
       </Group>
 

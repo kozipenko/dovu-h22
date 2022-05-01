@@ -1,7 +1,10 @@
 import { Button, Group, Modal, Select, TextInput } from "@mantine/core";
+import { useState } from "react";
 import { closeDialogs, useProjects } from "../../store/projects";
 
 export default function ProjectPurchaseDialog() {
+  const [currency, setCurrency] = useState("usd");
+  const [amount, setAmount] = useState(0);
   const projects = useProjects();
 
   return (
@@ -18,16 +21,16 @@ export default function ProjectPurchaseDialog() {
         rightSection={(
           <Select
             zIndex={1000}
-            value="usd"
+            value={currency}
             data={[
               { value: "dov", label: "DOV" },
-              { value: "tonnes", label: "TONNES" },
               { value: "eur", label: "🇪🇺 EUR" },
               { value: "usd", label: "🇺🇸 USD" },
               { value: "cad", label: "🇨🇦 CAD" },
               { value: "gbp", label: "🇬🇧 GBP" },
               { value: "aud", label: "🇦🇺 AUD" }
             ]}
+            onChange={setCurrency}
             styles={{
               input: {
                 borderTopLeftRadius: 0,

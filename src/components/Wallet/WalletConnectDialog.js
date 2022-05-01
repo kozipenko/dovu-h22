@@ -1,7 +1,7 @@
 import { ActionIcon, Anchor, Button, Center, Group, Loader, Modal, Stack, Text, TextInput } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useClipboard } from "@mantine/hooks";
-import { Copy, Help } from "tabler-icons-react";
+import { Copy, Help, Wallet } from "tabler-icons-react";
 import { connectToLocalWallet, toggleConnectDialog, useWallet } from "../../store/wallet";
 
 export default function WalletConnectDialog() {
@@ -18,7 +18,9 @@ export default function WalletConnectDialog() {
 
   return (
     <>
-      <Button onClick={toggleConnectDialog}>Connect</Button>
+      <Button leftIcon={<Wallet size={18} />} onClick={toggleConnectDialog}>
+        Connect
+      </Button>
 
       <Modal
         title="Connect Hedera Wallet"

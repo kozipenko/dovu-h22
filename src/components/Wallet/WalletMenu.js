@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Button, Divider, Group, Menu, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { Link } from "react-router-dom";
-import { ChartPie, Gift, Logout } from "tabler-icons-react";
+import { ChartPie, Gift, Logout, Wallet } from "tabler-icons-react";
 import { disconnectLocalWallet, useWallet } from "../../store/wallet";
 import { claimDemoTokensForStaking, getAccountBalance, useContract, changeStateOfTestContract, addProjectForStaking, addTokensToTreasury } from "../../store/contract";
 
@@ -49,7 +49,14 @@ export default function WalletMenu() {
   }, []);
 
   return (
-    <Menu control={<Button>{wallet.connection.pairedAccount}</Button>} zIndex={1000}>
+    <Menu
+      zIndex={1000}
+      control={
+        <Button leftIcon={<Wallet size={18} />}>
+          {wallet.connection.pairedAccount}
+        </Button>
+      }
+    >
       <Group position="apart" px="sm" py="xs">
         <Text size="xs" weight={500}>Balance:</Text>
         <Text size="xs" weight={500}>{contract.accountBalance} DOV</Text>
