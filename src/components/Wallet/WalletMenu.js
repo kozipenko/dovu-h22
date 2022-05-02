@@ -19,7 +19,7 @@ export default function WalletMenu() {
   }
 
   const handleClaimDemoTokens = () => {
-    claimDemoTokensForStaking(10);
+    claimDemoTokensForStaking(10000);
 
     showNotification({
       title: `10 DOV has been successfully sent to ${wallet.connection.pairedAccount}`

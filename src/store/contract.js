@@ -65,7 +65,7 @@ export async function getAccountBalance() {
     .execute(client);
   const balance = JSON.parse(response);
   const token = balance.tokens.find(t => t.tokenId === TOKEN_ID);
-  contract.accountBalance = token ? Math.round(token.balance/1000000).toLocaleString() : 0;
+  contract.accountBalance = token.balance; // TODO: proper rounding
 }
 
 export async function getTreasuryBalance() {
