@@ -4,45 +4,93 @@ import { showNotification } from "@mantine/notifications";
 import { Link } from "react-router-dom";
 import { ChartPie, Gift, Logout, Wallet } from "tabler-icons-react";
 import { disconnectLocalWallet, useWallet } from "../../store/wallet";
-import { claimDemoTokensForStaking, getAccountBalance, useContract, changeStateOfTestContract, addProjectForStaking, addTokensToTreasury } from "../../store/contract";
+import { claimDemoTokensForStaking, getAccountBalance, useContract, addProjectForStaking, addTokensToTreasury, stakeTokensToProject, unstakeTokensFromProject } from "../../store/contract";
+
 
 export default function WalletMenu() {
   const wallet = useWallet();
-  const contract = useContract();
+  const contract = useContract()
 
-  const handleChangeStateOfTestContract = () => {
-    changeStateOfTestContract(100);
-
-    showNotification({
-      title: `Changed state of contract.`
-    });
+  async function handleClaimDemoTokens() {
+    const response = await claimDemoTokensForStaking(10000);
+    if (response) {
+      showNotification({
+        title: `10 DOV has been successfully sent to ${wallet.connection.pairedAccount}`
+      });
+    }else{
+      showNotification({
+        title: `Could not claim demo tokens for: ${wallet.connection.pairedAccount}`
+      });
+    }
   }
 
-  const handleClaimDemoTokens = () => {
-    claimDemoTokensForStaking(10000);
-
-    showNotification({
-      title: `10 DOV has been successfully sent to ${wallet.connection.pairedAccount}`
-    });
+  /*
+   * ADMIN ONLY.
+   * accountId: the id of the hedera entity/project (this could be HTS id, Account id, or DID)
+   * verifiedCarbonKg: the amount of kgs to add to a project
+   */
+  async function handleAddProject(accountId, verifiedCarbonKg) {
+    const response = await addProjectForStaking(accountId, verifiedCarbonKg);
+    if (response) {
+      showNotification({
+        title: `Added new project: ${accountId} associated with ${verifiedCarbonKg} kg's of verified carbon.`
+     });
+    }else{
+      showNotification({
+        title: `Could not add project: ${accountId}.`
+     });
+    }
+  }
+  // ADMIN ONLY.
+  // export TOKEN_ID from contract.js so we can include it in notification?
+  async function handleAddTokenstoTreasury(amount) {
+    const response = await addTokensToTreasury(amount);
+    if (response) {
+      showNotification({
+        title: `Added ${amount} tokens to treasury.`
+      });
+    }else{
+      showNotification({
+        title: `Unable to add tokens to treasury.`
+     });
+    }
   }
 
-  const handleAddProject = () => {
-    const account_id = '0.0.1' + Math.floor(Math.random() * 100000)
-    console.log("Trying to add project: ", account_id)
-    addProjectForStaking(account_id);
-
-    showNotification({
-      title: `Added new project.`
-    });
+  /*
+   * project: the id of the entity that reputation energy (tokens) staked on it
+   * amount: the amount of tokens to remove (will revert if the balance of the user is too low)
+   */
+  async function handleStakeTokensToProject(project, amount) {
+    const response = await stakeTokensToProject(project, amount); 
+    if (response) {
+      showNotification({
+        title: `Congratulations, you've staked ${amount}!`
+      });
+    }else{
+      showNotification({
+        title: `Unable to stake to project!` // can we get a human readable version of the project?
+      });
+    }
   }
 
-  const handleAddTokenstoTreasury = () => {
-    console.log("Adding tokens to treasury...");
-    addTokensToTreasury(1000000);
-    showNotification({
-      title: `Adding tokens to treasury.`
-    });
+    /*
+   * project: the id of the entity that reputation energy (tokens) staked on it
+   * amount: the amount of tokens to remove (could be too much)
+   */
+  async function handleUnstakeTokensFromProject(project, amount) {
+    const response = await unstakeTokensFromProject(project, amount); 
+    if (response) {
+      showNotification({
+        title: `You've unstaked ${amount}.` // from $PROJECT
+      });
+    }else{
+      showNotification({
+        title: `Unable to unstake funds from project, please try again later...` // can we get a human readable version of the project?
+      });
+    }
   }
+  
+
 
   useEffect(() => {
     getAccountBalance();

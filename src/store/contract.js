@@ -59,6 +59,7 @@ async function callContract(method, params) {
   return await sendTransaction(transaction);
 }
 
+
 export async function getAccountBalance() {
   const response = await new AccountBalanceQuery()
     .setAccountId(wallet.connection.pairedAccount)
@@ -66,6 +67,17 @@ export async function getAccountBalance() {
   const balance = JSON.parse(response);
   const token = balance.tokens.find(t => t.tokenId === TOKEN_ID);
   contract.accountBalance = token.balance; // TODO: proper rounding
+}
+
+// for exposing 'admin features'
+export async function isUserOwner() {
+  const response = await new queryContract("owner");
+  const owner = AccountId.fromSolidityAddress(response.getAddress(0));
+  if (owner === ACCOUNT_ID) {
+    return true;
+  }else{
+    return false;
+  }
 }
 
 export async function getTreasuryBalance() {
@@ -77,34 +89,43 @@ export async function claimDemoTokensForStaking(amount=1) {
   const params = new ContractFunctionParameters().addInt64(amount);
   const response = await callContract("claimDemoTokensForStaking", params);
 
-  console.log(response);
-}
-
-export async function changeStateOfTestContract(amount) {
-  const func = "addTokens";
-  const params = new ContractFunctionParameters().addInt64(amount);
-  const transactionBytes = await callContract(func, params);
-
-  const response = await sendTransaction(transactionBytes);
-  console.log(response);
+  return response.success;
 }
 
 export async function addProjectForStaking(name) {
   const func = "addProject";
   const params = new ContractFunctionParameters().addString(name).addInt64(5);
   const transactionBytes = await callContract(func, params);
-
   const response = await sendTransaction(transactionBytes);
 
-  console.log(response);
+  return response.success;
 }
 
 export async function addTokensToTreasury(amount) {
   const func = "addTokensToTreasury";
   const params = new ContractFunctionParameters().addInt64(amount);
   const transactionBytes = await callContract(func, params);
-  
   const response = await sendTransaction(transactionBytes);
 
-  console.log(response);
+  return response.success
+}
+
+export async function stakeTokensToProject(project, amount) {
+  // TODO: implement emit events, record and mirror node.
+  const func = "stakeTokensToProject";
+  const params = new ContractFunctionParameters().addString(project).addInt64(amount);
+  const transactionBytes = await callContract(func, params);
+  const response = await sendTransaction(transactionBytes);
+
+  return response.success;
+}
+
+export async function unstakeTokensFromProject(project, amount) {
+  // TODO: implement emit events, record and mirror node.
+  const func = "unstakeTokensFromProject";
+  const params = new ContractFunctionParameters().addString(project).addInt64(amount);
+  const transactionBytes = await callContract(func, params);
+  const response = await sendTransaction(transactionBytes);
+
+  return response.success;
 }
