@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Checkbox, Group, NumberInput, Select, Text } from "@mantine/core";
 import { stakeTokensToProject, unstakeTokensFromProject } from "../../store/contract";
 
-export default function ProjectStakeModal() {
+export default function ProjectStakeModal({ innerProps }) {
   const [amount, setAmount] = useState(0);
   const [term, setTerm] = useState("1");
 

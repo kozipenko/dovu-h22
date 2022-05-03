@@ -21,13 +21,19 @@ export default function ProjectsCard({ project }) {
 
   function openProjectPurchaseModal() {
     modals.openContextModal("projectPurchase", {
-      title: `Purchase ${project.name} Offsets`
+      title: `Purchase ${project.name} Offsets`,
+      innerProps: {
+        project
+      }
     });
   }
 
   function openProjectStakeModal() {
     modals.openContextModal("projectStake", {
-      title: `Stake to ${project.name}`
+      title: `Stake to ${project.name}`,
+      innerProps: {
+        project
+      }
     });
   }
   
