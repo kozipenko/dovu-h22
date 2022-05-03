@@ -23,8 +23,7 @@ const initialConnection = {
 // wallet store
 export const wallet = proxy({
   extensions: [],
-  connection: loadInitialConnection(),
-  isConnecting: false
+  connection: loadInitialConnection()
 });
 
 // use to access wallet store from components
@@ -54,7 +53,6 @@ function loadInitialConnection() {
 
 // wallet pairing event
 function handlePairingEvent(e) {
-  wallet.isConnecting = false;
   wallet.connection.pairedAccount = e.accountIds[0];
   wallet.connection.pairedWalletData = e.metadata;
 }
@@ -63,11 +61,6 @@ function handlePairingEvent(e) {
 function handleFoundExtensionEvent(e) {
   if (!wallet.extensions.includes(e))
     wallet.extensions.push(e);
-}
-
-// toggle wallet connect dialog
-export function toggleConnectDialog() {
-  wallet.isConnecting = !wallet.isConnecting;
 }
 
 // initialize hashconnect first from localstorage or initial connection

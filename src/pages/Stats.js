@@ -1,12 +1,12 @@
-import { Group, Paper, SimpleGrid, Text } from "@mantine/core";
+import { Group, Paper, Text } from "@mantine/core";
 import { useEffect } from "react";
-import { getTreasuryBalance, useContract } from "../store/contract";
+import { loadTreasuryBalance, useContract } from "../store/contract";
 
 export default function Staking() {
   const contract = useContract();
 
   useEffect(() => {
-    getTreasuryBalance();
+    loadTreasuryBalance();
   }, []);
 
   return (

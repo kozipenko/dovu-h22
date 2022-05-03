@@ -22,6 +22,8 @@ const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY;
 const NETWORK = "testnet";
 // token used for staking
 const TOKEN_ID = "0.0.34185686"; // Token ID is the one sent for testing 0.0.34185686
+// token name
+export const TOKEN_NAME = "lol";
 // stakable contract id
 const CONTRACT_ID = "0.0.34359589"; // in testing - project.id -> 0.0.169290 in contract
 
@@ -31,6 +33,7 @@ const client = Client
   .setOperator(AccountId.fromString(ACCOUNT_ID), PrivateKey.fromString(PRIVATE_KEY));
 
 export const contract = proxy({
+  isOwner: true,
   accountBalance: null,
   treasuryBalance: null
 });
@@ -59,8 +62,8 @@ async function callContract(method, params) {
   return await sendTransaction(transaction);
 }
 
-
-export async function getAccountBalance() {
+// load account balance
+export async function loadAccountBalance() {
   const response = await new AccountBalanceQuery()
     .setAccountId(wallet.connection.pairedAccount)
     .execute(client);
@@ -69,25 +72,24 @@ export async function getAccountBalance() {
   contract.accountBalance = token.balance; // TODO: proper rounding
 }
 
-// for exposing 'admin features'
-export async function isUserOwner() {
-  const response = await new queryContract("owner");
+// load contract ownership status
+export async function loadIsOwner() {
+  const response = await queryContract("owner");
   const owner = AccountId.fromSolidityAddress(response.getAddress(0));
-  if (owner === ACCOUNT_ID) {
-    return true;
-  }else{
-    return false;
-  }
+  contract.isOwner = owner === ACCOUNT_ID;
 }
 
-export async function getTreasuryBalance() {
+export async function loadTreasuryBalance() {
   const response = await queryContract("getTreasuryBalance");
   contract.treasuryBalance = response.getInt64(0).toString();
 }
 
-export async function claimDemoTokensForStaking(amount=1) {
+export async function claimDemoTokensForStaking(amount) {
   const params = new ContractFunctionParameters().addInt64(amount);
   const response = await callContract("claimDemoTokensForStaking", params);
+
+  if (response.error)
+    throw new Error(response.error);
 
   return response.success;
 }

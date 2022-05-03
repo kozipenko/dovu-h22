@@ -1,9 +1,7 @@
 import { SimpleGrid } from "@mantine/core";
 import { useProjects } from "../../store/projects";
-import Project from "../Project/Project";
-import ProjectPurchaseDialog from "../Project/ProjectPurchaseDialog";
-import ProjectStakeDialog from "../Project/ProjectStakeDialog";
 import ProjectsFilter from "./ProjectsFilter";
+import ProjectsCard from "./ProjectsCard";
 
 export default function Projects() {
   const projects = useProjects();
@@ -11,8 +9,6 @@ export default function Projects() {
   return (
     <>
       <ProjectsFilter />
-      <ProjectPurchaseDialog />
-      <ProjectStakeDialog />
 
       <SimpleGrid
         spacing="md"
@@ -26,7 +22,7 @@ export default function Projects() {
         ]}
       >
         {projects.filtered.map(project => (
-          <Project key={project.id} data={project} />
+          <ProjectsCard key={project.id} project={project} />
         ))}
       </SimpleGrid>
     </>

@@ -1,8 +1,8 @@
 import { ActionIcon, Anchor, Box, Container, createStyles, Group, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { Moon, Sun } from "tabler-icons-react";
-import { useTheme } from "../../store/theme";
-import Wallet from "../Wallet/Wallet";
+import { toggleColorScheme, useTheme } from "../../store/theme";
+import PageWallet from "./PageWallet";
 
 const useStyles = createStyles(theme => ({
   root: {
@@ -40,8 +40,8 @@ export default function PageHeader() {
         </Anchor>
 
         <Group>
-          <Wallet />
-          <ActionIcon size="lg" variant="light" color="indigo" onClick={theme.toggleColorScheme}>
+          <PageWallet />
+          <ActionIcon size="lg" variant="light" color="indigo" onClick={toggleColorScheme}>
             {theme.colorScheme === "light" ? <Moon size={18} /> : <Sun size={18} />}
           </ActionIcon>
         </Group>

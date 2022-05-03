@@ -1,9 +1,12 @@
 import { proxy, useSnapshot } from "valtio";
 
-export const state = proxy({
+export const theme = proxy({
   colorScheme: "light",
-  primaryColor: "indigo",
-  toggleColorScheme: () => state.colorScheme = state.colorScheme === "light" ? "dark" : "light" 
+  primaryColor: "indigo"
 });
 
-export const useTheme = () => useSnapshot(state);
+export const useTheme = () => useSnapshot(theme);
+
+export function toggleColorScheme() {
+  theme.colorScheme = theme.colorScheme === "light" ? "dark" : "light";
+}

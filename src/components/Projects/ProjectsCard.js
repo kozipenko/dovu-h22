@@ -1,5 +1,5 @@
 import { Badge, Button, Card, createStyles, Group, Image, Stack, Text } from "@mantine/core";
-import { openStakeDialog, openPurchaseDialog } from "../../store/projects";
+import { useModals } from "@mantine/modals";
 
 const useStyles = createStyles(theme => ({
   root: {
@@ -15,33 +15,46 @@ const useStyles = createStyles(theme => ({
   }
 }));
 
-export default function Project({ data }) {
+export default function ProjectsCard({ project }) {
   const { classes } = useStyles();
+  const modals = useModals();
+
+  function openProjectPurchaseModal() {
+    modals.openContextModal("projectPurchase", {
+      title: `Purchase ${project.name} Offsets`
+    });
+  }
+
+  function openProjectStakeModal() {
+    modals.openContextModal("projectStake", {
+      title: `Stake to ${project.name}`
+    });
+  }
   
   return (
     <Card p={0} className={classes.root}>
       <Card.Section>
-        <Image src={data.coverImg} height={160} />
+        <Image src={project.coverImg} height={160} />
       </Card.Section>
 
       <Card.Section p="md">
         <Stack spacing="xs">
-          <Text weight={500}>{data.name}</Text>
+          <Text weight={500}>{project.name}</Text>
           <Group spacing="xs">
             <Badge
               size="sm"
               radius="xs"
               variant="filled"
-              color={data.supplyRemaining === 0 ? "red" : "green"}
+              color={project.supplyRemaining === 0 ? "red" : "green"}
               >
-                {data.supplyRemaining === 0 ? "No Stock" : "In Stock"}
+                {project.supplyRemaining === 0 ? "No Stock" : "In Stock"}
               </Badge>
-            <Badge size="sm" variant="filled" radius="xs">Price ${data.price}</Badge>
-            <Badge size="sm" variant="filled" radius="xs">APY {data.maxApy}%</Badge>
+            <Badge size="sm" variant="filled" radius="xs">Price ${project.price}</Badge>
+            <Badge size="sm" variant="filled" radius="xs">APY {project.maxApy}%</Badge>
           </Group>
           <Group spacing="xs">
-            <Badge size="sm" variant="filled" radius="xs">{data.stakers} Stakers</Badge>
-            <Badge size="sm" variant="filled" radius="xs">Collateral {data.collateral}%</Badge>
+            <Badge size="sm" variant="filled" radius="xs">{project.stakers} Stakers</Badge>
+            <Badge size="sm" variant="filled" radius="xs">Collateral {project.collateral}%</Badge>
           </Group>
         </Stack>
       </Card.Section>
@@ -52,8 +65,8 @@ export default function Project({ data }) {
             size="xs"
             color="green"
             variant="light"
-            disabled={data.supplyRemaining === 0}
-            onClick={() => openPurchaseDialog(data.id)}
+            disabled={project.supplyRemaining === 0}
+            onClick={openProjectPurchaseModal}
           >
             Purchase
           </Button>
@@ -61,8 +74,8 @@ export default function Project({ data }) {
             size="xs"
             color="blue"
             variant="light"
-            disabled={data.supplyRemaining === 0}
-            onClick={() => openStakeDialog(data.id)}
+            disabled={project.supplyRemaining === 0}
+            onClick={openProjectStakeModal}
           >
             Stake
           </Button>

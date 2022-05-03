@@ -1,19 +1,11 @@
-import { Button, Group, Modal, Select, TextInput } from "@mantine/core";
 import { useState } from "react";
-import { closeDialogs, useProjects } from "../../store/projects";
+import { Button, Group, Select, TextInput } from "@mantine/core";
 
-export default function ProjectPurchaseDialog() {
+export default function ProjectPurchaseModal() {
   const [currency, setCurrency] = useState("usd");
-  const [amount, setAmount] = useState(0);
-  const projects = useProjects();
 
   return (
-    <Modal
-      zIndex={1000}
-      title={projects.active?.name}
-      opened={projects.isPurchaseDialogOpen}
-      onClose={closeDialogs}
-    >
+    <>
       <TextInput
         mt="md"
         placeholder="Amount"
@@ -44,6 +36,6 @@ export default function ProjectPurchaseDialog() {
       <Group position="left" mt="xl">
         <Button variant="light" color="green">Checkout</Button>
       </Group>
-    </Modal>
+    </>
   );
 }

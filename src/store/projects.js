@@ -3,10 +3,7 @@ import projectsData from "../data/projects";
 
 // projects store
 export const projects = proxy({
-  active: null,
   filtered: projectsData,
-  isStakeDialogOpen: false,
-  isPurchaseDialogOpen: false,
   filters: {
     price: [0, 50],
     supply: [0, 100],
@@ -26,25 +23,6 @@ subscribe(projects.filters, () =>
   .filter(p => p.maxApy >= projects.filters.maxApy[0] && p.maxApy <= projects.filters.maxApy[1])
   .filter(p => p.name.toLowerCase().includes(projects.filters.search))
 );
-
-// open project stake dialog
-export function openStakeDialog(id) {
-  projects.active = projectsData.find(p => p.id === id);
-  projects.isStakeDialogOpen = true;
-}
-
-// open project purchase dialog
-export function openPurchaseDialog(id) {
-  projects.active = projectsData.find(p => p.id === id);
-  projects.isPurchaseDialogOpen = true;
-}
-
-// close all dialogs
-export function closeDialogs() {
-  projects.active = null;
-  projects.isStakeDialogOpen = false;
-  projects.isPurchaseDialogOpen = false;
-}
 
 // set price filter
 export function setPriceFilter(price) {

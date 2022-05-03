@@ -1,19 +1,25 @@
 import { useState } from "react";
-import { Button, Checkbox, Group, Modal, NumberInput, Select, Text } from "@mantine/core";
-import { closeDialogs, useProjects } from "../../store/projects";
+import { Button, Checkbox, Group, NumberInput, Select, Text } from "@mantine/core";
+import { stakeTokensToProject, unstakeTokensFromProject } from "../../store/contract";
 
-export default function ProjectStakeDialog() {
+export default function ProjectStakeModal() {
   const [amount, setAmount] = useState(0);
   const [term, setTerm] = useState("1");
-  const projects = useProjects();
+
+  // TODO: implement
+  async function handleStakeTokensToProject(project, amount) {
+    const response = await stakeTokensToProject(project, amount); 
+    console.log(response);
+  }
+
+  // TODO: implement
+  async function handleUnstakeTokensFromProject(project, amount) {
+    const response = await unstakeTokensFromProject(project, amount); 
+    console.log(response);
+  }
 
   return (
-    <Modal
-      zIndex={1000}
-      title={projects?.active?.name}
-      opened={projects.isStakeDialogOpen}
-      onClose={closeDialogs}
-    >
+    <>
       <Group spacing="xs">
         <NumberInput
           hideControls
@@ -62,6 +68,6 @@ export default function ProjectStakeDialog() {
 
       <Checkbox mt="xl" size="xs" label="I agree to the User Agreement and Privacy Policy" />
       <Button mt="md" variant="light">Stake</Button>
-    </Modal>
+    </>
   );
 }
