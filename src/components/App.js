@@ -27,7 +27,7 @@ export default function App() {
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
       <ModalsProvider
-        modalProps={{ zIndex: 1000, centered: true }}
+        modalProps={{ zIndex: 1000, centered: true, transition: "slide-right" }}
         modals={{
           projectPurchase: ProjectPurchaseModal,
           projectStake: ProjectStakeModal,

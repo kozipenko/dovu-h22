@@ -76,7 +76,7 @@ export async function loadAccountBalance() {
 export async function loadIsOwner() {
   const response = await queryContract("owner");
   const owner = AccountId.fromSolidityAddress(response.getAddress(0));
-  contract.isOwner = owner === ACCOUNT_ID;
+  contract.isOwner = owner === wallet.connection.pairedAccount;
 }
 
 export async function loadTreasuryBalance() {

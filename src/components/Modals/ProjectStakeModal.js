@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { Button, Checkbox, Group, NumberInput, Select, Text } from "@mantine/core";
-import { stakeTokensToProject, unstakeTokensFromProject } from "../../store/contract";
+import { useEffect, useState } from "react";
+import { Anchor, Button, Checkbox, Group, NumberInput, Paper, Select, Text } from "@mantine/core";
+import { loadAccountBalance, stakeTokensToProject, unstakeTokensFromProject, useContract } from "../../store/contract";
+import { showNotification } from "@mantine/notifications";
 
 export default function ProjectStakeModal({ innerProps }) {
   const [amount, setAmount] = useState(0);
   const [term, setTerm] = useState("1");
+  const contract = useContract();
 
   // TODO: implement
   async function handleStakeTokensToProject(project, amount) {
@@ -18,9 +20,30 @@ export default function ProjectStakeModal({ innerProps }) {
     console.log(response);
   }
 
+  useEffect(() => {
+    // load account balance on initial render
+    loadAccountBalance().catch(error => showNotification({
+      title: "An error has occured loading account balance",
+      message: error.message
+    }));
+  }, []);
+
   return (
     <>
-      <Group spacing="xs">
+      <Paper withBorder mt="xs" p="xs">
+        <Group position="apart">
+          <Text size="xs" color="dimmed">Total Users Staking</Text>
+          <Text size="xs" weight={500}>100 USERS</Text>
+        </Group>
+
+        <Group mt="xs" position="apart">
+          <Text size="xs" color="dimmed">Total Staked Amount</Text>
+          <Text size="xs" weight={500}>100,000 DOV</Text>
+        </Group>
+      </Paper>
+
+
+      <Group mt="xl" spacing="xs">
         <NumberInput
           hideControls
           sx={{ flex: 1 }}
@@ -38,35 +61,19 @@ export default function ProjectStakeModal({ innerProps }) {
           onChange={setTerm}
         />
       </Group>
-      
-      <Text mt="md" size="xs" color="dimmed">Rewards (DOV)</Text>
-      <Group mt="xs" position="apart">
-        <Text align="center" size="xs" weight={500}>
-          Daily
-          <Text size="lg" color="indigo" weight={700}>200</Text>
-        </Text>
 
-        <Text align="center" size="xs" weight={500}>
-          Weekly
-          <Text size="lg" color="indigo" weight={700}>300</Text>
-        </Text>
+      <Text mt="sm" size="xs">Available Balance: {contract.accountBalance} DOV</Text>
 
-        <Text align="center" size="xs" weight={500}>
-          Monthly
-          <Text size="lg" color="indigo" weight={700}>400</Text>
-        </Text>
-
-        <Text align="center" size="xs" weight={500}>
-          Total
-          <Text size="lg" color="indigo" weight={700}>500</Text>
-        </Text>
-        <Text align="center" size="xs" weight={500}>
-          APY
-          <Text size="lg" color="indigo" weight={700}>24%</Text>
-        </Text>
-      </Group>
-
-      <Checkbox mt="xl" size="xs" label="I agree to the User Agreement and Privacy Policy" />
+      <Checkbox
+        mt="xl"
+        size="xs"
+        label={(
+          <Text size="xs">
+            I agree to the <Anchor size="xs">User Agreenment</Anchor> and <Anchor size="xs">Privacy Policy</Anchor>
+          </Text>
+        )}
+        
+      />
       <Button mt="md" variant="light">Stake</Button>
     </>
   );
