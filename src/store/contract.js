@@ -33,7 +33,7 @@ const client = Client
   .setOperator(AccountId.fromString(ACCOUNT_ID), PrivateKey.fromString(PRIVATE_KEY));
 
 export const contract = proxy({
-  isOwner: true, // set true for testing, default: false
+  isOwner: true, // set true for testing, default is false
   accountBalance: null,
   treasuryBalance: null
 });
@@ -64,24 +64,33 @@ async function callContract(method, params) {
 
 // load account balance
 export async function loadAccountBalance() {
-  const response = await new AccountBalanceQuery()
-    .setAccountId(wallet.connection.pairedAccount)
-    .execute(client);
-  const balance = JSON.parse(response);
-  const token = balance.tokens.find(t => t.tokenId === TOKEN_ID);
-  contract.accountBalance = token?.balance; // TODO: proper rounding
+  try {
+    const response = await new AccountBalanceQuery()
+      .setAccountId(wallet.connection.pairedAccount)
+      .execute(client);
+    const balance = JSON.parse(response);
+    const token = balance.tokens.find(t => t.tokenId === TOKEN_ID);
+    contract.accountBalance = token.balance; // TODO: proper rounding
+  } catch {
+    contract.accountBalance = 0;
+  }
 }
 
 // load contract ownership status
 export async function loadIsOwner() {
   const response = await queryContract("owner");
   const owner = AccountId.fromSolidityAddress(response.getAddress(0));
-  contract.isOwner = owner === wallet.connection.pairedAccount;
+  contract.isOwner = owner.toString() === wallet.connection.pairedAccount;
 }
 
 export async function loadTreasuryBalance() {
   const response = await queryContract("getTreasuryBalance");
   contract.treasuryBalance = response.getInt64(0).toString();
+}
+
+export async function getVerifiedCarbonForProject(projectId) {
+  const response = await queryContract("getVerifiedCarbonForProject");
+  return response.getInt64(0).toString();
 }
 
 export async function claimDemoTokensForStaking(amount) {

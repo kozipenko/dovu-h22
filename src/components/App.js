@@ -11,7 +11,8 @@ import {
   WalletConnectModal,
   ClaimTokensModal,
   OwnerSettingsModal,
-  OwnerProjectsModal
+  OwnerEditProjectModal,
+  OwnerNewProjectModal
 } from "./Modals";
 import Page from "../components/Page/Page";
 import Home from "../pages/Home";
@@ -34,7 +35,8 @@ export default function App() {
           walletConnect: WalletConnectModal,
           claimTokens: ClaimTokensModal,
           ownerSettings: OwnerSettingsModal,
-          ownerProjects: OwnerProjectsModal
+          ownerEditProject: OwnerEditProjectModal,
+          ownerNewProject: OwnerNewProjectModal
         }}
       >
         <NotificationsProvider position="top-center" zIndex={1000}>

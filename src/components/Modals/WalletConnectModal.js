@@ -18,6 +18,7 @@ export default function WalletConnectModal({ context, id }) {
   }
 
   useEffect(() => {
+    // check if paired account is owner account upon wallet connect
     loadIsOwner().catch(error => showNotification({
       title: "An error has occured checking for contract ownersip",
       message: error.message

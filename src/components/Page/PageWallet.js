@@ -16,15 +16,15 @@ export default function PageWallet() {
     });
   }
 
-  function handleOpenOwnerProjectsModal() {
-    modals.openContextModal("ownerProjects", {
-      title: "Contract Owner Projects"
+  function handleOpenOwnerEditProjectModal() {
+    modals.openContextModal("ownerEditProject", {
+      title: "Edit Projects"
     });
   }
 
   function handleOpenOwnerSettingSModal() {
     modals.openContextModal("ownerSettings", {
-      title: "Contract Owner Settings"
+      title: "Contract Settings"
     });
   }
 
@@ -58,7 +58,7 @@ export default function PageWallet() {
         <>
           <Divider />
           <Menu.Label>Owner</Menu.Label>
-          <Menu.Item icon={<Edit size={18} />} onClick={handleOpenOwnerProjectsModal}>
+          <Menu.Item icon={<Edit size={18} />} onClick={handleOpenOwnerEditProjectModal}>
             Projects
           </Menu.Item>
           <Menu.Item icon={<Settings size={18} />} onClick={handleOpenOwnerSettingSModal}>
