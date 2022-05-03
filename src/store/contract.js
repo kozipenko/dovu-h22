@@ -33,7 +33,7 @@ const client = Client
   .setOperator(AccountId.fromString(ACCOUNT_ID), PrivateKey.fromString(PRIVATE_KEY));
 
 export const contract = proxy({
-  isOwner: false,
+  isOwner: true, // set true for testing, default: false
   accountBalance: null,
   treasuryBalance: null
 });
@@ -69,7 +69,7 @@ export async function loadAccountBalance() {
     .execute(client);
   const balance = JSON.parse(response);
   const token = balance.tokens.find(t => t.tokenId === TOKEN_ID);
-  contract.accountBalance = token.balance; // TODO: proper rounding
+  contract.accountBalance = token?.balance; // TODO: proper rounding
 }
 
 // load contract ownership status
@@ -94,11 +94,38 @@ export async function claimDemoTokensForStaking(amount) {
   return response.success;
 }
 
-export async function addProjectForStaking(name) {
+export async function addProject(projectId, verifiedKg) {
   const func = "addProject";
-  const params = new ContractFunctionParameters().addString(name).addInt64(5);
+  const params = new ContractFunctionParameters().addString(projectId).addInt64(verifiedKg);
   const transactionBytes = await callContract(func, params);
   const response = await sendTransaction(transactionBytes);
+
+  if (response.error)
+    throw new Error(response.error);
+
+  return response.success;
+}
+
+export async function addVerifiedCarbon(projectId, verifiedKg) {
+  const func = "addVerifiedCarbon";
+  const params = new ContractFunctionParameters().addString(projectId).addInt64(verifiedKg);
+  const transactionBytes = await callContract(func, params);
+  const response = await sendTransaction(transactionBytes);
+
+  if (response.error)
+    throw new Error(response.error);
+
+  return response.success;
+}
+
+export async function removeVerifiedCarbon(projectId, verifiedKg) {
+  const func = "removeVerifiedCarbon";
+  const params = new ContractFunctionParameters().addString(projectId).addInt64(verifiedKg);
+  const transactionBytes = await callContract(func, params);
+  const response = await sendTransaction(transactionBytes);
+
+  if (response.error)
+    throw new Error(response.error);
 
   return response.success;
 }
