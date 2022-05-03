@@ -33,7 +33,7 @@ const client = Client
   .setOperator(AccountId.fromString(ACCOUNT_ID), PrivateKey.fromString(PRIVATE_KEY));
 
 export const contract = proxy({
-  isOwner: true, // set true for testing, default is false
+  isOwner: false,
   accountBalance: null,
   treasuryBalance: null
 });
