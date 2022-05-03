@@ -27,7 +27,7 @@ export default function App() {
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
       <ModalsProvider
-        modalProps={{ zIndex: 1001, centered: true }}
+        modalProps={{ zIndex: 1000, centered: true }}
         modals={{
           projectPurchase: ProjectPurchaseModal,
           projectStake: ProjectStakeModal,
@@ -37,7 +37,7 @@ export default function App() {
           ownerProjects: OwnerProjectsModal
         }}
       >
-        <NotificationsProvider position="top-center" zIndex={1001}>
+        <NotificationsProvider position="top-center" zIndex={1000}>
           <BrowserRouter>
             <Routes>
               <Route element={<Page />}>
