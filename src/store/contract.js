@@ -25,7 +25,8 @@ const TOKEN_ID = "0.0.34185686"; // Token ID is the one sent for testing 0.0.341
 // token name
 export const TOKEN_NAME = "lol";
 // stakable contract id
-const CONTRACT_ID = "0.0.34359589"; // in testing - project.id -> 0.0.169290 in contract
+export const CONTRACT_ID = "0.0.34359589"; // in testing - project.id -> 0.0.169290 in contract
+
 
 // client needed for account balance queries
 const client = Client
@@ -46,6 +47,10 @@ async function queryContract(method, params) {
     .setGas(3000000)
     .setFunction(method, params)
     .execute(client);
+}
+// TODO: Temp for dev - speak to Kozzy.
+if (wallet.connection.pairedAccount != null) {
+  loadIsOwner();
 }
 
 async function callContract(method, params) {
@@ -106,8 +111,7 @@ export async function claimDemoTokensForStaking(amount) {
 export async function addProject(projectId, verifiedKg) {
   const func = "addProject";
   const params = new ContractFunctionParameters().addString(projectId).addInt64(verifiedKg);
-  const transactionBytes = await callContract(func, params);
-  const response = await sendTransaction(transactionBytes);
+  const response = await callContract(func, params);
 
   if (response.error)
     throw new Error(response.error);
@@ -118,8 +122,7 @@ export async function addProject(projectId, verifiedKg) {
 export async function addVerifiedCarbon(projectId, verifiedKg) {
   const func = "addVerifiedCarbon";
   const params = new ContractFunctionParameters().addString(projectId).addInt64(verifiedKg);
-  const transactionBytes = await callContract(func, params);
-  const response = await sendTransaction(transactionBytes);
+  const response = await callContract(func, params);
 
   if (response.error)
     throw new Error(response.error);
@@ -130,8 +133,7 @@ export async function addVerifiedCarbon(projectId, verifiedKg) {
 export async function removeVerifiedCarbon(projectId, verifiedKg) {
   const func = "removeVerifiedCarbon";
   const params = new ContractFunctionParameters().addString(projectId).addInt64(verifiedKg);
-  const transactionBytes = await callContract(func, params);
-  const response = await sendTransaction(transactionBytes);
+  const response = await callContract(func, params);
 
   if (response.error)
     throw new Error(response.error);
@@ -141,19 +143,18 @@ export async function removeVerifiedCarbon(projectId, verifiedKg) {
 
 export async function addTokensToTreasury(amount) {
   const func = "addTokensToTreasury";
+  console.log(typeof(amount))
   const params = new ContractFunctionParameters().addInt64(amount);
-  const transactionBytes = await callContract(func, params);
-  const response = await sendTransaction(transactionBytes);
+  const response = await callContract(func, params);
 
-  return response.success
+  return response
 }
 
 export async function stakeTokensToProject(project, amount) {
   // TODO: implement emit events, record and mirror node.
   const func = "stakeTokensToProject";
   const params = new ContractFunctionParameters().addString(project).addInt64(amount);
-  const transactionBytes = await callContract(func, params);
-  const response = await sendTransaction(transactionBytes);
+  const response = await callContract(func, params);
 
   return response.success;
 }
@@ -162,8 +163,7 @@ export async function unstakeTokensFromProject(project, amount) {
   // TODO: implement emit events, record and mirror node.
   const func = "unstakeTokensFromProject";
   const params = new ContractFunctionParameters().addString(project).addInt64(amount);
-  const transactionBytes = await callContract(func, params);
-  const response = await sendTransaction(transactionBytes);
+  const response = await callContract(func, params);
 
   return response.success;
 }

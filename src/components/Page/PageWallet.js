@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ChartPie, Edit, Gift, Logout, Settings, Wallet } from "tabler-icons-react";
 import { useModals } from "@mantine/modals";
 import { disconnectLocalWallet, useWallet } from "../../store/wallet";
-import { useContract } from "../../store/contract";
+import { CONTRACT_ID, useContract } from "../../store/contract";
 
 export default function PageWallet() {
   const modals = useModals();
@@ -24,7 +24,7 @@ export default function PageWallet() {
 
   function handleOpenOwnerSettingSModal() {
     modals.openContextModal("ownerSettings", {
-      title: "Contract Settings"
+      title: "Contract Settings: " + CONTRACT_ID
     });
   }
 
@@ -80,16 +80,13 @@ export default function PageWallet() {
 }
 
 /*
-
 // Add back to menu or find somewhere else for account balance?
-
 function handleLoadAccountBalance() {
   loadAccountBalance().catch(error => showNotification({
     title: "An erorr has occured loading account balance",
     message: error.message
   }));
 }
-
 <Group position="apart" px="sm" py="xs">
   <Text size="xs" weight={500}>Balance:</Text>
   <Text size="xs" weight={500}>{contract.accountBalance} {TOKEN_NAME}</Text>
