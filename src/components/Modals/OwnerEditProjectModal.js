@@ -75,7 +75,7 @@ export default function OwnerProjectsModal({ context, id }) {
         />
       )}
 
-      <Group position="right" mt="xl">
+      <Group position="right" spacing="xs" mt="xl">
         <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
           Cancel
         </Button>
