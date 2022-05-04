@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text, Paper, Group, NumberInput, Button } from "@mantine/core";
-import { TOKEN_NAME, loadTreasuryBalance, useContract, addTokensToTreasury } from "../../store/contract";
+import { TOKEN_NAME, loadTreasuryBalance, useContract, addTokensToTreasury, updateClaimableTokens } from "../../store/contract";
 
 export default function OwnerSettingsModal() {
   const contract = useContract(); 
@@ -8,23 +8,29 @@ export default function OwnerSettingsModal() {
   // TODO: This is being used in stats also
   // Should some of this be abtracted out and exported?
 
-  const maxClaimable = 69; // TODO: Update this, add to SC getter for current MCT.
+  let maxClaimable = 69; // TODO: Update this, add to SC getter for current MCT.
   const addToTreasury = "Add Tokens to Treasury (" + TOKEN_NAME + ")"; // TODO: Add function to get balance of user & show their max.
-  const updateMaxClaim = "Set Max Claimable Tokens (" + TOKEN_NAME + ")";
+  const maxClaimableTokens = "Set Max Claimable Tokens (" + TOKEN_NAME + ")";
 
-  const [amount, setAmount] = useState(0);
+  const [xferToTreasury, setXferToTreasury] = useState(0);
+  const [newClaimableAmount, setNewClaimableAmount] = useState(0);
 
   async function handleAddTokenstoTreasury() {
-    const response = await addTokensToTreasury(amount);
+    const response = await addTokensToTreasury(xferToTreasury);
     if (response.success) { 
       loadTreasuryBalance();
-      // clear state of amount.
+      // TODO: clear state of amount.
     }
   }
 
   // TODO: implement
   async function handleUpdateClaimableTokens() {
-    return;
+    const response = await updateClaimableTokens(newClaimableAmount);
+    console.log(response)
+    if (response.success) {
+      maxClaimable = newClaimableAmount; // This is not updating.
+      // TODO: Update to getter.
+    }
   }
   useEffect(() => {
     loadTreasuryBalance();
@@ -49,8 +55,8 @@ export default function OwnerSettingsModal() {
           sx={{ flex: 1 }}
           description={addToTreasury}
           placeholder={TOKEN_NAME}
-          value={amount}
-          onChange={value => setAmount(value)}
+          value={xferToTreasury}
+          onChange={value => setXferToTreasury(value)}
         />
         <Button
           mt="md"
@@ -60,7 +66,23 @@ export default function OwnerSettingsModal() {
           onClick={handleAddTokenstoTreasury}
           >Deposit</Button>
         </Group>
-      <Text size="sm"><br />updateClaimableTokens coming soon.</Text>
+        <Group mt="xl" spacing="xs">
+        <NumberInput
+          hideControls
+          sx={{ flex: 1 }}
+          description={maxClaimableTokens}
+          placeholder={TOKEN_NAME}
+          value={newClaimableAmount}
+          onChange={value => setNewClaimableAmount(value)}
+        />
+           <Button
+          mt="md"
+          zIndex={1000}
+          sx={{ maxWidth: 125 }}
+          color="green"
+          onClick={handleUpdateClaimableTokens}
+          >Update</Button>
+        </Group>
     </>
   );
 }

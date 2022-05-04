@@ -181,3 +181,11 @@ export async function unstakeTokensFromProject(project, amount) {
 
   return response.success;
 }
+
+export async function updateClaimableTokens(amount) {
+  const func = "updateClaimableTokens";
+  const params = new ContractFunctionParameters().addInt64(amount);
+  const response = await callContract(func, params)
+  // TODO: handle owner related errors.
+  return response.success;
+}
