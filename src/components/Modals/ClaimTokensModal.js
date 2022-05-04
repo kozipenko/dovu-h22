@@ -1,7 +1,7 @@
 import { Button, Group, Loader, Paper, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useEffect, useState } from "react";
-import { SquareCheck } from "tabler-icons-react";
+import { AlertTriangle, SquareCheck } from "tabler-icons-react";
 import { claimDemoTokensForStaking, loadTotalTokensClaimed, useContract } from "../../store/contract";
 
 // TODO: This value does not work
@@ -39,7 +39,7 @@ export default function ClaimTokensModal({ context, id, innerProps }) {
         </Group>
       </Paper>
 
-      <Button fullWidth mt="xl" onClick={() => context.closeModal(id)}>
+      <Button fullWidth mt="xl" variant="light" onClick={() => context.closeModal(id)}>
         Continue
       </Button>
     </>
@@ -48,7 +48,7 @@ export default function ClaimTokensModal({ context, id, innerProps }) {
       <Group spacing="xs">
         <SquareCheck color="#4c6ef5" size={18} />
         <Text size="sm">
-          10 tokens have been transferred to {innerProps.pairedAccount}
+          10 tokens have been sent to {innerProps.pairedAccount}.
         </Text>
       </Group>
 
@@ -60,17 +60,20 @@ export default function ClaimTokensModal({ context, id, innerProps }) {
       </Paper>
       {error ? (
         <>
-          <Text size="sm" color="red" mt="xl">
-            {error.message}
-          </Text>
-          <Button fullWidth mt="xs" color="red" onClick={() => context.closeModal(id)}>
-            Cancel
-          </Button>
+          <Group position="apart" mt="xl">
+            <Group spacing="xs">
+              <AlertTriangle color="#f03e3e" size={18} />
+              <Text size="sm" color="red">{error.message}</Text>
+            </Group>
+            <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
+              Cancel
+            </Button>
+          </Group>
         </>
       ) : (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
-          <Text size="xs">Waiting for transaction approval</Text>
+          <Text size="xs" color="dimmed">Transacting</Text>
         </Stack>
       )}
     </>

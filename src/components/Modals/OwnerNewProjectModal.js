@@ -19,7 +19,9 @@ export default function OwnerNewProjectsModal({ context, id }) {
         <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
           Cancel
         </Button>
-        <Button variant="light">Save</Button>
+        <Button disabled variant="light">
+          Save
+        </Button>
       </Group>
     </>
   );

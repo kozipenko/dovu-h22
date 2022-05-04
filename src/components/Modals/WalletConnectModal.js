@@ -80,7 +80,7 @@ export default function WalletConnectModal({ context, id }) {
       <Text size="xs" mt="md" color="dimmed">Extension</Text>
 
       {wallet.extensions.map(extension => (
-        <Button mt="xs" onClick={() => connectToLocalWallet(extension)}>
+        <Button fullWidth mt="xs" onClick={() => connectToLocalWallet(extension)}>
           {extension.name}
         </Button>
       ))}
@@ -98,7 +98,7 @@ export default function WalletConnectModal({ context, id }) {
 
       <Stack align="center" spacing="xs" mt="xl">
         <Loader size="sm" variant="dots" />
-        <Text size="xs">Waiting for transaction approval</Text>
+        <Text size="xs" color="dimmed">Waiting for transaction</Text>
       </Stack>
     </>
   )
