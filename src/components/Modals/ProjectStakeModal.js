@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { Anchor, Button, Checkbox, Group, NumberInput, Paper, Select, Text } from "@mantine/core";
-import { loadAccountBalance, stakeTokensToProject, unstakeTokensFromProject, useContract } from "../../store/contract";
+import { loadAccountBalance, stakeTokensToProject, TOKEN_EXP, TOKEN_NAME, unstakeTokensFromProject, useContract } from "../../store/contract";
 import { showNotification } from "@mantine/notifications";
 
 export default function ProjectStakeModal({ context, id, innerProps }) {
   const [amount, setAmount] = useState(0);
   const [term, setTerm] = useState("1");
   const contract = useContract();
+
+  const stakeAmountString = "Amount: (" + TOKEN_NAME + ")";
 
   // TODO: implement
   async function handleStakeTokensToProject(project, amount) {
@@ -28,6 +30,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     }));
   }, []);
 
+  // TODO: Add real data to this.
   return (
     <>
       <Paper withBorder mt="xs" p="xs">
@@ -43,7 +46,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Total Staked Amount:</Text>
-          <Text size="xs" weight={500}>100,000 DOV</Text>
+          <Text size="xs" weight={500}>100,000 {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
@@ -52,8 +55,8 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
         <NumberInput
           hideControls
           sx={{ flex: 1 }}
-          description="Amount (DOV)"
-          placeholder="DOV"
+          description={stakeAmountString}
+          placeholder={TOKEN_NAME}
           value={amount}
           onChange={setAmount}
         />
@@ -67,7 +70,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
         />
       </Group>
 
-      <Text mt="sm" size="xs">Available Balance: {contract.accountBalance} DOV</Text>
+      <Text mt="sm" size="xs">Available Balance: {contract.accountBalance/TOKEN_EXP} {TOKEN_NAME}</Text>
 
       <Checkbox
         mt="xl"
