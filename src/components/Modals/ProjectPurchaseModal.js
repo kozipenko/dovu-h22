@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Group, Select, TextInput } from "@mantine/core";
 
-export default function ProjectPurchaseModal() {
+export default function ProjectPurchaseModal({ context, id }) {
   const [currency, setCurrency] = useState("usd");
 
   return (
@@ -33,8 +33,11 @@ export default function ProjectPurchaseModal() {
         )}
       />
 
-      <Group position="left" mt="xl">
-        <Button variant="light" color="green">Checkout</Button>
+      <Group position="right" mt="xl">
+        <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
+          Cancel
+        </Button>
+        <Button variant="light">Purchase</Button>
       </Group>
     </>
   );

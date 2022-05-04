@@ -3,7 +3,7 @@ import { Anchor, Button, Checkbox, Group, NumberInput, Paper, Select, Text } fro
 import { loadAccountBalance, stakeTokensToProject, unstakeTokensFromProject, useContract } from "../../store/contract";
 import { showNotification } from "@mantine/notifications";
 
-export default function ProjectStakeModal({ innerProps }) {
+export default function ProjectStakeModal({ context, id, innerProps }) {
   const [amount, setAmount] = useState(0);
   const [term, setTerm] = useState("1");
   const contract = useContract();
@@ -79,7 +79,13 @@ export default function ProjectStakeModal({ innerProps }) {
         )}
         
       />
-      <Button mt="md" variant="light">Stake</Button>
+      
+      <Group position="right" mt="xl">
+        <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
+          Cancel
+        </Button>
+        <Button variant="light">Stake</Button>
+      </Group>
     </>
   );
 }
