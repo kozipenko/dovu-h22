@@ -59,7 +59,7 @@ export default function OwnerProjectsModal({ context, id }) {
           onChange={handleChangeProject}
           sx={{flex: 1}}
         />
-        <Button color="green" onClick={handleOpenOwnerNewProjectModal}>
+        <Button variant="light" color="green" onClick={handleOpenOwnerNewProjectModal}>
           New
         </Button>
       </Group>
