@@ -8,17 +8,18 @@ export default function OwnerSettingsModal() {
   // TODO: This is being used in stats also
   // Should some of this be abtracted out and exported?
 
-  let maxClaimable = 69; // TODO: Update this, add to SC getter for current MCT.
   const addToTreasury = "Add Tokens to Treasury (" + TOKEN_NAME + ")"; // TODO: Add function to get balance of user & show their max.
   const maxClaimableTokens = "Set Max Claimable Tokens (" + TOKEN_NAME + ")";
-
+  
+  const [maxClaimable, updateMaxClaimable] = useState(100); // placeholder - move value out to state.
   const [xferToTreasury, setXferToTreasury] = useState(0);
   const [newClaimableAmount, setNewClaimableAmount] = useState(0);
 
   async function handleAddTokenstoTreasury() {
     const response = await addTokensToTreasury(xferToTreasury);
-    if (response.success) { 
+    if (response.success) {
       loadTreasuryBalance();
+      setXferToTreasury(0);
       // TODO: clear state of amount.
     }
   }
@@ -26,10 +27,9 @@ export default function OwnerSettingsModal() {
   // TODO: implement
   async function handleUpdateClaimableTokens() {
     const response = await updateClaimableTokens(newClaimableAmount);
-    console.log(response)
-    if (response.success) {
-      maxClaimable = newClaimableAmount; // This is not updating.
-      // TODO: Update to getter.
+    if (response) {
+      updateMaxClaimable(newClaimableAmount);// TODO: Update to getter.
+      setNewClaimableAmount(0);
     }
   }
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function OwnerSettingsModal() {
         />
         <Button
           mt="md"
-          zIndex={1000}
+          zindex={1000}
           sx={{ maxWidth: 125 }}
           color="green"
           onClick={handleAddTokenstoTreasury}
@@ -77,7 +77,7 @@ export default function OwnerSettingsModal() {
         />
            <Button
           mt="md"
-          zIndex={1000}
+          zindex={1000}
           sx={{ maxWidth: 125 }}
           color="green"
           onClick={handleUpdateClaimableTokens}

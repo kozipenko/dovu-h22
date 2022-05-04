@@ -21,11 +21,11 @@ const ACCOUNT_ID = process.env.REACT_APP_ACCOUNT_ID;
 const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY;
 const NETWORK = "testnet";
 // token used for staking
-const TOKEN_ID = "0.0.34185686"; // Token ID is the one sent for testing 0.0.34185686
+const TOKEN_ID = "0.0.30875555";//"0.0.34185686"; // Token ID is the one sent for testing 0.0.34185686
 // token name
-export const TOKEN_NAME = "lol";
+export const TOKEN_NAME = "testDOV";
 // stakable contract id
-export const CONTRACT_ID = "0.0.34359589"; // in testing - project.id -> 0.0.169290 in contract
+export const CONTRACT_ID = "0.0.34399474";//"0.0.34359589"; // in testing - project.id -> 0.0.169290 in contract
 
 // client needed for queries
 const client = Client
