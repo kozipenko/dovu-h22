@@ -39,13 +39,12 @@ export default function PageWallet() {
     });
   }
 
-  useEffect(() => {
-    // check if paired account is owner account upon wallet connect
+  function handleLoadIsOwner() {
     loadIsOwner().catch(error => showNotification({
       title: "An error has occured checking for contract ownersip",
       message: error.message
     }));
-  }, []);
+  }
 
   return wallet.connection.pairedAccount ? (
     <Menu
@@ -55,6 +54,7 @@ export default function PageWallet() {
           {wallet.connection.pairedAccount}
         </Button>
       }
+      onOpen={handleLoadIsOwner}
     >
       <Menu.Label>User</Menu.Label>
       <Menu.Item to="/stats" component={Link} icon={<ChartPie size={18} />}>
