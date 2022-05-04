@@ -3,13 +3,14 @@ import { ActionIcon, Anchor, Button, Group, Loader, Paper, Stack, Text, TextInpu
 import { useClipboard } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { Copy, Help, SquareCheck } from "tabler-icons-react";
-import { loadAccountBalance, loadIsOwner, useContract } from "../../store/contract";
+import { loadAccountBalance, loadIsOwner, TOKEN_EXP, TOKEN_NAME, useContract } from "../../store/contract";
 import { useWallet, connectToLocalWallet } from "../../store/wallet";
 
 export default function WalletConnectModal({ context, id }) {
   const clipboard = useClipboard();
   const wallet = useWallet();
   const contract = useContract();
+  const intNoFmt = new Intl.NumberFormat("en-GB");
 
   function handleCopyPairingString() {
     clipboard.copy(wallet.connection.pairingString);
@@ -46,7 +47,7 @@ export default function WalletConnectModal({ context, id }) {
         </Group>
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Account Balance:</Text>
-          <Text size="xs" weight={500}>{contract.accountBalance} lol</Text>
+          <Text size="xs" weight={500}>{intNoFmt.format(contract.accountBalance/TOKEN_EXP)} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 

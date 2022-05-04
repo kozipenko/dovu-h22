@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text, Paper, Group, NumberInput, Button } from "@mantine/core";
-import { TOKEN_NAME, loadTreasuryBalance, useContract, addTokensToTreasury, updateClaimableTokens } from "../../store/contract";
+import { TOKEN_NAME, loadTreasuryBalance, useContract, addTokensToTreasury, updateClaimableTokens, loadMaxClaimableTokens, SetContractMaxClaimableTokens } from "../../store/contract";
 
 export default function OwnerSettingsModal() {
   const contract = useContract(); 
@@ -9,9 +9,8 @@ export default function OwnerSettingsModal() {
   // Should some of this be abtracted out and exported?
 
   const addToTreasury = "Add Tokens to Treasury (" + TOKEN_NAME + ")"; // TODO: Add function to get balance of user & show their max.
-  const maxClaimableTokens = "Set Max Claimable Tokens (" + TOKEN_NAME + ")";
+  const maxClaimableTokensStr = "Set Max Claimable Tokens (" + TOKEN_NAME + ")";
   
-  const [maxClaimable, updateMaxClaimable] = useState(100); // placeholder - move value out to state.
   const [xferToTreasury, setXferToTreasury] = useState(0);
   const [newClaimableAmount, setNewClaimableAmount] = useState(0);
 
@@ -28,12 +27,13 @@ export default function OwnerSettingsModal() {
   async function handleUpdateClaimableTokens() {
     const response = await updateClaimableTokens(newClaimableAmount);
     if (response) {
-      updateMaxClaimable(newClaimableAmount);// TODO: Update to getter.
+      SetContractMaxClaimableTokens(newClaimableAmount);
       setNewClaimableAmount(0);
     }
   }
   useEffect(() => {
     loadTreasuryBalance();
+    loadMaxClaimableTokens();
   }, []);
 
   return (
@@ -45,7 +45,7 @@ export default function OwnerSettingsModal() {
         </Group>
         <Group position="apart">
           <Text size="xs" color="dimmed">Current Claimable Max:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(maxClaimable)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{intNoFmt.format(contract.maxClaimableTokens)} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
@@ -70,7 +70,7 @@ export default function OwnerSettingsModal() {
         <NumberInput
           hideControls
           sx={{ flex: 1 }}
-          description={maxClaimableTokens}
+          description={maxClaimableTokensStr}
           placeholder={TOKEN_NAME}
           value={newClaimableAmount}
           onChange={value => setNewClaimableAmount(value)}
