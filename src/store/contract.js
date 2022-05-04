@@ -106,8 +106,11 @@ export async function loadTreasuryBalance() {
 }
 
 export async function getVerifiedCarbonForProject(projectId) {
-  const response = await queryContract("getVerifiedCarbonForProject");
-  return response.getInt64(0).toString();
+  const func = "getVerifiedCarbonForProject";
+  const params = new ContractFunctionParameters().addString(projectId);
+  const response = await queryContract(func, params);
+  
+  return response.getInt64(0).toNumber();
 }
 
 export async function claimDemoTokensForStaking(amount) {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ActionIcon, Button, Checkbox, CheckboxGroup, Drawer, Group, RangeSlider, Text, TextInput } from "@mantine/core";
 import { Filter, Search, X } from "tabler-icons-react";
-import { resetFilters, setMaxApyFilter, setPriceFilter, setSearchFilter, setSupplyFilter, useProjects } from "../../store/projects";
+import { resetFilters, setVerifiedKgFilter, setPriceKgFilter, setSearchFilter, useProjects } from "../../store/projects";
 
 export default function ProjectsFilters() {
   const [opened, setOpened] = useState(false);
@@ -34,50 +34,35 @@ export default function ProjectsFilters() {
         opened={opened}
         onClose={() => setOpened(false)}
       >
-        <Text size="sm" mt="xl" weight={500}>Carbon Offset Price</Text>
-        <RangeSlider
-          mt="xs"
-          min={0}
-          max={50}
-          minRange={1}
-          label={null}
-          value={projects.filters.price}
-          onChange={setPriceFilter}
-        
-        />
-        <Group position="apart" mt="xs">
-          <Text size="xs" color="dimmed" weight={500}>${projects.filters.price[0]}</Text>
-          <Text size="xs" color="dimmed" weight={500}>${projects.filters.price[1]}</Text>
-        </Group>
-          
-        <Text mt="xl" size="sm" weight={500}>Carbon Supply Remaining</Text>
+        <Text size="sm" mt="xl" weight={500}>Carbon Price</Text>
         <RangeSlider
           mt="xs"
           min={0}
           max={100}
           minRange={1}
           label={null}
-          value={projects.filters.supply}
-          onChange={setSupplyFilter}
+          value={projects.filters.priceKg}
+          onChange={setPriceKgFilter}
+        
         />
         <Group position="apart" mt="xs">
-          <Text size="xs" color="dimmed" weight={500}>{projects.filters.supply[0]}t</Text>
-          <Text size="xs" color="dimmed" weight={500}>{projects.filters.supply[1]}t</Text>
+          <Text size="xs" color="dimmed" weight={500}>${projects.filters.priceKg[0]}</Text>
+          <Text size="xs" color="dimmed" weight={500}>${projects.filters.priceKg[1]}</Text>
         </Group>
-
-        <Text mt="xl" size="sm" weight={500}>Staking APY</Text>
+          
+        <Text mt="xl" size="sm" weight={500}>Verified Carbon</Text>
         <RangeSlider
           mt="xs"
           min={0}
-          max={50}
+          max={1000}
           minRange={1}
           label={null}
-          value={projects.filters.maxApy}
-          onChange={setMaxApyFilter}
+          value={projects.filters.verifiedKg}
+          onChange={setVerifiedKgFilter}
         />
         <Group position="apart" mt="xs">
-          <Text size="xs" color="dimmed" weight={500}>{projects.filters.maxApy[0]}%</Text>
-          <Text size="xs" color="dimmed" weight={500}>{projects.filters.maxApy[1]}%</Text>
+          <Text size="xs" color="dimmed" weight={500}>{projects.filters.verifiedKg[0]} kg</Text>
+          <Text size="xs" color="dimmed" weight={500}>{projects.filters.verifiedKg[1]} kg</Text>
         </Group>
 
         <Text mt="xl" size="sm" color="dimmed" weight={700}>Measurement</Text>

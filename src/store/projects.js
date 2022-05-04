@@ -1,53 +1,52 @@
 import { proxy, subscribe, useSnapshot } from "valtio";
 import projectsData from "../data/projects";
 
-// projects store
 export const projects = proxy({
+  list: projectsData,
   filtered: projectsData,
-  filters: {
-    price: [0, 50],
-    supply: [0, 100],
-    maxApy: [0, 50],
-    search: ""
-  }
+  filters: { priceKg: [0, 100], verifiedKg: [0, 1000], search: "" }
 });
 
-// use to access projects store from components
 export const useProjects = () => useSnapshot(projects);
 
-// update filtered projects when filters change
-subscribe(projects.filters, () =>
-  projects.filtered = projectsData
-  .filter(p => p.price >= projects.filters.price[0] && p.price <= projects.filters.price[1])
-  .filter(p => p.supply >= projects.filters.supply[0] && p.supply <= projects.filters.supply[1])
-  .filter(p => p.maxApy >= projects.filters.maxApy[0] && p.maxApy <= projects.filters.maxApy[1])
+subscribe(projects.list, filterProjects);
+subscribe(projects.filters, filterProjects);
+
+export function createProject(newProject) {
+  projects.list.push(newProject)
+}
+
+export function updateProject({ id, name, image, priceKg }) {
+  const project = projects.list.find(p => p.id === id);
+  project.name = name;
+  project.image = image;
+  project.priceKg = priceKg;
+}
+
+function filterProjects() {
+  projects.filtered = projects.list
+  .filter(p => p.priceKg >= projects.filters.priceKg[0] && p.priceKg <= projects.filters.priceKg[1])
   .filter(p => p.name.toLowerCase().includes(projects.filters.search))
-);
+}
 
 // set price filter
-export function setPriceFilter(price) {
-  projects.filters.price = price;
+export function setPriceKgFilter(values) {
+  projects.filters.priceKg = values;
 }
 
-// set max apy filter
-export function setMaxApyFilter(maxApy) {
-  projects.filters.maxApy = maxApy;
-}
-
-// set supply filter
-export function setSupplyFilter(supply) {
-  projects.filters.supply = supply;
+// set verified carbon filter
+export function setVerifiedKgFilter(values) {
+  projects.filters.verifiedKg = values;
 }
 
 // set search filter
-export function setSearchFilter(search) {
-  projects.filters.search = search;
+export function setSearchFilter(value) {
+  projects.filters.search = value;
 }
 
 // reset all filters
 export function resetFilters() {
-  projects.filters.price = [0, 50];
-  projects.filters.maxApy = [0, 50];
-  projects.filters.supply = [0, 100];
+  projects.filters.priceKg = [0, 100];
+  projects.filters.verifiedKg = [0, 1000];
   projects.filters.search = "";
 }

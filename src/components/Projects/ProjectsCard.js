@@ -40,7 +40,7 @@ export default function ProjectsCard({ project }) {
   return (
     <Card p={0} className={classes.root}>
       <Card.Section>
-        <Image src={project.coverImg} height={160} />
+        <Image src={project.image} height={160} />
       </Card.Section>
 
       <Card.Section p="md">
@@ -51,16 +51,16 @@ export default function ProjectsCard({ project }) {
               size="sm"
               radius="xs"
               variant="filled"
-              color={project.supplyRemaining === 0 ? "red" : "green"}
+              color={project.verifiedKg === 0 ? "red" : "green"}
               >
-                {project.supplyRemaining === 0 ? "No Stock" : "In Stock"}
+                {project.verifiedKg === 0 ? "No Stock" : "In Stock"}
               </Badge>
-            <Badge size="sm" variant="filled" radius="xs">Price ${project.price}</Badge>
-            <Badge size="sm" variant="filled" radius="xs">APY {project.maxApy}%</Badge>
+            <Badge size="sm" variant="filled" radius="xs">Price ${project.priceKg}</Badge>
+            <Badge size="sm" variant="filled" radius="xs">APY 10%</Badge>
           </Group>
           <Group spacing="xs">
-            <Badge size="sm" variant="filled" radius="xs">{project.stakers} Stakers</Badge>
-            <Badge size="sm" variant="filled" radius="xs">Collateral {project.collateral}%</Badge>
+            <Badge size="sm" variant="filled" radius="xs">10 Stakers</Badge>
+            <Badge size="sm" variant="filled" radius="xs">Collateral 10%</Badge>
           </Group>
         </Stack>
       </Card.Section>
@@ -71,7 +71,7 @@ export default function ProjectsCard({ project }) {
             size="xs"
             color="green"
             variant="light"
-            disabled={project.supplyRemaining === 0}
+            disabled={project.verifiedKg === 0}
             onClick={openProjectPurchaseModal}
           >
             Purchase
@@ -80,7 +80,7 @@ export default function ProjectsCard({ project }) {
             size="xs"
             color="blue"
             variant="light"
-            disabled={project.supplyRemaining === 0}
+            disabled={project.verifiedKg === 0}
             onClick={openProjectStakeModal}
           >
             Stake
