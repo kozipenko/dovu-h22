@@ -16,7 +16,7 @@ import {
 // DUMMY SC  - 0.0.34359634
 // TODO: Update to official
 // Stakable (modified with no checks, for debugging) - 0.0.34359589
-// testnet account needed for account balance queries
+// testnet account needed for queries
 const ACCOUNT_ID = process.env.REACT_APP_ACCOUNT_ID;
 const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY;
 const NETWORK = "testnet";
@@ -27,16 +27,17 @@ export const TOKEN_NAME = "lol";
 // stakable contract id
 export const CONTRACT_ID = "0.0.34359589"; // in testing - project.id -> 0.0.169290 in contract
 
-
-// client needed for account balance queries
+// client needed for queries
 const client = Client
   .forName(NETWORK)
   .setOperator(AccountId.fromString(ACCOUNT_ID), PrivateKey.fromString(PRIVATE_KEY));
 
+// contract store
 export const contract = proxy({
   isOwner: false,
   accountBalance: null,
-  treasuryBalance: null
+  treasuryBalance: null,
+  totalTokensClaimed: null
 });
 
 export const useContract = () => useSnapshot(contract);
@@ -48,13 +49,19 @@ async function queryContract(method, params) {
     .setFunction(method, params)
     .execute(client);
 }
-// TODO: Temp for dev - speak to Kozzy.
+
+
+/*
+I believe this issue is fixed now.  Moved loadIsOwner check to PageWallet.js on each render
+
 if (wallet.connection.pairedAccount != null) {
   loadIsOwner();
 }
+*/
 
+// call contract helper
 async function callContract(method, params) {
-  const transaction = await new ContractExecuteTransaction()
+  const transaction = new ContractExecuteTransaction()
   .setContractId(CONTRACT_ID)
   .setGas(3000000)
   .setFunction(method, params)
@@ -88,6 +95,13 @@ export async function loadIsOwner() {
   contract.isOwner = owner.toString() === wallet.connection.pairedAccount;
 }
 
+// load total tokens already claimed by user
+export async function loadTotalTokensClaimed() {
+  const response = await queryContract("getTotalTokensClaimed");
+  contract.totalTokensClaimed = response.getInt64(0).toString();
+}
+
+// load treasury balance
 export async function loadTreasuryBalance() {
   const response = await queryContract("getTreasuryBalance");
   contract.treasuryBalance = response.getInt64(0).toString();

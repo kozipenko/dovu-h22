@@ -8,7 +8,7 @@ const APP_META = { name: "Hackathon", description: "Testing" };
 // local storage key for connection data
 const LOCAL_STORAGE_CONNECTION_KEY = "connection";
 
-// hashconnect instance
+// hashconnect instance (debug=true)
 const hashConnect = new HashConnect(true);
 
 // initial wallet connection settings

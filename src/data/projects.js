@@ -1,4 +1,4 @@
-export default [
+const projectsData = [
   {
     id: 0,
     name: "Maple Leaf Range",
@@ -99,3 +99,5 @@ export default [
     collateral: 88
   }
 ];
+
+export default projectsData;

@@ -52,14 +52,16 @@ export default function OwnerProjectsModal({ context, id }) {
         <Select
           searchable
           placeholder="Select Project"
-          label={<Text size="xs" color="dimmed">Project Name</Text>}
+          label={<Text size="xs" color="dimmed">Project</Text>}
           zIndex={1000}
           value={project?.value}
           data={projects}
           onChange={handleChangeProject}
           sx={{flex: 1}}
         />
-        <Button onClick={handleOpenOwnerNewProjectModal}>New</Button>
+        <Button color="green" onClick={handleOpenOwnerNewProjectModal}>
+          New
+        </Button>
       </Group>
 
       {project && (
@@ -73,15 +75,12 @@ export default function OwnerProjectsModal({ context, id }) {
         />
       )}
 
-      <Button
-        fullWidth
-        mt="xl"
-        color="green"
-        disabled={!project || isLoading}
-        onClick={handleSaveProject}
-      >
-        Save
-      </Button>
+      <Group position="right" mt="xl">
+        <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
+          Cancel
+        </Button>
+        <Button variant="light">Save</Button>
+      </Group>
     </>
   );
 }

@@ -1,9 +1,11 @@
+import { useEffect } from "react";
 import { Button, Divider, Menu } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { ChartPie, Edit, Gift, Logout, Settings, Wallet } from "tabler-icons-react";
 import { useModals } from "@mantine/modals";
 import { disconnectLocalWallet, useWallet } from "../../store/wallet";
-import { CONTRACT_ID, useContract } from "../../store/contract";
+import { CONTRACT_ID, loadIsOwner, useContract } from "../../store/contract";
+import { showNotification } from "@mantine/notifications";
 
 export default function PageWallet() {
   const modals = useModals();
@@ -36,6 +38,14 @@ export default function PageWallet() {
       }
     });
   }
+
+  useEffect(() => {
+    // check if paired account is owner account upon wallet connect
+    loadIsOwner().catch(error => showNotification({
+      title: "An error has occured checking for contract ownersip",
+      message: error.message
+    }));
+  }, []);
 
   return wallet.connection.pairedAccount ? (
     <Menu

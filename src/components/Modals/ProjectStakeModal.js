@@ -32,12 +32,17 @@ export default function ProjectStakeModal({ innerProps }) {
     <>
       <Paper withBorder mt="xs" p="xs">
         <Group position="apart">
-          <Text size="xs" color="dimmed">Total Users Staking</Text>
+          <Text size="xs" color="dimmed">APY:</Text>
+          <Text size="xs" weight={500}>25%</Text>
+        </Group>
+
+        <Group mt="xs" position="apart">
+          <Text size="xs" color="dimmed">Total Users Staking:</Text>
           <Text size="xs" weight={500}>100 USERS</Text>
         </Group>
 
         <Group mt="xs" position="apart">
-          <Text size="xs" color="dimmed">Total Staked Amount</Text>
+          <Text size="xs" color="dimmed">Total Staked Amount:</Text>
           <Text size="xs" weight={500}>100,000 DOV</Text>
         </Group>
       </Paper>
