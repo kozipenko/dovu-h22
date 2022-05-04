@@ -1,11 +1,9 @@
-import { useEffect } from "react";
 import { Button, Divider, Menu } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { ChartPie, Edit, Gift, Logout, Settings, Wallet } from "tabler-icons-react";
 import { useModals } from "@mantine/modals";
 import { disconnectLocalWallet, useWallet } from "../../store/wallet";
-import { CONTRACT_ID, loadIsOwner, useContract } from "../../store/contract";
-import { showNotification } from "@mantine/notifications";
+import { CONTRACT_ID, useContract } from "../../store/contract";
 
 export default function PageWallet() {
   const modals = useModals();
@@ -39,13 +37,6 @@ export default function PageWallet() {
     });
   }
 
-  function handleLoadIsOwner() {
-    loadIsOwner().catch(error => showNotification({
-      title: "An error has occured checking for contract ownersip",
-      message: error.message
-    }));
-  }
-
   return wallet.connection.pairedAccount ? (
     <Menu
       zIndex={1000}
@@ -54,7 +45,6 @@ export default function PageWallet() {
           {wallet.connection.pairedAccount}
         </Button>
       }
-      onOpen={handleLoadIsOwner}
     >
       <Menu.Label>User</Menu.Label>
       <Menu.Item to="/stats" component={Link} icon={<ChartPie size={18} />}>
@@ -64,7 +54,7 @@ export default function PageWallet() {
         Claim Tokens
       </Menu.Item>
 
-      {contract.isOwner && (
+      {wallet.connection.isOwner && (
         <>
           <Divider />
           <Menu.Label>Owner</Menu.Label>

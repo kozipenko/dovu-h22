@@ -34,7 +34,6 @@ const client = Client
 
 // contract store
 export const contract = proxy({
-  isOwner: false,
   accountBalance: null,
   treasuryBalance: null,
   totalTokensClaimed: null
@@ -49,7 +48,6 @@ async function queryContract(method, params) {
     .setFunction(method, params)
     .execute(client);
 }
-
 
 /*
 I believe this issue is fixed now.  Moved loadIsOwner check to PageWallet.js on each render
@@ -92,7 +90,7 @@ export async function loadAccountBalance() {
 export async function loadIsOwner() {
   const response = await queryContract("owner");
   const owner = AccountId.fromSolidityAddress(response.getAddress(0));
-  contract.isOwner = owner.toString() === wallet.connection.pairedAccount;
+  wallet.connection.isOwner = owner.toString() === wallet.connection.pairedAccount;
 }
 
 // load total tokens already claimed by user

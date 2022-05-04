@@ -3,7 +3,7 @@ import { ActionIcon, Anchor, Button, Group, Loader, Paper, Stack, Text, TextInpu
 import { useClipboard } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { Copy, Help, SquareCheck } from "tabler-icons-react";
-import { loadAccountBalance, useContract } from "../../store/contract";
+import { loadAccountBalance, loadIsOwner, useContract } from "../../store/contract";
 import { useWallet, connectToLocalWallet } from "../../store/wallet";
 
 export default function WalletConnectModal({ context, id }) {
@@ -21,6 +21,11 @@ export default function WalletConnectModal({ context, id }) {
   useEffect(() => {
     loadAccountBalance().catch(error => showNotification({
       title: "An error has occured loading account balance",
+      message: error.message
+    }));
+
+    loadIsOwner().catch(error => showNotification({
+      title: "An error has occured checking for contract ownersip",
       message: error.message
     }));
   }, [wallet.connection.pairedAccount]);

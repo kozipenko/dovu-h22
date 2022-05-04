@@ -14,6 +14,7 @@ const hashConnect = new HashConnect(true);
 // initial wallet connection settings
 const initialConnection = {
   topic: "",
+  isOwner: false,
   privateKey: "",
   pairingString: "",
   pairedAccount: null,
