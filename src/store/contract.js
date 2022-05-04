@@ -40,6 +40,10 @@ export function SetContractMaxClaimableTokens(value) {
   contract.maxClaimableTokens = value;
 }
 
+export function SetTreasuryBalance(value) {
+  contract.treasuryBalance = parseFloat(contract.treasuryBalance) + parseFloat(value * TOKEN_EXP); // have to do this way or js does string concat.
+
+}
 export const useContract = () => useSnapshot(contract);
 
 async function queryContract(method, params) {
@@ -159,11 +163,11 @@ export async function removeVerifiedCarbon(projectId, verifiedKg) {
 
   return response.success;
 }
-
+//TODO: REVERTS ON DECIMAL FIX
 export async function addTokensToTreasury(amount) {
   const func = "addTokensToTreasury";
   console.log(typeof(amount))
-  const params = new ContractFunctionParameters().addInt64(amount);
+  const params = new ContractFunctionParameters().addInt64(amount*TOKEN_EXP);
   const response = await callContract(func, params);
 
   return response
@@ -172,7 +176,7 @@ export async function addTokensToTreasury(amount) {
 export async function stakeTokensToProject(project, amount) {
   // TODO: implement emit events, record and mirror node.
   const func = "stakeTokensToProject";
-  const params = new ContractFunctionParameters().addString(project).addInt64(amount);
+  const params = new ContractFunctionParameters().addString(project).addInt64(amount*TOKEN_EXP);
   const response = await callContract(func, params);
 
   return response.success;
@@ -181,7 +185,7 @@ export async function stakeTokensToProject(project, amount) {
 export async function unstakeTokensFromProject(project, amount) {
   // TODO: implement emit events, record and mirror node.
   const func = "unstakeTokensFromProject";
-  const params = new ContractFunctionParameters().addString(project).addInt64(amount);
+  const params = new ContractFunctionParameters().addString(project).addInt64(amount*TOKEN_EXP);
   const response = await callContract(func, params);
 
   return response.success;
@@ -189,7 +193,7 @@ export async function unstakeTokensFromProject(project, amount) {
 
 export async function updateClaimableTokens(amount) {
   const func = "updateClaimableTokens";
-  const params = new ContractFunctionParameters().addInt64(amount);
+  const params = new ContractFunctionParameters().addInt64(amount*TOKEN_EXP);
   const response = await callContract(func, params)
   // TODO: handle owner related errors.
   return response.success;

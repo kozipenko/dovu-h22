@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text, Paper, Group, NumberInput, Button } from "@mantine/core";
-import { TOKEN_NAME, loadTreasuryBalance, useContract, addTokensToTreasury, updateClaimableTokens, loadMaxClaimableTokens, SetContractMaxClaimableTokens } from "../../store/contract";
+import { TOKEN_NAME, loadTreasuryBalance, useContract, addTokensToTreasury, updateClaimableTokens, loadMaxClaimableTokens, SetContractMaxClaimableTokens, SetTreasuryBalance, TOKEN_EXP } from "../../store/contract";
 
 export default function OwnerSettingsModal() {
   const contract = useContract(); 
@@ -17,9 +17,8 @@ export default function OwnerSettingsModal() {
   async function handleAddTokenstoTreasury() {
     const response = await addTokensToTreasury(xferToTreasury);
     if (response.success) {
-      loadTreasuryBalance();
+      SetTreasuryBalance(xferToTreasury)
       setXferToTreasury(0);
-      // TODO: clear state of amount.
     }
   }
 
@@ -41,11 +40,11 @@ export default function OwnerSettingsModal() {
       <Paper withBorder my="xs" p="xs">
         <Group position="apart">
           <Text size="xs" color="dimmed">Treasury Balance:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(contract.treasuryBalance)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{intNoFmt.format(contract.treasuryBalance/TOKEN_EXP)} {TOKEN_NAME}</Text>
         </Group>
         <Group position="apart">
           <Text size="xs" color="dimmed">Current Claimable Max:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(contract.maxClaimableTokens)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{intNoFmt.format(contract.maxClaimableTokens/TOKEN_EXP)} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
