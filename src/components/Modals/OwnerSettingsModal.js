@@ -31,7 +31,7 @@ export default function OwnerSettingsModal() {
     setIsTransacting(true);
     const response = await addTokensToTreasury(xferToTreasury);
     if (response.success) {
-      setTreasuryBalance(xferToTreasury)
+      setTreasuryBalance(treasuryBalance + xferToTreasury)
       setXferToTreasury(0);
     }
     setIsTransacting(false);
