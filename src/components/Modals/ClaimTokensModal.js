@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { AlertTriangle, SquareCheck } from "tabler-icons-react";
 import { claimDemoTokensForStaking, loadTotalTokensClaimed, TOKEN_EXP, TOKEN_NAME, useContract } from "../../store/contract";
 
-const intNoFmt = new Intl.NumberFormat("en-GB");
+// TODO: This value does not work
 
 export default function ClaimTokensModal({ context, id, innerProps }) {
   const [response, setResponse] = useState(null);
@@ -12,7 +12,7 @@ export default function ClaimTokensModal({ context, id, innerProps }) {
   const contract = useContract();
 
   useEffect(() => {
-    claimDemoTokensForStaking(1000000).then(setResponse).catch(setError)
+    claimDemoTokensForStaking(contract.maxClaimableTokens).then(setResponse).catch(setError)
   }, []);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function ClaimTokensModal({ context, id, innerProps }) {
       <Group spacing="xs">
         <SquareCheck color="#4c6ef5" size={18} />
         <Text size="sm">
-          You have successfully claimed 10 tokens.
+          You have successfully claimed {contract.maxClaimableTokens/TOKEN_EXP} tokens.
         </Text>
       </Group>
   
@@ -47,7 +47,7 @@ export default function ClaimTokensModal({ context, id, innerProps }) {
       <Group spacing="xs">
         <SquareCheck color="#4c6ef5" size={18} />
         <Text size="sm">
-          10 tokens have been sent to {innerProps.pairedAccount}.
+         {contract.totalTokensClaimed/TOKEN_EXP} tokens have been sent to {innerProps.pairedAccount}.
         </Text>
       </Group>
 

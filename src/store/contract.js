@@ -37,13 +37,14 @@ export const contract = proxy({
 });
 
 export function SetContractMaxClaimableTokens(value) {
-  contract.maxClaimableTokens = value;
+  contract.maxClaimableTokens = value * TOKEN_EXP; 
+
 }
 
 export function SetTreasuryBalance(value) {
   contract.treasuryBalance = parseFloat(contract.treasuryBalance) + parseFloat(value * TOKEN_EXP); // have to do this way or js does string concat.
-
 }
+
 export const useContract = () => useSnapshot(contract);
 
 async function queryContract(method, params) {
