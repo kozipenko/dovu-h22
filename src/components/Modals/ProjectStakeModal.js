@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import { Anchor, Button, Checkbox, Group, NumberInput, Paper, Select, Text } from "@mantine/core";
-import { loadAccountBalance, stakeTokensToProject, TOKEN_EXP, TOKEN_NAME, unstakeTokensFromProject, useContract } from "../../store/contract";
+import { getStakedPosition, loadAccountBalance, stakeTokensToProject, TOKEN_EXP, TOKEN_NAME, unstakeTokensFromProject, useContract, getNumberOfTokensStakedToProject } from "../../store/contract";
 import { showNotification } from "@mantine/notifications";
-
+import { connectToLocalWallet } from "../../store/wallet";
+// TODO: Needs a lot of work...
 export default function ProjectStakeModal({ context, id, innerProps }) {
   const [amount, setAmount] = useState(0);
   const [term, setTerm] = useState("1");
   const contract = useContract();
+  const [stateTempValues, setStateTempValues] = useState({});
 
   const stakeAmountString = "Amount: (" + TOKEN_NAME + ")";
 
-  // TODO: implement
-  async function handleStakeTokensToProject(project, amount) {
-    const response = await stakeTokensToProject(project, amount); 
-    console.log(response);
+  // TODO: project == innerProps.project.id, amount = userInput.
+  async function handleStakeTokensToProject() {
+    const response = await stakeTokensToProject(innerProps.project.id, amount); 
+    console.log("resp" + response);
   }
 
   // TODO: implement
@@ -22,14 +24,28 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     console.log(response);
   }
 
+  async function getProjectUserData() {
+    return await getStakedPosition(innerProps.project.id);
+  }
+
+  async function getTotalStakedToProject() {
+    const totalStaked = await getNumberOfTokensStakedToProject(innerProps.project.id);
+    innerProps.project.totalStaked = totalStaked;
+  }
+
   useEffect(() => {
     // load account balance on initial render
     loadAccountBalance().catch(error => showNotification({
       title: "An error has occured loading account balance",
       message: error.message
     }));
+   
+    getTotalStakedToProject();
+    getProjectUserData().then(rsp => {
+      setStateTempValues(rsp);
+    });
+    
   }, []);
-
   // TODO: Add real data to this.
   return (
     <>
@@ -40,13 +56,13 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
         </Group>
 
         <Group mt="xs" position="apart">
-          <Text size="xs" color="dimmed">Total Users Staking:</Text>
-          <Text size="xs" weight={500}>100 USERS</Text>
+          <Text size="xs" color="dimmed">Total Staked:</Text>
+          <Text size="xs" weight={500}>{innerProps.project.totalStaked / TOKEN_EXP} {TOKEN_NAME}</Text>
         </Group>
 
         <Group mt="xs" position="apart">
-          <Text size="xs" color="dimmed">Total Staked Amount:</Text>
-          <Text size="xs" weight={500}>100,000 {TOKEN_NAME}</Text>
+          <Text size="xs" color="dimmed">Your staked position:</Text>
+          <Text size="xs" weight={500}>{stateTempValues?.[0]?.toNumber() / TOKEN_EXP} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
@@ -87,7 +103,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
         <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
           Cancel
         </Button>
-        <Button variant="light">Stake</Button>
+        <Button onClick={handleStakeTokensToProject} variant="light">Stake</Button>
       </Group>
     </>
   );

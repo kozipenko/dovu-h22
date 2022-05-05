@@ -21,7 +21,7 @@ const TOKEN_ID = "0.0.30875555";
 export const TOKEN_NAME = "testDOV"; // TODO: get data from mirror node.
 export const TOKEN_EXP = 10**6; // TODO: get data from mirror node & create function to correctly display precision.
 // stakable contract id
-export const CONTRACT_ID = "0.0.34399474";
+export const CONTRACT_ID = "0.0.34400935";
 
 // client needed for queries
 const client = Client
@@ -51,6 +51,7 @@ async function queryContract(method, params) {
   return await new ContractCallQuery()
     .setContractId(CONTRACT_ID)
     .setGas(3000000)
+    .setQueryPayment(new Hbar(3))
     .setFunction(method, params)
     .execute(client);
 }
@@ -125,6 +126,19 @@ export async function getVerifiedCarbonForProject(projectId) {
   return response.getInt64(0).toNumber();
 }
 
+export async function getStakedPosition(id) {
+  const func = "getStakedPosition";
+  const params = new ContractFunctionParameters().addString(id);
+  const response = await queryContract(func, params);
+  return [response.getInt64(0), response.getInt64(1), response.getUint256(2), response.getUint256(3), response.getBool(4)];
+}
+
+export async function getNumberOfTokensStakedToProject(id) {
+  const func = "numberOfTokensStakedToProject";
+  const params = new ContractFunctionParameters().addString(id);
+  const response = await queryContract(func, params);
+  return response.getInt64(0);
+}
 export async function claimDemoTokensForStaking(amount) {
   const params = new ContractFunctionParameters().addInt64(amount);
   const response = await callContract("claimDemoTokensForStaking", params);
