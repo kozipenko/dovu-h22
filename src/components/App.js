@@ -5,7 +5,6 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useTheme } from "../store/theme";
 import { initializeHashConnect } from "../store/wallet";
-import { loadMaxClaimableTokens } from "../store/contract";
 import {
   ProjectPurchaseModal,
   ProjectStakeModal,
@@ -25,7 +24,6 @@ export default function App() {
 
   useEffect(() => {
     initializeHashConnect();
-    loadMaxClaimableTokens();
   }, []);
 
   return (

@@ -85,9 +85,9 @@ export async function loadIsOwner() {
 }
 
 // load current max claimable tokens.
-export async function loadMaxClaimableTokens() {
+export async function getMaxClaimableTokens() {
   const response = await queryContract("getMaximumClaimableTokens");
-  contract.maxClaimableTokens = response.getInt64(0).toNumber();
+  return response.getInt64(0).toNumber() / TOKEN_EXP;
 }
 
 // load treasury balance
