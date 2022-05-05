@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Group, Paper, Text } from "@mantine/core";
-import { getAccountBalance, getTreasuryBalance } from "../store/contract";
+import { getAccountBalance, getTreasuryBalance, TOKEN_NAME } from "../store/contract";
 
 export default function Staking() {
   const [treasuryBalance, setTreasuryBalance] = useState(0);
@@ -28,7 +28,7 @@ export default function Staking() {
           Treasury Balance
         </Text>
         <Text mt="xs" weight={500} sx={{ fontSize: 24 }}>
-          {treasuryBalance}
+          {treasuryBalance} {TOKEN_NAME}
         </Text>
       </Paper>
 
@@ -37,7 +37,7 @@ export default function Staking() {
           Account Balance
         </Text>
         <Text mt="xs" weight={500} sx={{ fontSize: 24 }}>
-          {accountBalance}
+          {accountBalance} {TOKEN_NAME}
         </Text>
       </Paper>
     </Group>
