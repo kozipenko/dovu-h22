@@ -20,7 +20,7 @@ export default function OwnerNewProjectsModal({ context, id }) {
       const response = await addProject(projectId, verifiedKg);
       
       if (response) {
-        createProject(projectId, projectName, projectImage, verifiedKg, priceKg);
+        createProject(projectId, projectName, projectImage, priceKg);
         setIsLoading(false);
         setIsCreated(true);
       } else {
@@ -74,7 +74,7 @@ export default function OwnerNewProjectsModal({ context, id }) {
 
       <TextInput
         mt="xs"
-        placeholder="https://freepik.com/"
+        placeholder="URL"
         value={projectImage}
         label={<Text size="xs" color="dimmed">Image</Text>}
         onChange={(e) => setProjectImage(e.currentTarget.value)}

@@ -12,8 +12,8 @@ export const useProjects = () => useSnapshot(projects);
 subscribe(projects.list, filterProjects);
 subscribe(projects.filters, filterProjects);
 
-export function createProject(newProject) {
-  projects.list.push(newProject)
+export function createProject(id, name, image, priceKg) {
+  projects.list.push({ id, name, image, priceKg });
 }
 
 export function updateProject({ id, name, image, priceKg }) {

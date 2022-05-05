@@ -22,6 +22,8 @@ export default function OwnerEditProjectsModal({ context, id }) {
 
   function handleProjectChange(id) {
     setSelectedProject(projects.list.find(p => p.id === id));
+    setVerifiedKg(null);
+    setOriginalVerifiedKg(null);
   }
 
   function handleProjectNameChange(event) {
@@ -54,9 +56,11 @@ export default function OwnerEditProjectsModal({ context, id }) {
     if (verifiedKg > originalVerifiedKg) {
       const newVerifiedKg = verifiedKg - originalVerifiedKg;
       const response = await addVerifiedCarbon(selectedProject.id, newVerifiedKg);
+      loadVerifiedKg();
     } else if (verifiedKg < originalVerifiedKg) {
       const newVerifiedKg = originalVerifiedKg - verifiedKg;
       const response = await removeVerifiedCarbon(selectedProject.id, newVerifiedKg);
+      loadVerifiedKg();
     }
 
     updateProject(selectedProject);
