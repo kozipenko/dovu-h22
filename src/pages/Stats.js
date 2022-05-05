@@ -1,22 +1,43 @@
+import { useEffect, useState } from "react";
 import { Group, Paper, Text } from "@mantine/core";
-import { useEffect } from "react";
-import { loadTreasuryBalance, useContract } from "../store/contract";
+import { getAccountBalance, getTreasuryBalance } from "../store/contract";
 
 export default function Staking() {
-  const contract = useContract();
+  const [treasuryBalance, setTreasuryBalance] = useState(0);
+  const [accountBalance, setAccountBalance] = useState(0);
+
+  async function loadTreasuryBalance() {
+    const balance = await getTreasuryBalance();
+    setTreasuryBalance(balance);
+  }
+
+  async function loadAccountBalance() {
+    const balance = await getAccountBalance();
+    setAccountBalance(balance);
+  }
 
   useEffect(() => {
     loadTreasuryBalance();
+    loadAccountBalance();
   }, []);
 
   return (
-    <Group position="apart">
+    <Group>
       <Paper withBorder p="md" radius="md">
         <Text size="xs" color="dimmed" weight={700}>
           Treasury Balance
         </Text>
         <Text mt="xs" weight={500} sx={{ fontSize: 24 }}>
-          {contract.treasuryBalance}
+          {treasuryBalance}
+        </Text>
+      </Paper>
+
+      <Paper withBorder p="md" radius="md">
+        <Text size="xs" color="dimmed" weight={700}>
+          Account Balance
+        </Text>
+        <Text mt="xs" weight={500} sx={{ fontSize: 24 }}>
+          {accountBalance}
         </Text>
       </Paper>
     </Group>

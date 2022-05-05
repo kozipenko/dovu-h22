@@ -56,11 +56,11 @@ export default function ProjectsCard({ project }) {
                 {project.verifiedKg === 0 ? "No Stock" : "In Stock"}
               </Badge>
             <Badge size="sm" variant="filled" radius="xs">Price ${project.priceKg}</Badge>
-            <Badge size="sm" variant="filled" radius="xs">APY 10%</Badge>
+            <Badge size="sm" variant="filled" radius="xs">APY 25%</Badge>
           </Group>
           <Group spacing="xs">
-            <Badge size="sm" variant="filled" radius="xs">10 Stakers</Badge>
-            <Badge size="sm" variant="filled" radius="xs">Collateral 10%</Badge>
+            <Badge size="sm" variant="filled" radius="xs">100 Stakers</Badge>
+            <Badge size="sm" variant="filled" radius="xs">Collateral 30%</Badge>
           </Group>
         </Stack>
       </Card.Section>

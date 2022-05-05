@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ActionIcon, Anchor, Button, Group, Loader, Paper, Stack, Text, TextInput } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { Copy, Help, SquareCheck } from "tabler-icons-react";
-import { loadAccountBalance, loadIsOwner, TOKEN_EXP, TOKEN_NAME, useContract } from "../../store/contract";
+import { getAccountBalance, loadIsOwner, TOKEN_NAME, useContract } from "../../store/contract";
 import { useWallet, connectToLocalWallet } from "../../store/wallet";
 
 export default function WalletConnectModal({ context, id }) {
+  const [accountBalance, setAccountBalance] = useState(null);
   const clipboard = useClipboard();
   const wallet = useWallet();
   const contract = useContract();
@@ -19,11 +20,13 @@ export default function WalletConnectModal({ context, id }) {
     });
   }
 
+  async function loadAccountBalance() {
+    const balance = await getAccountBalance();
+    setAccountBalance(balance);
+  }
+
   useEffect(() => {
-    loadAccountBalance().catch(error => showNotification({
-      title: "An error has occured loading account balance",
-      message: error.message
-    }));
+    loadAccountBalance();
 
     loadIsOwner().catch(error => showNotification({
       title: "An error has occured checking for contract ownersip",
@@ -47,7 +50,7 @@ export default function WalletConnectModal({ context, id }) {
         </Group>
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Account Balance:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(contract.accountBalance/TOKEN_EXP)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{intNoFmt.format(accountBalance)} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 

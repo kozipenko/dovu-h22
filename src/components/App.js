@@ -5,14 +5,16 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useTheme } from "../store/theme";
 import { initializeHashConnect } from "../store/wallet";
+import { loadMaxClaimableTokens } from "../store/contract";
 import {
   ProjectPurchaseModal,
   ProjectStakeModal,
+  ProjectStakeConfirmModal,
   WalletConnectModal,
   ClaimTokensModal,
   OwnerSettingsModal,
   OwnerEditProjectModal,
-  OwnerNewProjectModal
+  OwnerNewProjectModal,
 } from "./Modals";
 import Page from "../components/Page/Page";
 import Home from "../pages/Home";
@@ -23,6 +25,7 @@ export default function App() {
 
   useEffect(() => {
     initializeHashConnect();
+    loadMaxClaimableTokens();
   }, []);
 
   return (
@@ -32,6 +35,7 @@ export default function App() {
         modals={{
           projectPurchase: ProjectPurchaseModal,
           projectStake: ProjectStakeModal,
+          projectStakeConfirm: ProjectStakeConfirmModal,
           walletConnect: WalletConnectModal,
           claimTokens: ClaimTokensModal,
           ownerSettings: OwnerSettingsModal,

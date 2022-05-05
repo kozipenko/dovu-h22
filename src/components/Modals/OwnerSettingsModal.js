@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Text, Paper, Group, NumberInput, Button } from "@mantine/core";
-import { TOKEN_NAME, loadTreasuryBalance, useContract, addTokensToTreasury, updateClaimableTokens, loadMaxClaimableTokens, SetContractMaxClaimableTokens, SetTreasuryBalance, TOKEN_EXP } from "../../store/contract";
+import { Text, Paper, Group, NumberInput, Button, Stack, Loader } from "@mantine/core";
+import { TOKEN_NAME, useContract, addTokensToTreasury, updateClaimableTokens, setContractMaxClaimableTokens, TOKEN_EXP, getTreasuryBalance } from "../../store/contract";
 
 export default function OwnerSettingsModal() {
+  const [isTransacting, setIsTransacting] = useState(false);
+  const [treasuryBalance, setTreasuryBalance] = useState(0);
   const contract = useContract(); 
   const intNoFmt = new Intl.NumberFormat("en-GB");
   // TODO: This is being used in stats also
@@ -14,25 +16,34 @@ export default function OwnerSettingsModal() {
   const [xferToTreasury, setXferToTreasury] = useState(0);
   const [newClaimableAmount, setNewClaimableAmount] = useState(0);
 
+  async function loadTreasuryBalance() {
+    const balance = await getTreasuryBalance();
+    setTreasuryBalance(balance);
+  }
+
   async function handleAddTokenstoTreasury() {
+    setIsTransacting(true);
     const response = await addTokensToTreasury(xferToTreasury);
     if (response.success) {
-      SetTreasuryBalance(xferToTreasury)
+      setTreasuryBalance(xferToTreasury)
       setXferToTreasury(0);
     }
+    setIsTransacting(false);
   }
 
   // TODO: implement
   async function handleUpdateClaimableTokens() {
+    setIsTransacting(true);
     const response = await updateClaimableTokens(newClaimableAmount);
     if (response) {
-      SetContractMaxClaimableTokens(newClaimableAmount);
+      setContractMaxClaimableTokens(newClaimableAmount);
       setNewClaimableAmount(0);
     }
+    setIsTransacting(false);
   }
+
   useEffect(() => {
     loadTreasuryBalance();
-    loadMaxClaimableTokens();
   }, []);
 
   return (
@@ -40,7 +51,7 @@ export default function OwnerSettingsModal() {
       <Paper withBorder my="xs" p="xs">
         <Group position="apart">
           <Text size="xs" color="dimmed">Treasury Balance:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(contract.treasuryBalance/TOKEN_EXP)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{intNoFmt.format(treasuryBalance || 0)} {TOKEN_NAME}</Text>
         </Group>
         <Group position="apart">
           <Text size="xs" color="dimmed">Current Claimable Max:</Text>
@@ -59,13 +70,14 @@ export default function OwnerSettingsModal() {
         />
         <Button
           mt="md"
+          variant="light"
+          color="green"
           zindex={1000}
           sx={{ maxWidth: 125 }}
-          color="green"
           onClick={handleAddTokenstoTreasury}
           >Deposit</Button>
-        </Group>
-        <Group mt="xl" spacing="xs">
+      </Group>
+      <Group mt="xl" spacing="xs">
         <NumberInput
           hideControls
           sx={{ flex: 1 }}
@@ -74,14 +86,24 @@ export default function OwnerSettingsModal() {
           value={newClaimableAmount}
           onChange={value => setNewClaimableAmount(value)}
         />
-           <Button
+        <Button
           mt="md"
+          variant="light"
+          color="green"
           zindex={1000}
           sx={{ maxWidth: 125 }}
-          color="green"
           onClick={handleUpdateClaimableTokens}
-          >Update</Button>
-        </Group>
+        >
+          Update
+        </Button>
+      </Group>
+
+      {isTransacting && (
+        <Stack align="center" spacing="xs" mt="xl">
+          <Loader size="sm" variant="dots" />
+          <Text size="xs" color="dimmed">Tansacting</Text>
+        </Stack>
+      )}
     </>
   );
 }

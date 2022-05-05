@@ -76,6 +76,7 @@ export default function OwnerEditProjectsModal({ context, id }) {
     <>
       <Group align="end">
         <Select
+          clearable
           searchable
           placeholder="Select Project"
           label={<Text size="xs" color="dimmed">Project</Text>}

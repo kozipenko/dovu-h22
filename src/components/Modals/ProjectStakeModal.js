@@ -1,51 +1,60 @@
 import { useEffect, useState } from "react";
 import { Anchor, Button, Checkbox, Group, NumberInput, Paper, Select, Text } from "@mantine/core";
-import { getStakedPosition, loadAccountBalance, stakeTokensToProject, TOKEN_EXP, TOKEN_NAME, unstakeTokensFromProject, useContract, getNumberOfTokensStakedToProject } from "../../store/contract";
-import { showNotification } from "@mantine/notifications";
-import { connectToLocalWallet } from "../../store/wallet";
+import { useModals } from "@mantine/modals";
+import {
+  getStakedPosition,
+  TOKEN_NAME,
+  unstakeTokensFromProject,
+  getNumberOfTokensStakedToProject,
+  getAccountBalance
+} from "../../store/contract";
+
 // TODO: Needs a lot of work...
 export default function ProjectStakeModal({ context, id, innerProps }) {
+  const [accountBalance, setAccountBalance] = useState(0);
   const [amount, setAmount] = useState(0);
   const [term, setTerm] = useState("1");
-  const contract = useContract();
-  const [stateTempValues, setStateTempValues] = useState({});
+  const [position, setPosition] = useState({});
+  const [totalStakedToProject, setTotalStakedToProject] = useState(0);
+  const modals = useModals();
 
-  const stakeAmountString = "Amount: (" + TOKEN_NAME + ")";
-
-  // TODO: project == innerProps.project.id, amount = userInput.
-  async function handleStakeTokensToProject() {
-    const response = await stakeTokensToProject(innerProps.project.id, amount); 
-    console.log("resp" + response);
+  async function handleOpenProjectStakeConfirmModal() {
+    modals.openContextModal("projectStakeConfirm", {
+      title: "Confirm Staking Position",
+      innerProps: {
+        term,
+        amount,
+        projectId: innerProps.project.id,
+      }
+    });
   }
 
-  // TODO: implement
-  async function handleUnstakeTokensFromProject(project, amount) {
-    const response = await unstakeTokensFromProject(project, amount); 
+  async function handleUnstakeTokensFromProject() {
+    const response = await unstakeTokensFromProject(innerProps.project.id, amount); 
     console.log(response);
   }
 
-  async function getProjectUserData() {
-    return await getStakedPosition(innerProps.project.id);
+  async function loadAccountBalance() {
+    const balance = await getAccountBalance();
+    setAccountBalance(balance);
   }
 
-  async function getTotalStakedToProject() {
-    const totalStaked = await getNumberOfTokensStakedToProject(innerProps.project.id);
-    innerProps.project.totalStaked = totalStaked;
+  async function loadStakedPosition() {
+    const pos = await getStakedPosition(innerProps.project.id);
+    setPosition(pos);
+  }
+
+  async function loadTotalStakedToProject() {
+    const total = await getNumberOfTokensStakedToProject(innerProps.project.id);
+    setTotalStakedToProject(total);
   }
 
   useEffect(() => {
-    // load account balance on initial render
-    loadAccountBalance().catch(error => showNotification({
-      title: "An error has occured loading account balance",
-      message: error.message
-    }));
-   
-    getTotalStakedToProject();
-    getProjectUserData().then(rsp => {
-      setStateTempValues(rsp);
-    });
-    
+    loadAccountBalance();
+    loadTotalStakedToProject();
+    loadStakedPosition();
   }, []);
+
   // TODO: Add real data to this.
   return (
     <>
@@ -57,27 +66,26 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Total Staked:</Text>
-          <Text size="xs" weight={500}>{innerProps.project.totalStaked / TOKEN_EXP} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{totalStakedToProject} {TOKEN_NAME}</Text>
         </Group>
 
         <Group mt="xs" position="apart">
-          <Text size="xs" color="dimmed">Your staked position:</Text>
-          <Text size="xs" weight={500}>{stateTempValues?.[0]?.toNumber() / TOKEN_EXP} {TOKEN_NAME}</Text>
+          <Text size="xs" color="dimmed">My Staked Position:</Text>
+          <Text size="xs" weight={500}>{position.amount} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
-
 
       <Group mt="xl" spacing="xs">
         <NumberInput
           hideControls
           sx={{ flex: 1 }}
-          description={stakeAmountString}
+          description={`Amount (${TOKEN_NAME}):`}
           placeholder={TOKEN_NAME}
           value={amount}
           onChange={setAmount}
         />
         <Select
-          description="Term (Years)"
+          description="Term (Years):"
           zIndex={1000}
           value={term}
           sx={{ maxWidth: 76 }}
@@ -86,7 +94,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
         />
       </Group>
 
-      <Text mt="sm" size="xs">Available Balance: {contract.accountBalance/TOKEN_EXP} {TOKEN_NAME}</Text>
+      <Text mt="sm" size="xs">Available Balance: {accountBalance} {TOKEN_NAME}</Text>
 
       <Checkbox
         mt="xl"
@@ -96,14 +104,19 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
             I agree to the <Anchor size="xs">User Agreenment</Anchor> and <Anchor size="xs">Privacy Policy</Anchor>
           </Text>
         )}
-        
       />
       
       <Group position="right" spacing="xs" mt="xl">
         <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
           Cancel
         </Button>
-        <Button onClick={handleStakeTokensToProject} variant="light">Stake</Button>
+        <Button
+          variant="light"
+          disabled={!amount}
+          onClick={handleOpenProjectStakeConfirmModal}
+        >
+          Stake
+        </Button>
       </Group>
     </>
   );

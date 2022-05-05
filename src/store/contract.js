@@ -30,19 +30,11 @@ const client = Client
 
 // contract store
 export const contract = proxy({
-  accountBalance: null,
-  treasuryBalance: null,
-  maxClaimableTokens: null,
-  totalTokensClaimed: null
+  maxClaimableTokens: null
 });
 
-export function SetContractMaxClaimableTokens(value) {
+export function setContractMaxClaimableTokens(value) {
   contract.maxClaimableTokens = value * TOKEN_EXP; 
-
-}
-
-export function SetTreasuryBalance(value) {
-  contract.treasuryBalance = parseFloat(contract.treasuryBalance) + parseFloat(value * TOKEN_EXP); // have to do this way or js does string concat.
 }
 
 export const useContract = () => useSnapshot(contract);
@@ -55,14 +47,6 @@ async function queryContract(method, params) {
     .setFunction(method, params)
     .execute(client);
 }
-
-/*
-I believe this issue is fixed now.  Moved loadIsOwner check to PageWallet.js on each render
-
-if (wallet.connection.pairedAccount != null) {
-  loadIsOwner();
-}
-*/
 
 // call contract helper
 async function callContract(method, params) {
@@ -80,16 +64,16 @@ async function callContract(method, params) {
 }
 
 // load account balance
-export async function loadAccountBalance() {
+export async function getAccountBalance() {
   try {
     const response = await new AccountBalanceQuery()
       .setAccountId(wallet.connection.pairedAccount)
       .execute(client);
     const balance = JSON.parse(response);
     const token = balance.tokens.find(t => t.tokenId === TOKEN_ID);
-    contract.accountBalance = token.balance; // TODO: proper rounding
+    return token.balance / TOKEN_EXP;
   } catch {
-    contract.accountBalance = 0;
+    return 0;
   }
 }
 
@@ -103,19 +87,19 @@ export async function loadIsOwner() {
 // load current max claimable tokens.
 export async function loadMaxClaimableTokens() {
   const response = await queryContract("getMaximumClaimableTokens");
-  contract.maxClaimableTokens = response.getInt64(0).toString();
-}
-
-// load total tokens already claimed by user
-export async function loadTotalTokensClaimed() {
-  const response = await queryContract("getTotalTokensClaimed");
-  contract.totalTokensClaimed = response.getInt64(0).toString();
+  contract.maxClaimableTokens = response.getInt64(0).toNumber();
 }
 
 // load treasury balance
-export async function loadTreasuryBalance() {
+export async function getTreasuryBalance() {
   const response = await queryContract("getTreasuryBalance");
-  contract.treasuryBalance = response.getInt64(0).toString();
+  contract.treasuryBalance = response.getInt64(0).toNumber() / TOKEN_EXP;
+}
+
+// get total tokens already claimed by user
+export async function getTotalTokensClaimed() {
+  const response = await queryContract("getTotalTokensClaimed");
+  return response.getInt64(0).toNumber() / TOKEN_EXP;
 }
 
 export async function getVerifiedCarbonForProject(projectId) {
@@ -126,19 +110,28 @@ export async function getVerifiedCarbonForProject(projectId) {
   return response.getInt64(0).toNumber();
 }
 
-export async function getStakedPosition(id) {
+export async function getStakedPosition(projectId) {
   const func = "getStakedPosition";
-  const params = new ContractFunctionParameters().addString(id);
+  const params = new ContractFunctionParameters().addString(projectId);
   const response = await queryContract(func, params);
-  return [response.getInt64(0), response.getInt64(1), response.getUint256(2), response.getUint256(3), response.getBool(4)];
+  //return [response.getInt64(0), response.getInt64(1), response.getUint256(2), response.getUint256(3), response.getBool(4)];
+
+  return {
+    amount: response.getInt64(0).toNumber() / TOKEN_EXP,
+    amountOnEnd: response.getInt64(1).toNumber(),
+    numberOfDays: response.getUint256(2).toNumber(),
+    unlockTime: response.getUint256(3).toNumber(),
+    open: response.getBool(4)
+  }
 }
 
-export async function getNumberOfTokensStakedToProject(id) {
+export async function getNumberOfTokensStakedToProject(projectId) {
   const func = "numberOfTokensStakedToProject";
-  const params = new ContractFunctionParameters().addString(id);
+  const params = new ContractFunctionParameters().addString(projectId);
   const response = await queryContract(func, params);
-  return response.getInt64(0);
+  return response.getInt64(0).toNumber() / TOKEN_EXP;
 }
+
 export async function claimDemoTokensForStaking(amount) {
   const params = new ContractFunctionParameters().addInt64(amount);
   const response = await callContract("claimDemoTokensForStaking", params);
@@ -191,19 +184,19 @@ export async function addTokensToTreasury(amount) {
   return response
 }
 
-export async function stakeTokensToProject(project, amount) {
+export async function stakeTokensToProject(projectId, amount) {
   // TODO: implement emit events, record and mirror node.
   const func = "stakeTokensToProject";
-  const params = new ContractFunctionParameters().addString(project).addInt64(amount*TOKEN_EXP);
+  const params = new ContractFunctionParameters().addString(projectId).addInt64(amount*TOKEN_EXP);
   const response = await callContract(func, params);
 
   return response.success;
 }
 
-export async function unstakeTokensFromProject(project, amount) {
+export async function unstakeTokensFromProject(projectId, amount) {
   // TODO: implement emit events, record and mirror node.
   const func = "unstakeTokensFromProject";
-  const params = new ContractFunctionParameters().addString(project).addInt64(amount*TOKEN_EXP);
+  const params = new ContractFunctionParameters().addString(projectId).addInt64(amount*TOKEN_EXP);
   const response = await callContract(func, params);
 
   return response.success;
