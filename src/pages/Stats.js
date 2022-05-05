@@ -28,7 +28,7 @@ export default function Staking() {
           Treasury Balance
         </Text>
         <Text mt="xs" weight={500} sx={{ fontSize: 24 }}>
-          {treasuryBalance} {TOKEN_NAME}
+          {treasuryBalance.toLocaleString()} {TOKEN_NAME}
         </Text>
       </Paper>
 
@@ -37,7 +37,7 @@ export default function Staking() {
           Account Balance
         </Text>
         <Text mt="xs" weight={500} sx={{ fontSize: 24 }}>
-          {accountBalance} {TOKEN_NAME}
+          {accountBalance.toLocaleString()} {TOKEN_NAME}
         </Text>
       </Paper>
     </Group>

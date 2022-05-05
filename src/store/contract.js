@@ -30,11 +30,16 @@ const client = Client
 
 // contract store
 export const contract = proxy({
-  maxClaimableTokens: null
+  // treasuryBalance: 0,
+  // maxClaimableTokens: 0
 });
 
-export function setContractMaxClaimableTokens(value) {
-  contract.maxClaimableTokens = value * TOKEN_EXP; 
+// Potentially init contract state like treasuryBalance, maxClaimableTokens, etc
+// Call from initial render of App?
+export async function initializeContract() {
+  contract.treasuryBalance = await getTreasuryBalance();
+  contract.maxClaimableTokens = await getMaxClaimableTokens();
+  contract.isOwner = await getIsOwner();
 }
 
 export const useContract = () => useSnapshot(contract);
@@ -75,6 +80,12 @@ export async function getAccountBalance() {
   } catch {
     return 0;
   }
+}
+
+export async function getIsOwner() {
+  const response = await queryContract("owner");
+  const owner = AccountId.fromSolidityAddress(response.getAddress(0));
+  return owner.toString();
 }
 
 // load contract ownership status

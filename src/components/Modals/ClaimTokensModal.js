@@ -53,7 +53,7 @@ export default function ClaimTokensModal({ context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={isTransacting}
+          disabled={isTransacting || !maxClaimableTokens}
           onClick={handleClaimDemoTokensForStaking}
         >
           Claim

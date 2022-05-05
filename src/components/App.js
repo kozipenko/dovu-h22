@@ -5,6 +5,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useTheme } from "../store/theme";
 import { initializeHashConnect } from "../store/wallet";
+
 import {
   ProjectPurchaseModal,
   ProjectStakeModal,
