@@ -82,6 +82,7 @@ export async function getAccountBalance() {
   }
 }
 
+// Not using this.  Using loadIsOwner for now
 export async function getIsOwner() {
   const response = await queryContract("owner");
   const owner = AccountId.fromSolidityAddress(response.getAddress(0));
