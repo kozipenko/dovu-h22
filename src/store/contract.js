@@ -93,7 +93,7 @@ export async function loadMaxClaimableTokens() {
 // load treasury balance
 export async function getTreasuryBalance() {
   const response = await queryContract("getTreasuryBalance");
-  contract.treasuryBalance = response.getInt64(0).toNumber() / TOKEN_EXP;
+  return response.getInt64(0).toNumber() / TOKEN_EXP;
 }
 
 // get total tokens already claimed by user
