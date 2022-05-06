@@ -3,12 +3,11 @@ import { Link } from "react-router-dom";
 import { ChartPie, Edit, Gift, Logout, Settings, Wallet } from "tabler-icons-react";
 import { useModals } from "@mantine/modals";
 import { disconnectLocalWallet, useWallet } from "../../store/wallet";
-import { CONTRACT_ID, useContract } from "../../store/contract";
+import { CONTRACT_ID } from "../../store/contract";
 
 export default function PageWallet() {
   const modals = useModals();
   const wallet = useWallet();
-  const contract = useContract();
 
   function handleOpenWalletConnectModal() {
     modals.openContextModal("walletConnect", {
@@ -48,7 +47,7 @@ export default function PageWallet() {
     >
       <Menu.Label>User</Menu.Label>
       <Menu.Item to="/stats" component={Link} icon={<ChartPie size={18} />}>
-        Stats
+        Dashboard
       </Menu.Item>
       <Menu.Item icon={<Gift size={18} />} onClick={handleClaimDemoTokensForStaking}>
         Claim Tokens
