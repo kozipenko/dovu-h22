@@ -6,7 +6,8 @@ import {
   TOKEN_NAME,
   unstakeTokensFromProject,
   getNumberOfTokensStakedToProject,
-  getAccountBalance
+  getAccountBalance,
+  getCollateralRisk
 } from "../../store/contract";
 
 // TODO: Needs a lot of work...
@@ -16,8 +17,12 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   const [term, setTerm] = useState("1");
   const [position, setPosition] = useState({});
   const [totalStakedToProject, setTotalStakedToProject] = useState(0);
+  const [collateralRisk, setCollateralRisk] = useState(0); // TODO: Make this live.
+  const [releaseDate, setReleaseDate] = useState("N/A");
   const modals = useModals();
 
+  const intNoFmt = new Intl.NumberFormat("en-GB");
+  
   async function handleOpenProjectStakeConfirmModal() {
     modals.openContextModal("projectStakeConfirm", {
       title: "Confirm Staking Position",
@@ -28,10 +33,24 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       }
     });
   }
+  
+  async function handleOpenProjectUnstakeConfirmModal() {
+    modals.openContextModal("projectUnstakeConfirm", {
+      title: "Confirm Position Closure",
+      innerProps: {
+        projectId: innerProps.project.id,
+      }
+    });
+  }
 
   async function handleUnstakeTokensFromProject() {
     const response = await unstakeTokensFromProject(innerProps.project.id, amount); 
     console.log(response);
+  }
+
+  async function loadGetCollateral() {
+    const response = await getCollateralRisk(innerProps.project.id);
+    setCollateralRisk(response); 
   }
 
   async function loadAccountBalance() {
@@ -41,6 +60,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
   async function loadStakedPosition() {
     const pos = await getStakedPosition(innerProps.project.id);
+    toUtcTimeString(pos.unlockTime); // TODO: setPosition is not working as intended .. fix & i thought i staked for 10 years not 1 prob need to check this.
     setPosition(pos);
   }
 
@@ -49,14 +69,70 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     setTotalStakedToProject(total);
   }
 
+  async function toUtcTimeString(time) {
+    const rDate  = new Date(time * 1000)
+    setReleaseDate(rDate.toUTCString());
+  }
+
   useEffect(() => {
     loadAccountBalance();
     loadTotalStakedToProject();
     loadStakedPosition();
+    loadGetCollateral();
   }, []);
+  
+  //
+  // TODO: Disable button with unmarked checkbox.
+  // TODO: check if wallet paired then display staking details.
+  return (position.open) ? (
+    <>
+      <Paper withBorder mt="xs" p="xs">
 
-  // TODO: Add real data to this.
-  return (
+        <Group position="apart">
+          <Text size="xs" color="dimmed">APY:</Text>
+          <Text size="xs" weight={500}>25%</Text>
+        </Group>
+
+        <Group position="apart">
+          <Text size="xs" color="dimmed">Collateral Risk:</Text>
+          <Text size="xs" weight={500}>{collateralRisk}</Text>
+        </Group>
+
+        <Group mt="xs" position="apart">
+          <Text size="xs" color="dimmed">Total Staked:</Text>
+          <Text size="xs" weight={500}>{intNoFmt.format(totalStakedToProject)} {TOKEN_NAME}</Text>
+        </Group>
+
+        <Group position="apart">
+          <Text size="xs" color="dimmed">Position Status:</Text>
+          <Text size="xs" color="green" weight={500}>{(position.open) ? "Open":"Closed"}</Text>
+        </Group>
+
+        <Group mt="xs" position="apart">
+          <Text size="xs" color="dimmed">Postion Value:</Text>
+          <Text size="xs" weight={500}>{intNoFmt.format(position.amount)} {TOKEN_NAME}</Text>
+        </Group>
+
+        <Group mt="xs" position="apart">
+          <Text size="xs" color="dimmed">Release Date: </Text>
+          <Text size="xs" weight={500}>{releaseDate}</Text>
+        </Group>
+
+        <Group position="right" spacing="xs" mt="xl">
+          <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
+            Cancel
+          </Button>
+          <Button
+            variant="light"
+            color="red"
+            onClick={handleOpenProjectUnstakeConfirmModal}
+          >
+            Unstake
+          </Button>
+        </Group>
+      </Paper>
+    </>
+  ) : (
     <>
       <Paper withBorder mt="xs" p="xs">
         <Group position="apart">
@@ -64,14 +140,19 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
           <Text size="xs" weight={500}>25%</Text>
         </Group>
 
+        <Group position="apart">
+          <Text size="xs" color="dimmed">Collateral Risk:</Text>
+          <Text size="xs" weight={500}>{collateralRisk}</Text>
+        </Group>
+        
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Total Staked:</Text>
-          <Text size="xs" weight={500}>{totalStakedToProject} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{intNoFmt.format(totalStakedToProject)} {TOKEN_NAME}</Text>
         </Group>
 
         <Group mt="xs" position="apart">
-          <Text size="xs" color="dimmed">My Staked Position:</Text>
-          <Text size="xs" weight={500}>{position.amount} {TOKEN_NAME}</Text>
+          <Text size="xs" color="dimmed">Your Balance:</Text>
+          <Text size="xs" weight={500}>{intNoFmt.format(accountBalance)} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
@@ -93,8 +174,6 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
           onChange={setTerm}
         />
       </Group>
-
-      <Text mt="sm" size="xs">Available Balance: {accountBalance} {TOKEN_NAME}</Text>
 
       <Checkbox
         mt="xl"

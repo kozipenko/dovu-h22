@@ -114,6 +114,11 @@ export async function getTotalTokensClaimed() {
   return response.getInt64(0).toNumber() / TOKEN_EXP;
 }
 
+// TODO: Hardcoded for now, will update SC to expose value.
+export function getStakingFeePercentage() {
+  const feePercentage = 5;
+  return feePercentage;
+}
 export async function getVerifiedCarbonForProject(projectId) {
   const func = "getVerifiedCarbonForProject";
   const params = new ContractFunctionParameters().addString(projectId);
@@ -126,7 +131,6 @@ export async function getStakedPosition(projectId) {
   const func = "getStakedPosition";
   const params = new ContractFunctionParameters().addString(projectId);
   const response = await queryContract(func, params);
-  //return [response.getInt64(0), response.getInt64(1), response.getUint256(2), response.getUint256(3), response.getBool(4)];
 
   return {
     amount: response.getInt64(0).toNumber() / TOKEN_EXP,
@@ -144,6 +148,13 @@ export async function getNumberOfTokensStakedToProject(projectId) {
   return response.getInt64(0).toNumber() / TOKEN_EXP;
 }
 
+export async function getCollateralRisk(projectId) {
+  const func = "getCollateralRisk";
+  const params = new ContractFunctionParameters().addString(projectId);
+  const response = await queryContract(func, params);
+  return ((response.getInt64(0).toNumber() / TOKEN_EXP)/response.getInt64(1).toNumber())*100; // TODO: to float for precision?
+
+}
 export async function claimDemoTokensForStaking(amount) {
   const params = new ContractFunctionParameters().addInt64(amount);
   const response = await callContract("claimDemoTokensForStaking", params);
@@ -196,19 +207,19 @@ export async function addTokensToTreasury(amount) {
   return response
 }
 
-export async function stakeTokensToProject(projectId, amount) {
+export async function stakeTokensToProject(projectId, amount, term) {
   // TODO: implement emit events, record and mirror node.
   const func = "stakeTokensToProject";
-  const params = new ContractFunctionParameters().addString(projectId).addInt64(amount*TOKEN_EXP);
+  const params = new ContractFunctionParameters().addString(projectId).addInt64(amount*TOKEN_EXP).addUint256(term);
   const response = await callContract(func, params);
 
   return response.success;
 }
 
-export async function unstakeTokensFromProject(projectId, amount) {
+export async function unstakeTokensFromProject(projectId) {
   // TODO: implement emit events, record and mirror node.
-  const func = "unstakeTokensFromProject";
-  const params = new ContractFunctionParameters().addString(projectId).addInt64(amount*TOKEN_EXP);
+  const func = "endStakeToProject";
+  const params = new ContractFunctionParameters().addString(projectId);//.addInt64(amount*TOKEN_EXP);
   const response = await callContract(func, params);
 
   return response.success;

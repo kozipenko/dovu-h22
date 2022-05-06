@@ -1,6 +1,7 @@
 export { default as ProjectPurchaseModal } from "./ProjectPurchaseModal";
 export { default as ProjectStakeModal } from "./ProjectStakeModal";
 export { default as ProjectStakeConfirmModal } from "./ProjectStakeConfirmModal";
+export { default as ProjectUnstakeConfirmModal } from "./ProjectUnstakeConfirmModal";
 export { default as WalletConnectModal } from "./WalletConnectModal";
 export { default as ClaimTokensModal } from "./ClaimTokensModal";
 export { default as OwnerSettingsModal } from "./OwnerSettingsModal";

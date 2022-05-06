@@ -15,6 +15,7 @@ import {
   OwnerSettingsModal,
   OwnerEditProjectModal,
   OwnerNewProjectModal,
+  ProjectUnstakeConfirmModal,
 } from "./Modals";
 import Page from "../components/Page/Page";
 import Home from "../pages/Home";
@@ -35,6 +36,7 @@ export default function App() {
           projectPurchase: ProjectPurchaseModal,
           projectStake: ProjectStakeModal,
           projectStakeConfirm: ProjectStakeConfirmModal,
+          projectUnstakeConfirm: ProjectUnstakeConfirmModal,
           walletConnect: WalletConnectModal,
           claimTokens: ClaimTokensModal,
           ownerSettings: OwnerSettingsModal,
