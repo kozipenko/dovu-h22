@@ -4,7 +4,7 @@ const API_TOKEN = "3|X7zfL4pPstsqaqZsSa8IY1aS6ARCQVNSvwuDkxqP";
 
 const api = axios.create({
   baseURL: "https://h22.dovu.dev/api/v1",
-  headers: { "Authorization": `Bearer ${API_TOKEN}` }
+  headers: { "Authorization": `Bearer ${API_TOKEN}`, "Accept": "application/json" }
 });
 
 export async function getProjects() {

@@ -52,34 +52,34 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   // TODO: check if wallet paired then display staking details.
   return (position.open) ? (
     <>
-      <Paper withBorder mt="xs" p="xs">
+      <Paper withBorder mt="xl" p="xs">
 
         <Group position="apart">
           <Text size="xs" color="dimmed">APY:</Text>
           <Text size="xs" weight={500}>25%</Text>
         </Group>
 
-        <Group position="apart">
+        <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed">Collateral Risk:</Text>
           <Text size="xs" weight={500}>{collateralRisk}</Text>
         </Group>
 
-        <Group mt="xs" position="apart">
+        <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed">Total Staked:</Text>
           <Text size="xs" weight={500}>{totalStakedToProject.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
-        <Group position="apart">
+        <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed">Position Status:</Text>
           <Text size="xs" color="green" weight={500}>{(position.open) ? "Open":"Closed"}</Text>
         </Group>
 
-        <Group mt="xs" position="apart">
+        <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed">Postion Value:</Text>
           <Text size="xs" weight={500}>{position.amount.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
-        <Group mt="xs" position="apart">
+        <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed">Release Date: </Text>
           <Text size="xs" weight={500}>{releaseDate}</Text>
         </Group>
@@ -100,23 +100,23 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     </>
   ) : (
     <>
-      <Paper withBorder mt="xs" p="xs">
+      <Paper withBorder mt="xl" p="xs">
         <Group position="apart">
           <Text size="xs" color="dimmed">APY:</Text>
           <Text size="xs" weight={500}>25%</Text>
         </Group>
 
-        <Group position="apart">
+        <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed">Collateral Risk:</Text>
           <Text size="xs" weight={500}>{collateralRisk}</Text>
         </Group>
         
-        <Group mt="xs" position="apart">
+        <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed">Total Staked:</Text>
           <Text size="xs" weight={500}>{totalStakedToProject.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
-        <Group mt="xs" position="apart">
+        <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed">Your Balance:</Text>
           <Text size="xs" weight={500}>{accountBalance.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
