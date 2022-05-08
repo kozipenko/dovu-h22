@@ -45,7 +45,11 @@ export default function ProjectPurchaseModal({ context, id, innerProps }) {
         <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
           Cancel
         </Button>
-        <Button variant="light" onClick={handleOffsetPurchase}>
+        <Button
+          variant="light"
+          disabled={amount > innerProps.project.verified_kg}
+          onClick={handleOffsetPurchase}
+        >
           Purchase
         </Button>
       </Group>
