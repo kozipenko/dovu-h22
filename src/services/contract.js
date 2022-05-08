@@ -131,6 +131,7 @@ export async function stakeTokensToProject(id, amount, term) {
   const params = new ContractFunctionParameters().addString(id).addInt64(amount*TOKEN_EXP).addUint256(term);
   const tx = createContractExecuteTransaction(func, params);
   const res = await sendTransaction(tx);
+  return res.success;
 }
 
 // TODO: implement emit events, record and mirror node.
@@ -139,6 +140,7 @@ export async function unstakeTokensFromProject(id) {
   const params = new ContractFunctionParameters().addString(id);//.addInt64(amount*TOKEN_EXP);
   const tx = createContractExecuteTransaction(func, params);
   const res = await sendTransaction(tx);
+  return res.success;
 }
 
 // TODO: handle owner related errors.

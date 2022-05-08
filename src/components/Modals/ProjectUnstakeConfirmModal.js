@@ -4,11 +4,10 @@ import { unstakeTokensFromProject } from "../../services/contract";
 export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
   async function handleUnstakeTokensFromProject() {
-      console.log("ID" + innerProps.projectId)
       const response = await unstakeTokensFromProject(innerProps.projectId)
       if (response) {
           console.log("Your loss bby.");
-          context.closeModal(id)
+          innerProps.cModal();
       }
   }
 

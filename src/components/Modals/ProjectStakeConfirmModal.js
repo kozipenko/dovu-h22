@@ -7,6 +7,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
   const [releaseDateAsUtcString, setReleaseDateAsUtcString] = useState("");
   const [stakingFee, setStakingFee] = useState(0);
   const [amountToStake, setAmountToStake] = useState(0);
+  console.log("ParentID: " + innerProps.parentId)
 
 
   function configureReleaseDate() {
@@ -30,7 +31,11 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
     setIsTransacting(false);
     
     if (response)
-      context.closeModal(id);
+      closeParent();
+  }
+
+  function closeParent() {
+     innerProps.cModal();
   }
 
   useEffect(() => {
@@ -69,7 +74,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
       </Paper>
 
       <Group position="right" spacing="xs" mt="xl">
-        <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
+        <Button variant="light" color="red" onClick={closeParent}>
           Cancel
         </Button>
         <Button

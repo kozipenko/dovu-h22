@@ -13,7 +13,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   const [collateralRisk, setCollateralRisk] = useState(0); // TODO: Make this live.
   const [releaseDate, setReleaseDate] = useState("N/A");
   const modals = useModals();
-
+  
   async function handleOpenProjectStakeConfirmModal() {
     modals.openContextModal("projectStakeConfirm", {
       title: "Confirm Staking Position",
@@ -21,6 +21,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
         term,
         amount,
         projectId: innerProps.project.id,
+        cModal,
       }
     });
   }
@@ -30,14 +31,20 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       title: "Confirm Position Closure",
       innerProps: {
         projectId: innerProps.project.id,
+        cModal,
       }
     });
   }
 
-  // Is this needed still?
+  // Is this needed still? Oui, pour la date de détachement.
   async function toUtcTimeString(time) {
     const rDate  = new Date(time * 1000)
     setReleaseDate(rDate.toUTCString());
+  }
+
+  function cModal() {
+    console.log("Click me?!")
+    context.closeModal(id);
   }
 
   useEffect(() => {
