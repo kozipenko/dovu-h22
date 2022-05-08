@@ -30,7 +30,7 @@ export const useWallet = () => useSnapshot(wallet);
 export async function initializeWallet() {
   const local = loadFromLocalStorage();
 
-  if (!local.accountId) {
+  if (!local) {
     const init = await hashConnect.init(DAPP);
     const state = await hashConnect.connect();
     const pairingString = hashConnect.generatePairingString(state, NETWORK, false);

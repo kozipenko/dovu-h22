@@ -1,36 +1,20 @@
 import { useState } from "react";
 import { Button, Group, Loader, NumberInput, Stack, Text, TextInput } from "@mantine/core";
-import { addProject } from "../../store/contract";
-import { createProject } from "../../store/projects";
 import { AlertTriangle, SquareCheck } from "tabler-icons-react";
 
-export default function OwnerNewProjectsModal({ context, id }) {
+export default function OwnerNewProjectModal({ context, id }) {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isCreated, setIsCreated] = useState(null);
   const [projectId, setProjectId] = useState("");
-  const [projectName, setProjectName] = useState("");
-  const [projectImage, setProjectImage] = useState("");
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("");
   const [verifiedKg, setVerifiedKg] = useState(null);
   const [priceKg, setPriceKg] = useState(null);
 
+
   async function handleAddProject() {
-    try {
-      setIsLoading(true);
-      const response = await addProject(projectId, verifiedKg);
-      
-      if (response) {
-        createProject(projectId, projectName, projectImage, priceKg);
-        setIsLoading(false);
-        setIsCreated(true);
-      } else {
-        setError("Error creating project");
-      }
-    } catch (error) {
-      console.log(error);
-      setError("Error creating project");
-      setIsLoading(false);
-    }
+   //
   }
  
   return (isCreated || error) ? (
@@ -46,7 +30,7 @@ export default function OwnerNewProjectsModal({ context, id }) {
         <Group spacing="xs">
           <SquareCheck color="#4c6ef5" size={18} />
           <Text size="sm">
-            {projectName} has been successfully created.
+            {name} has been successfully created.
           </Text>
         </Group>
       )}
@@ -58,26 +42,19 @@ export default function OwnerNewProjectsModal({ context, id }) {
   ) : (
     <>
       <TextInput
-        placeholder="x.x.xxxxxxx"
-        value={projectId}
-        label={<Text size="xs" color="dimmed">ID</Text>}
-        onChange={(e) => setProjectId(e.currentTarget.value)}
-      />
-
-      <TextInput
         mt="xs"
         placeholder="Schrute Farms"
-        value={projectName}
+        value={name}
         label={<Text size="xs" color="dimmed">Name</Text>}
-        onChange={(e) => setProjectName(e.currentTarget.value)}
+        onChange={(e) => setName(e.currentTarget.value)}
       />
 
       <TextInput
         mt="xs"
         placeholder="URL"
-        value={projectImage}
+        value={image}
         label={<Text size="xs" color="dimmed">Image</Text>}
-        onChange={(e) => setProjectImage(e.currentTarget.value)}
+        onChange={(e) => setImage(e.currentTarget.value)}
       />
 
       <NumberInput
@@ -104,7 +81,7 @@ export default function OwnerNewProjectsModal({ context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={!projectId || !projectName || isLoading}
+          disabled={!projectId || !name || isLoading}
           onClick={handleAddProject}
         >
           Save
