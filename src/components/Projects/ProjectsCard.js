@@ -57,7 +57,7 @@ export default function ProjectsCard({ project }) {
               </Badge>
             <Badge size="sm" variant="outline" radius="xs">${project.price_kg}/kg</Badge>
             <Badge size="sm" variant="outline" radius="xs">25% APY</Badge>
-            <Badge size="sm" variant="outline" radius="xs">{project.verified_kg.toLocaleString()} kg supply</Badge>
+            <Badge size="sm" variant="outline" radius="xs">{project?.verified_kg?.toLocaleString()} kg supply</Badge>
             <Badge size="sm" variant="outline" radius="xs">Risk {project.collateral_risk}%</Badge>
           </Group>
         </Stack>

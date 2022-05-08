@@ -12,7 +12,7 @@ export async function getProjects() {
 }
 
 export async function createProject(project) {
-  return await api.post("/projects", project).status === 200;
+  return await api.post("/projects", { name: "test_123", image: "test_123"}).status === 200;
 }
 
 export async function updateProject(project) {
