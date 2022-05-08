@@ -2,7 +2,7 @@ import { Button, Divider, Menu } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { ChartPie, Edit, Gift, Logout, Settings, Wallet } from "tabler-icons-react";
 import { useModals } from "@mantine/modals";
-import { disconnectLocalWallet, useWallet } from "../../store/wallet";
+import { disconnectLocalWallet, useWallet } from "../../services/wallet";
 import { CONTRACT_ID } from "../../store/contract";
 
 export default function PageWallet() {
@@ -31,29 +31,29 @@ export default function PageWallet() {
     modals.openContextModal("claimTokens", {
       title: "Claim Tokens",
       innerProps: {
-        pairedAccount: wallet.connection.pairedAccount
+        pairedAccount: wallet.accountId
       }
     });
   }
 
-  return wallet.connection.pairedAccount ? (
+  return wallet.accountId ? (
     <Menu
       zIndex={1000}
       control={
         <Button leftIcon={<Wallet size={18} />}>
-          {wallet.connection.pairedAccount}
+          {wallet.accountId}
         </Button>
       }
     >
       <Menu.Label>User</Menu.Label>
       <Menu.Item to="/stats" component={Link} icon={<ChartPie size={18} />}>
-        Dashboard
+        Stats
       </Menu.Item>
       <Menu.Item icon={<Gift size={18} />} onClick={handleClaimDemoTokensForStaking}>
         Claim Tokens
       </Menu.Item>
 
-      {wallet.connection.isOwner && (
+      {wallet.isContractOwner && (
         <>
           <Divider />
           <Menu.Label>Owner</Menu.Label>

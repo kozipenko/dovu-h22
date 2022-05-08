@@ -1,36 +1,21 @@
 import { useEffect, useState } from "react";
 import { Button, Group, Loader, Paper, Stack, Text } from "@mantine/core";
-import {
-  claimDemoTokensForStaking,
-  getMaxClaimableTokens,
-  getTotalTokensClaimed,
-  TOKEN_NAME
-} from "../../store/contract";
+import { claimDemoTokensForStaking, getMaximumClaimableTokens, getTotalTokensClaimed, TOKEN_NAME } from "../../services/contract";
 
 export default function ClaimTokensModal({ context, id }) {
   const [isTransacting, setIsTransacting] = useState(false);
-  const [maxClaimableTokens, setMaxClaimableTokens] = useState(0);
+  const [maximumClaimableTokens, setMaximumClaimableTokens] = useState(0);
   const [totalTokensClaimed, setTotalTokensClaimed] = useState(0);
-
-  async function loadMaxClaimableTokens() {
-    const max = await getMaxClaimableTokens();
-    setMaxClaimableTokens(max);
-  }
-
-  async function loadTotalTokensClaimed() {
-    const total = await getTotalTokensClaimed();
-    setTotalTokensClaimed(total);
-  }
 
   async function handleClaimDemoTokensForStaking() {
     setIsTransacting(true);
-    await claimDemoTokensForStaking(maxClaimableTokens).catch(() => setIsTransacting(false));
+    await claimDemoTokensForStaking(maximumClaimableTokens-totalTokensClaimed).catch(() => setIsTransacting(false));
     setIsTransacting(false);
   }
 
   useEffect(() => {
-    loadMaxClaimableTokens();
-    loadTotalTokensClaimed();
+    getTotalTokensClaimed().then(setTotalTokensClaimed);
+    getMaximumClaimableTokens().then(setMaximumClaimableTokens);
   }, []);
 
   return (
@@ -43,7 +28,7 @@ export default function ClaimTokensModal({ context, id }) {
 
         <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed">Max Claimable Tokens:</Text>
-          <Text size="xs" weight={500}>{maxClaimableTokens} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{maximumClaimableTokens} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
@@ -53,7 +38,7 @@ export default function ClaimTokensModal({ context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={isTransacting || !maxClaimableTokens}
+          disabled={isTransacting || !maximumClaimableTokens}
           onClick={handleClaimDemoTokensForStaking}
         >
           Claim

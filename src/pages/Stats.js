@@ -1,24 +1,15 @@
 import { useEffect, useState } from "react";
 import { Group, Paper, Text } from "@mantine/core";
-import { getAccountBalance, getTreasuryBalance, TOKEN_NAME } from "../store/contract";
+import { getAccountBalance } from "../services/wallet";
+import { getTreasuryBalance, TOKEN_NAME} from "../services/contract";
 
 export default function Staking() {
   const [treasuryBalance, setTreasuryBalance] = useState(0);
   const [accountBalance, setAccountBalance] = useState(0);
 
-  async function loadTreasuryBalance() {
-    const balance = await getTreasuryBalance();
-    setTreasuryBalance(balance);
-  }
-
-  async function loadAccountBalance() {
-    const balance = await getAccountBalance();
-    setAccountBalance(balance);
-  }
-
   useEffect(() => {
-    loadTreasuryBalance();
-    loadAccountBalance();
+    getAccountBalance().then(setAccountBalance);
+    getTreasuryBalance().then(setTreasuryBalance);
   }, []);
 
   return (

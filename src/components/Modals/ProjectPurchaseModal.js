@@ -1,43 +1,41 @@
-import { useState } from "react";
-import { Button, Group, Select, TextInput } from "@mantine/core";
+import { Button, Group, Paper, Text, TextInput } from "@mantine/core";
+import { Leaf } from "tabler-icons-react";
 
-export default function ProjectPurchaseModal({ context, id }) {
-  const [currency, setCurrency] = useState("usd");
+export default function ProjectPurchaseModal({ context, id, innerProps }) {
+  // TOOD
+  async function handleProjectOffsetPurchase() {
+    return;
+  }
 
   return (
     <>
+      <Paper withBorder mt="xl" p="xs">
+        <Group position="apart">
+          <Text size="xs" color="dimmed">Total Offsets Remaining:</Text>
+          <Text size="xs" weight={500}>{innerProps.project.verified_kg.toLocaleString()} kg</Text>
+        </Group>
+
+        <Group position="apart" mt="xs">
+          <Text size="xs" color="dimmed">Total Offsets Purchased:</Text>
+          <Text size="xs" weight={500}>2,000 kg</Text>
+        </Group>
+      </Paper>
+
       <TextInput
-        mt="md"
-        placeholder="Amount"
+        mt="xl"
+        description="Amount (kg)"
         rightSectionWidth={110}
-        rightSection={(
-          <Select
-            zIndex={1000}
-            value={currency}
-            data={[
-              { value: "dov", label: "DOV" },
-              { value: "eur", label: "🇪🇺 EUR" },
-              { value: "usd", label: "🇺🇸 USD" },
-              { value: "cad", label: "🇨🇦 CAD" },
-              { value: "gbp", label: "🇬🇧 GBP" },
-              { value: "aud", label: "🇦🇺 AUD" }
-            ]}
-            onChange={setCurrency}
-            styles={{
-              input: {
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0
-              }
-            }}
-          />
-        )}
+        icon={<Leaf size={18} />}
+        value={0}
       />
 
       <Group position="right" spacing="xs" mt="xl">
         <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
           Cancel
         </Button>
-        <Button variant="light">Purchase</Button>
+        <Button variant="light" onClick={handleProjectOffsetPurchase}>
+          Purchase
+        </Button>
       </Group>
     </>
   );

@@ -1,10 +1,11 @@
 import { SimpleGrid } from "@mantine/core";
-import { useProjects } from "../../store/projects";
+import { useQuery } from "react-query";
+import { getProjects } from "../../services/projects";
 import ProjectsFilter from "./ProjectsFilter";
 import ProjectsCard from "./ProjectsCard";
 
 export default function Projects() {
-  const projects = useProjects();
+  const query = useQuery("project", getProjects);
 
   return (
     <>
@@ -21,7 +22,7 @@ export default function Projects() {
           { maxWidth: "lg", cols: 3 },
         ]}
       >
-        {projects.filtered.map(project => (
+        {query.isFetched && query.data.map(project => (
           <ProjectsCard key={project.id} project={project} />
         ))}
       </SimpleGrid>

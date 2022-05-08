@@ -50,17 +50,15 @@ export default function ProjectsCard({ project }) {
             <Badge
               size="sm"
               radius="xs"
-              variant="filled"
-              color={project.verifiedKg === 0 ? "red" : "green"}
+              variant="outline"
+              color={project.verified_kg === 0 ? "red" : "green"}
               >
-                {project.verifiedKg === 0 ? "No Stock" : "In Stock"}
+                {project.verified_kg === 0 ? "No Stock" : "In Stock"}
               </Badge>
-            <Badge size="sm" variant="filled" radius="xs">Price ${project.priceKg}</Badge>
-            <Badge size="sm" variant="filled" radius="xs">APY 25%</Badge>
-          </Group>
-          <Group spacing="xs">
-            <Badge size="sm" variant="filled" radius="xs">100 Stakers</Badge>
-            <Badge size="sm" variant="filled" radius="xs">Collateral 30%</Badge>
+            <Badge size="sm" variant="outline" radius="xs">${project.price_kg}/kg</Badge>
+            <Badge size="sm" variant="outline" radius="xs">25% APY</Badge>
+            <Badge size="sm" variant="outline" radius="xs">{project.verified_kg.toLocaleString()} kg supply</Badge>
+            <Badge size="sm" variant="outline" radius="xs">Risk {project.collateral_risk}%</Badge>
           </Group>
         </Stack>
       </Card.Section>
@@ -71,7 +69,7 @@ export default function ProjectsCard({ project }) {
             size="xs"
             color="green"
             variant="light"
-            disabled={project.verifiedKg === 0}
+            disabled={project.verified_kg === 0}
             onClick={openProjectPurchaseModal}
           >
             Purchase
@@ -80,7 +78,7 @@ export default function ProjectsCard({ project }) {
             size="xs"
             color="blue"
             variant="light"
-            disabled={project.verifiedKg === 0}
+            disabled={project.verified_kg === 0}
             onClick={openProjectStakeModal}
           >
             Stake

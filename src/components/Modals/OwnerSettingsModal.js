@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text, Paper, Group, NumberInput, Button, Stack, Loader } from "@mantine/core";
-import {
-  TOKEN_NAME,
-  addTokensToTreasury,
-  updateClaimableTokens,
-  getTreasuryBalance,
-  getMaxClaimableTokens
-} from "../../store/contract";
+import { addTokensToTreasury, getMaximumClaimableTokens, getTreasuryBalance, updateClaimableTokens, TOKEN_NAME } from "../../services/contract";
 
 export default function OwnerSettingsModal() {
   const [isTransacting, setIsTransacting] = useState(false);
@@ -14,18 +8,6 @@ export default function OwnerSettingsModal() {
   const [maxClaimableTokens, setMaxClaimableTokens] = useState(0);
   const [newMaxClaimableTokens, setNewMaxClaimableTokens] = useState(0);
   const [xferToTreasury, setXferToTreasury] = useState(0);
-
-  const intNoFmt = new Intl.NumberFormat("en-GB");
-
-  async function loadTreasuryBalance() {
-    const balance = await getTreasuryBalance();
-    setTreasuryBalance(balance);
-  }
-
-  async function loadMaxClaimableTokens() {
-    const max = await getMaxClaimableTokens();
-    setMaxClaimableTokens(max);
-  }
 
   async function handleAddTokenstoTreasury() {
     setIsTransacting(true);
@@ -37,7 +19,6 @@ export default function OwnerSettingsModal() {
     setIsTransacting(false);
   }
 
-  // TODO: implement
   async function handleUpdateClaimableTokens() {
     setIsTransacting(true);
     const response = await updateClaimableTokens(newMaxClaimableTokens);
@@ -49,20 +30,20 @@ export default function OwnerSettingsModal() {
   }
 
   useEffect(() => {
-    loadTreasuryBalance();
-    loadMaxClaimableTokens();
-  }, []);
+    getTreasuryBalance().then(setTreasuryBalance);
+    getMaximumClaimableTokens().then(setMaxClaimableTokens);
+  }, [isTransacting]);
 
   return (
     <>
       <Paper withBorder my="xs" p="xs">
         <Group position="apart">
           <Text size="xs" color="dimmed">Treasury Balance:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(treasuryBalance || 0)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{treasuryBalance.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
         <Group position="apart">
           <Text size="xs" color="dimmed">Current Claimable Max:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(maxClaimableTokens)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{maxClaimableTokens.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 

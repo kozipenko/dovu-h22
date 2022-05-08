@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Group, Loader, Paper, Stack, Text } from "@mantine/core";
-import { getStakingFeePercentage, stakeTokensToProject, TOKEN_NAME } from "../../store/contract";
+import { getStakingFeePercentage, stakeTokensToProject, TOKEN_NAME } from "../../services/contract";
 
 export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
   const [isTransacting, setIsTransacting] = useState(false);
@@ -61,8 +61,6 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           <Text size="xs" color="dimmed">Fee (5%): </Text>
           <Text size="xs" color="red" weight={500}>{stakingFee} {TOKEN_NAME}</Text>
         </Group>
-
-        
 
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Token Release:</Text>

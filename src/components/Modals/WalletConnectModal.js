@@ -3,38 +3,27 @@ import { ActionIcon, Anchor, Button, Group, Loader, Paper, Stack, Text, TextInpu
 import { useClipboard } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { Copy, Help, SquareCheck } from "tabler-icons-react";
-import { getAccountBalance, loadIsOwner, TOKEN_NAME, useContract } from "../../store/contract";
-import { useWallet, connectToLocalWallet } from "../../store/wallet";
+import { connectToLocalWallet, getAccountBalance, useWallet } from "../../services/wallet";
+import { TOKEN_NAME } from "../../services/contract";
 
 export default function WalletConnectModal({ context, id }) {
-  const [accountBalance, setAccountBalance] = useState(null);
+  const [accountBalance, setAccountBalance] = useState(0);
   const clipboard = useClipboard();
   const wallet = useWallet();
-  const contract = useContract();
-  const intNoFmt = new Intl.NumberFormat("en-GB");
 
   function handleCopyPairingString() {
-    clipboard.copy(wallet.connection.pairingString);
+    clipboard.copy(wallet.pairingString);
     showNotification({
       title: "Pairing string copied to clipboard",
     });
   }
 
-  async function loadAccountBalance() {
-    const balance = await getAccountBalance();
-    setAccountBalance(balance);
-  }
-
   useEffect(() => {
-    loadAccountBalance();
+    if (wallet.accountId)
+      getAccountBalance().then(setAccountBalance);
+  }, [wallet.accountId]);
 
-    loadIsOwner().catch(error => showNotification({
-      title: "An error has occured checking for contract ownersip",
-      message: error.message
-    }));
-  }, [wallet.connection.pairedAccount]);
-
-  return wallet.connection.pairedAccount ? (
+  return wallet.accountId ? (
     <>
       <Group spacing="xs">
         <SquareCheck color="#4c6ef5" size={18} />
@@ -46,11 +35,11 @@ export default function WalletConnectModal({ context, id }) {
       <Paper withBorder mt="xl" p="xs">
         <Group position="apart">
           <Text size="xs" color="dimmed">Account:</Text>
-          <Text size="xs" weight={500}>{wallet.connection.pairedAccount}</Text>
+          <Text size="xs" weight={500}>{wallet.accountId}</Text>
         </Group>
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Account Balance:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(accountBalance)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{accountBalance.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
@@ -72,7 +61,7 @@ export default function WalletConnectModal({ context, id }) {
         readOnly
         mt="xs"
         variant="filled"
-        value={wallet.connection.pairingString}
+        value={wallet.pairingString}
         onFocus={e => e.target.select()}
         rightSection={
           <ActionIcon>

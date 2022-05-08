@@ -1,16 +1,9 @@
 import { useEffect, useState } from "react";
 import { Anchor, Button, Checkbox, Group, NumberInput, Paper, Select, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
-import {
-  getStakedPosition,
-  TOKEN_NAME,
-  unstakeTokensFromProject,
-  getNumberOfTokensStakedToProject,
-  getAccountBalance,
-  getCollateralRisk
-} from "../../store/contract";
+import { getAccountBalance } from "../../services/wallet";
+import { getCollateralRisk, getNumberOfTokensStakedToProject, getStakedPosition, TOKEN_NAME } from "../../services/contract";
 
-// TODO: Needs a lot of work...
 export default function ProjectStakeModal({ context, id, innerProps }) {
   const [accountBalance, setAccountBalance] = useState(0);
   const [amount, setAmount] = useState(0);
@@ -21,8 +14,6 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   const [releaseDate, setReleaseDate] = useState("N/A");
   const modals = useModals();
 
-  const intNoFmt = new Intl.NumberFormat("en-GB");
-  
   async function handleOpenProjectStakeConfirmModal() {
     modals.openContextModal("projectStakeConfirm", {
       title: "Confirm Staking Position",
@@ -43,42 +34,17 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     });
   }
 
-  async function handleUnstakeTokensFromProject() {
-    const response = await unstakeTokensFromProject(innerProps.project.id, amount); 
-    console.log(response);
-  }
-
-  async function loadGetCollateral() {
-    const response = await getCollateralRisk(innerProps.project.id);
-    setCollateralRisk(response); 
-  }
-
-  async function loadAccountBalance() {
-    const balance = await getAccountBalance();
-    setAccountBalance(balance);
-  }
-
-  async function loadStakedPosition() {
-    const pos = await getStakedPosition(innerProps.project.id);
-    toUtcTimeString(pos.unlockTime); // TODO: setPosition is not working as intended .. fix & i thought i staked for 10 years not 1 prob need to check this.
-    setPosition(pos);
-  }
-
-  async function loadTotalStakedToProject() {
-    const total = await getNumberOfTokensStakedToProject(innerProps.project.id);
-    setTotalStakedToProject(total);
-  }
-
+  // Is this needed still?
   async function toUtcTimeString(time) {
     const rDate  = new Date(time * 1000)
     setReleaseDate(rDate.toUTCString());
   }
 
   useEffect(() => {
-    loadAccountBalance();
-    loadTotalStakedToProject();
-    loadStakedPosition();
-    loadGetCollateral();
+    getAccountBalance().then(setAccountBalance);
+    getStakedPosition(innerProps.project.id).then(setPosition); //  toUtcTimeString(pos.unlockTime) needed still?
+    getCollateralRisk(innerProps.project.id).then(setCollateralRisk);
+    getNumberOfTokensStakedToProject(innerProps.project.id).then(setTotalStakedToProject);
   }, []);
   
   //
@@ -100,7 +66,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Total Staked:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(totalStakedToProject)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{totalStakedToProject.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
         <Group position="apart">
@@ -110,7 +76,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Postion Value:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(position.amount)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{position.amount.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
         <Group mt="xs" position="apart">
@@ -147,12 +113,12 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
         
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Total Staked:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(totalStakedToProject)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{totalStakedToProject.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Your Balance:</Text>
-          <Text size="xs" weight={500}>{intNoFmt.format(accountBalance)} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{accountBalance.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
