@@ -48,6 +48,7 @@ export async function initializeWallet() {
     wallet.metadata = local.metadata;
     wallet.accountId = local.accountId;
     wallet.privateKey = local.privateKey;
+    wallet.pairingString = local.pairingString;
     wallet.isContractOwner = await getIsOwner();
   }
 
