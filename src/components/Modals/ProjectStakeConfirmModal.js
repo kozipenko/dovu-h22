@@ -9,7 +9,6 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
   const [amountToStake, setAmountToStake] = useState(0);
   console.log("ParentID: " + innerProps.parentId)
 
-
   function configureReleaseDate() {
     const currDate = Math.floor((new Date()).getTime() / 1000);
     const termFromNow = currDate + (31536000 * innerProps.term);

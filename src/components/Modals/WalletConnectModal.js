@@ -91,7 +91,7 @@ export default function WalletConnectModal({ context, id }) {
 
       <Stack align="center" spacing="xs" mt="xl">
         <Loader size="sm" variant="dots" />
-        <Text size="xs" color="dimmed">Waiting for transaction</Text>
+        <Text size="xs" color="dimmed">Listening</Text>
       </Stack>
     </>
   )
