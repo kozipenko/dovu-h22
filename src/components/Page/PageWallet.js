@@ -1,6 +1,6 @@
 import { Button, Divider, Menu } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { ChartPie, Edit, Gift, Logout, Settings, Wallet } from "tabler-icons-react";
+import { ChartPie, Edit, Gift, Logout, Settings, UserCircle } from "tabler-icons-react";
 import { useModals } from "@mantine/modals";
 import { disconnectLocalWallet, useWallet } from "../../services/wallet";
 import { CONTRACT_ID } from "../../services/contract";
@@ -40,7 +40,7 @@ export default function PageWallet() {
     <Menu
       zIndex={1000}
       control={
-        <Button leftIcon={<Wallet size={18} />}>
+        <Button variant="light" leftIcon={<UserCircle size={18} />}>
           {wallet.accountId}
         </Button>
       }
@@ -72,7 +72,7 @@ export default function PageWallet() {
       </Menu.Item>
     </Menu>
   ) : (
-    <Button leftIcon={<Wallet size={18} />} onClick={handleOpenWalletConnectModal}>
+    <Button onClick={handleOpenWalletConnectModal}>
       Connect
     </Button>
   );

@@ -1,36 +1,42 @@
 import { useEffect, useState } from "react";
-import { Group, Paper, Text } from "@mantine/core";
-import { getAccountBalance } from "../services/wallet";
+import { Card, Group, Text } from "@mantine/core";
+import { useQuery } from "react-query";
 import { getTreasuryBalance, TOKEN_NAME} from "../services/contract";
+import { getProjects } from "../services/projects";
 
 export default function Staking() {
+  const query = useQuery("projects", getProjects);
   const [treasuryBalance, setTreasuryBalance] = useState(0);
-  const [accountBalance, setAccountBalance] = useState(0);
+  const [totalProjects, setTotalProjects] = useState(0);
 
   useEffect(() => {
-    getAccountBalance().then(setAccountBalance);
     getTreasuryBalance().then(setTreasuryBalance);
   }, []);
 
+  useEffect(() => {  
+    query.isSuccess && setTotalProjects(query.data.length);
+  }, [query]);
+
   return (
     <Group>
-      <Paper withBorder p="md" radius="md">
+      <Card p="md" radius="md" shadow="xs">
         <Text size="xs" color="dimmed" weight={700}>
           Treasury Balance
         </Text>
-        <Text mt="xs" weight={500} sx={{ fontSize: 24 }}>
-          {treasuryBalance.toLocaleString()} {TOKEN_NAME}
+        <Text mt="xs" size="xl" weight={500}>
+          {treasuryBalance.toLocaleString()}
+          <Text component="span" ml="xs">{TOKEN_NAME}</Text>
         </Text>
-      </Paper>
+      </Card>
 
-      <Paper withBorder p="md" radius="md">
+      <Card p="md" radius="md" shadow="xs">
         <Text size="xs" color="dimmed" weight={700}>
-          Account Balance
+          Total Projects
         </Text>
-        <Text mt="xs" weight={500} sx={{ fontSize: 24 }}>
-          {accountBalance.toLocaleString()} {TOKEN_NAME}
+        <Text mt="xs" size="xl" weight={500}>
+          {totalProjects}
         </Text>
-      </Paper>
+      </Card>
     </Group>
   );
 }

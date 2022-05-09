@@ -10,7 +10,7 @@ const useStyles = createStyles(theme => ({
     left: 0,
     right: 0,
     height: 64,
-    backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.white,
+    backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.white,
     boxShadow: theme.shadows.xs,
     zIndex: 999
   },
