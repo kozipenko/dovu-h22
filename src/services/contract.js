@@ -108,6 +108,7 @@ export async function addVerifiedCarbon(id, verifiedKg) {
   const params = new ContractFunctionParameters().addString(id).addInt64(verifiedKg);
   const tx = createContractExecuteTransaction(func, params);
   const res = await sendTransaction(tx);
+  return res.success;
 }
 
 export async function removeVerifiedCarbon(id, verifiedKg) {
@@ -115,6 +116,7 @@ export async function removeVerifiedCarbon(id, verifiedKg) {
   const params = new ContractFunctionParameters().addString(id).addInt64(verifiedKg);
   const tx = createContractExecuteTransaction(func, params);
   const res = await sendTransaction(tx);
+  return res.success;
 }
 
 // TODO: REVERTS ON DECIMAL FIX

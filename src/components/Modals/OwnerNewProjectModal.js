@@ -13,9 +13,10 @@ export default function OwnerNewProjectModal({ context, id }) {
 
   async function handleAddProject() {
     setIsTransacting(true);
-    const project = await createProject({ name, image, priceKg, verifiedKg });
+    const project = await createProject({ name, image, price_kg: priceKg, verified_kg: verifiedKg });
     const res = await addProject(project.id, project.verified_kg);
     setIsTransacting(false);
+    context.closeModal(id);
   }
  
   return (
@@ -40,18 +41,18 @@ export default function OwnerNewProjectModal({ context, id }) {
         mt="xs"
         placeholder="0"
         min={0}
-        value={verifiedKg}
-        label={<Text size="xs" color="dimmed">Verified Carbon (kg)</Text>}
-        onChange={setVerifiedKg}
+        value={priceKg}
+        label={<Text size="xs" color="dimmed">Carbon Price (USD)</Text>}
+        onChange={setPriceKg}
       />
 
       <NumberInput
         mt="xs"
         placeholder="0"
         min={0}
-        value={priceKg}
-        label={<Text size="xs" color="dimmed">Carbon Price (USD)</Text>}
-        onChange={setPriceKg}
+        value={verifiedKg}
+        label={<Text size="xs" color="dimmed">Verified Carbon (kg)</Text>}
+        onChange={setVerifiedKg}
       />
 
       <Group position="right" spacing="xs" mt="xl">
@@ -60,7 +61,7 @@ export default function OwnerNewProjectModal({ context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={!name}
+          disabled={!name || isTransacting}
           onClick={handleAddProject}
         >
           Save

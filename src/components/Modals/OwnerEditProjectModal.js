@@ -1,15 +1,51 @@
-import { useState } from "react";
-import { Button, Group, NumberInput, Text, TextInput } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Button, Group, Loader, NumberInput, Stack, Text, TextInput } from "@mantine/core";
+import { updateProject } from "../../services/projects";
+import { addVerifiedCarbon, getVerifiedCarbonForProject, removeVerifiedCarbon } from "../../services/contract";
 
 export default function OwnerEditProjectsModal({ innerProps, context, id }) {
   const [newName, setNewName] = useState(innerProps.project.name);
   const [newImage, setNewImage] = useState(innerProps.project.image);
+  const [newPriceKg, setNewPriceKg] = useState(parseFloat(innerProps.project.price_kg));
   const [newVerifiedKg, setNewVerifiedKg] = useState(innerProps.project.verified_kg);
-  const [newPriceKg, setNewPriceKg] = useState(innerProps.project.price_kg);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isTransacting, setIsTransacting] = useState(false);
+
+  async function syncVerifiedCarbon() {
+    setIsLoading(true);
+    const verifiedKg = await getVerifiedCarbonForProject(innerProps.project.id);
+    
+    if (verifiedKg !== newVerifiedKg)
+      updateProject({ verified_kg: verifiedKg });
+
+    setIsLoading(false);
+  }
+
+  async function editVerifiedCarbon() {
+    if (newVerifiedKg > innerProps.project.verified_kg)
+      return await addVerifiedCarbon(innerProps.project.id, newVerifiedKg-innerProps.project.verified_kg);
+    else if (newVerifiedKg < innerProps.project.verified_kg)
+      return await removeVerifiedCarbon(innerProps.project.id, innerProps.project.verified_kg-newVerifiedKg)
+  }
 
   async function handleEditProject() {
+    setIsTransacting(true);
+    const res = await editVerifiedCarbon();
+
+    if (res)
+      updateProject(innerProps.project.id, {
+        name: newName,
+        image: newImage,
+        price_kg: newPriceKg,
+        verified_kg: newVerifiedKg
+      });
     
+    setIsTransacting(false);
   }
+
+  useEffect(() => {
+    syncVerifiedCarbon();
+  }, []);
 
   return (
     <>
@@ -37,21 +73,22 @@ export default function OwnerEditProjectsModal({ innerProps, context, id }) {
       <NumberInput
         mt="xs"
         min={0}
-        disabled={null}//{isVerifiedKgLoading}
-        rightSection={null}//{isVerifiedKgLoading && <Loader size="xs" />}
-        value={newVerifiedKg}
-        label={<Text size="xs" color="dimmed">Verified Carbon (kg)</Text>}
-        onChange={setNewVerifiedKg}
-      />
-
-      <NumberInput
-        mt="xs"
-        min={0}
+        precision={2}
         value={newPriceKg}
         parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
         formatter={(value) => `$ ${value}`}
         label={<Text size="xs" color="dimmed">Carbon Price (USD)</Text>}
         onChange={setNewPriceKg}
+      />
+
+      <NumberInput
+        mt="xs"
+        min={0}
+        disabled={isLoading}
+        rightSection={isLoading && <Loader size="xs" />}
+        value={newVerifiedKg}
+        label={<Text size="xs" color="dimmed">Verified Carbon (kg)</Text>}
+        onChange={setNewVerifiedKg}
       />
 
       <Group position="right" spacing="xs" mt="xl">
@@ -60,13 +97,19 @@ export default function OwnerEditProjectsModal({ innerProps, context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={null} //{isTransacting || isVerifiedKgLoading}
+          disabled={isLoading || isTransacting}
           onClick={handleEditProject}
         >
           Save
         </Button>
       </Group>
 
+      {isTransacting && (
+        <Stack align="center" spacing="xs" mt="xl">
+          <Loader size="sm" variant="dots" />
+          <Text size="xs" color="dimmed">Tansacting</Text>
+        </Stack>
+      )}
     </>
   );
 }
