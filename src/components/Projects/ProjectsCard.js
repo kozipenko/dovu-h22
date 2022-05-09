@@ -5,7 +5,7 @@ const useStyles = createStyles(theme => ({
   root: {
     padding: theme.spacing.md,
     borderRadius: theme.radius.md,
-    boxShadow: theme.shadows.sm,
+    boxShadow: theme.shadows.xs,
     transition: "all .1s ease-in-out",
     ":hover": { transform: "scale(1.005)" }
   },
@@ -40,7 +40,7 @@ export default function ProjectsCard({ project }) {
   return (
     <Card p={0} className={classes.root}>
       <Card.Section>
-        <Image src={project.image} height={160} />
+        <Image withPlaceholder src={project.image} height={160} />
       </Card.Section>
 
       <Card.Section p="md">

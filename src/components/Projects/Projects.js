@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SimpleGrid } from "@mantine/core";
+import { Center, Loader, SimpleGrid } from "@mantine/core";
 import { useQuery } from "react-query";
 import { getProjects } from "../../services/projects";
 import ProjectsFilter from "./ProjectsFilter";
@@ -18,9 +18,15 @@ export default function Projects() {
     <>
       <ProjectsFilter value={filter} onChange={setFilter} />
 
+      {query.isLoading && (
+        <Center mt="xl">
+          <Loader variant="dots" />
+        </Center>
+      )}
+
       <SimpleGrid
-        spacing="md"
-        mt="md"
+        spacing="xl"
+        mt="xl"
         cols={4}
         breakpoints={[
           { maxWidth: "xs", cols: 1 },
@@ -29,7 +35,7 @@ export default function Projects() {
           { maxWidth: "lg", cols: 3 },
         ]}
       >
-        {query.isFetched && query.data.map(project => (
+        {query.isSuccess && query.data.map(project => (
           <ProjectsCard key={project.id} project={project} />
         ))}
       </SimpleGrid>

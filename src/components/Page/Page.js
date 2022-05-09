@@ -15,7 +15,7 @@ export default function Page() {
   return (
     <Box className={classes.root}>
       <PageHeader />
-      <Container size="xl" p="md">
+      <Container size="xl" p="xl">
         <Outlet />
       </Container>
     </Box>

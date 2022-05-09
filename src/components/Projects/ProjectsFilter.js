@@ -39,7 +39,7 @@ export default function ProjectsFilter({ value, onChange }) {
   return (
     <>
       <Group>
-        <ActionIcon size="lg" variant="outline" color="indigo" onClick={() => setIsOpen(true)}>
+        <ActionIcon size="lg" variant="light" color="indigo" onClick={() => setIsOpen(true)}>
           <Filter size={18} />
         </ActionIcon>
 
@@ -93,8 +93,10 @@ export default function ProjectsFilter({ value, onChange }) {
           <Text size="xs" color="dimmed" weight={500}>{verifiedKg[0]} kg</Text>
           <Text size="xs" color="dimmed" weight={500}>{verifiedKg[1]} kg</Text>
         </Group>
-
-        <Button mt="xl" onClick={handleReset}>Reset</Button>
+        
+        <Button fullWidth mt="xl" variant="light" onClick={handleReset}>
+          Reset
+        </Button>
       </Drawer>
     </>
   );
