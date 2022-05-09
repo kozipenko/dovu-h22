@@ -6,7 +6,7 @@ import ProjectsFilter from "./ProjectsFilter";
 import ProjectsCard from "./ProjectsCard";
 
 export default function Projects() {
-  const [filter, setFilter] = useState({ search: "", priceKg: [0, 100], verifiedKg: [0, 1000] });
+  const [filter, setFilter] = useState({ search: "", priceKg: [0, 100], verifiedKg: [0, 5000] });
   const query = useQuery("project", getProjects, {
     select: (projects) => projects
       .filter(p => p.verified_kg >= filter.verifiedKg[0] && p.verified_kg <= filter.verifiedKg[1])
