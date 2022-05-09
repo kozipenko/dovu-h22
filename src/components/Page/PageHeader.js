@@ -1,7 +1,6 @@
-import { ActionIcon, Anchor, Box, Container, createStyles, Group, Text } from "@mantine/core";
+import { ActionIcon, Anchor, Box, Container, createStyles, Group, Text, useMantineColorScheme } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { Moon, Sun } from "tabler-icons-react";
-import { toggleColorScheme, useTheme } from "../../store/theme";
 import PageWallet from "./PageWallet";
 
 const useStyles = createStyles(theme => ({
@@ -25,7 +24,7 @@ const useStyles = createStyles(theme => ({
 
 export default function PageHeader() {
   const { classes } = useStyles();
-  const theme = useTheme();
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
   return (
     <Box component="header" className={classes.root}>
@@ -42,7 +41,7 @@ export default function PageHeader() {
         <Group>
           <PageWallet />
           <ActionIcon size="lg" variant="light" color="indigo" onClick={toggleColorScheme}>
-            {theme.colorScheme === "light" ? <Moon size={18} /> : <Sun size={18} />}
+            {colorScheme === "light" ? <Moon size={18} /> : <Sun size={18} />}
           </ActionIcon>
         </Group>
       </Container>

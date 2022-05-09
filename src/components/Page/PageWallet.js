@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ChartPie, Edit, Gift, Logout, Settings, Wallet } from "tabler-icons-react";
 import { useModals } from "@mantine/modals";
 import { disconnectLocalWallet, useWallet } from "../../services/wallet";
-import { CONTRACT_ID } from "../../store/contract";
+import { CONTRACT_ID } from "../../services/contract";
 
 export default function PageWallet() {
   const modals = useModals();
