@@ -22,7 +22,8 @@ export const wallet = proxy({
   extensions: [],
   metadata: null,
   pairingString: "",
-  isContractOwner: false,
+  isTransacting: false,
+  isContractOwner: false
 });
 
 export const useWallet = () => useSnapshot(wallet);
@@ -59,6 +60,7 @@ export async function initializeWallet() {
     wallet.isContractOwner = await getIsOwner();
   });
 
+  hashConnect.acknowledgeMessageEvent.on(event => console.log("ACK EVENT", event));
   hashConnect.foundExtensionEvent.on((extension) => wallet.extensions.push(extension));
 }
 
@@ -70,6 +72,7 @@ export function disconnectLocalWallet() {
   wallet.metadata = "";
   wallet.accountId = "";
   wallet.privateKey = "";
+  wallet.isTransacting = false;
   wallet.isContractOwner = false;
   localStorage.removeItem(LOCAL_STORAGE_KEY);
 }

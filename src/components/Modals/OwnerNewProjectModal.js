@@ -14,7 +14,10 @@ export default function OwnerNewProjectModal({ context, id }) {
   async function handleAddProject() {
     setIsTransacting(true);
     const project = await createProject({ name, image, price_kg: priceKg, verified_kg: verifiedKg });
-    const res = await addProject(project.id, project.verified_kg);
+
+    if (project.id)
+      await addProject(project.id, project.verified_kg);
+
     setIsTransacting(false);
     context.closeModal(id);
   }

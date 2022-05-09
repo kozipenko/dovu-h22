@@ -16,7 +16,7 @@ export default function OwnerEditProjectsModal({ innerProps, context, id }) {
     const verifiedKg = await getVerifiedCarbonForProject(innerProps.project.id);
     
     if (verifiedKg !== newVerifiedKg)
-      updateProject({ verified_kg: verifiedKg });
+      await updateProject(innerProps.project.id, { name: newName, verified_kg: verifiedKg });
 
     setIsLoading(false);
   }
