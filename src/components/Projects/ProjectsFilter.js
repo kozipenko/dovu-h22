@@ -83,7 +83,7 @@ export default function ProjectsFilter({ value, onChange }) {
         <RangeSlider
           mt="xs"
           min={0}
-          max={1000}
+          max={5000}
           minRange={1}
           label={null}
           value={verifiedKg}
