@@ -47,6 +47,7 @@ export async function initializeWallet() {
     wallet.topic = local.topic;
     wallet.metadata = local.metadata;
     wallet.accountId = local.accountId;
+    wallet.extensions = local.extensions;
     wallet.privateKey = local.privateKey;
     wallet.pairingString = local.pairingString;
     wallet.isContractOwner = await getIsOwner();
@@ -69,7 +70,6 @@ export function disconnectLocalWallet() {
   wallet.metadata = "";
   wallet.accountId = "";
   wallet.privateKey = "";
-  wallet.extensions = [];
   wallet.isContractOwner = false;
   localStorage.removeItem(LOCAL_STORAGE_KEY);
 }
