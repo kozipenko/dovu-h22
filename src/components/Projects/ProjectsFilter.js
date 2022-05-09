@@ -1,29 +1,58 @@
 import { useState } from "react";
-import { ActionIcon, Button, Checkbox, CheckboxGroup, Drawer, Group, RangeSlider, Text, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Drawer, Group, RangeSlider, Text, TextInput } from "@mantine/core";
 import { Filter, Search, X } from "tabler-icons-react";
-import { resetFilters, setVerifiedKgFilter, setPriceKgFilter, setSearchFilter, useProjects } from "../../store/projects";
 
-export default function ProjectsFilters() {
-  const [opened, setOpened] = useState(false);
-  const projects = useProjects();
+export default function ProjectsFilter({ value, onChange }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [defaultValue] = useState(value);
+  const [search, setSearch] = useState(value.search);
+  const [priceKg, setPriceKg] = useState(value.priceKg);
+  const [verifiedKg, setVerifiedKg] = useState(value.verifiedKg);
+
+  function handleSearchChange(event) {
+    setSearch(event.currentTarget.value);
+    onChange({ search: event.currentTarget.value, priceKg, verifiedKg });
+  }
+
+  function handlePriceKgChange(newPriceKg) {
+    setPriceKg(newPriceKg);
+    onChange({ search, priceKg: newPriceKg, verifiedKg });
+  }
+
+  function handleVerifiedKgChange(newVerifiedKg) {
+    setVerifiedKg(newVerifiedKg);
+    onChange({ search, priceKg, verifiedKg: newVerifiedKg });
+  }
+
+  function handleResetSearch() {
+    setSearch("");
+    onChange({ search: "", priceKg, verifiedKg });
+  }
+
+  function handleReset() {
+    setSearch(defaultValue.search);
+    setPriceKg(defaultValue.priceKg);
+    setVerifiedKg(defaultValue.verifiedKg);
+    onChange({ search: defaultValue.search, priceKg: defaultValue.priceKg, verifiedKg: defaultValue.verifiedKg });
+  }
 
   return (
     <>
       <Group>
-        <ActionIcon size="lg" variant="outline" color="indigo" onClick={() => setOpened(true)}>
+        <ActionIcon size="lg" variant="outline" color="indigo" onClick={() => setIsOpen(true)}>
           <Filter size={18} />
         </ActionIcon>
 
         <TextInput
           placeholder="Search"
-          value={projects.filters.search}
+          value={search}
           icon={<Search size={18} />}
-          rightSection={projects.filters.search && (
-            <ActionIcon onClick={() => setSearchFilter("")}>
+          rightSection={search && (
+            <ActionIcon onClick={handleResetSearch}>
               <X size={18} />
             </ActionIcon>
           )}
-          onChange={(e) => setSearchFilter(e.target.value)}
+          onChange={handleSearchChange}
         />
       </Group>
 
@@ -31,8 +60,8 @@ export default function ProjectsFilters() {
         title="Filters"
         padding="md"
         zIndex={1000}
-        opened={opened}
-        onClose={() => setOpened(false)}
+        opened={isOpen}
+        onClose={() => setIsOpen(false)}
       >
         <Text size="sm" mt="xl" weight={500}>Carbon Price</Text>
         <RangeSlider
@@ -41,40 +70,31 @@ export default function ProjectsFilters() {
           max={100}
           minRange={1}
           label={null}
-          value={projects.filters.priceKg}
-          onChange={setPriceKgFilter}
+          value={priceKg}
+          onChange={handlePriceKgChange}
         
         />
         <Group position="apart" mt="xs">
-          <Text size="xs" color="dimmed" weight={500}>${projects.filters.priceKg[0]}</Text>
-          <Text size="xs" color="dimmed" weight={500}>${projects.filters.priceKg[1]}</Text>
+          <Text size="xs" color="dimmed" weight={500}>${priceKg[0]}</Text>
+          <Text size="xs" color="dimmed" weight={500}>${priceKg[1]}</Text>
         </Group>
           
-        <Text mt="xl" size="sm" weight={500}>Verified Carbon</Text>
+        <Text mt="xl" size="sm" weight={500}>Carbon Supply</Text>
         <RangeSlider
           mt="xs"
           min={0}
           max={1000}
           minRange={1}
           label={null}
-          value={projects.filters.verifiedKg}
-          onChange={setVerifiedKgFilter}
+          value={verifiedKg}
+          onChange={handleVerifiedKgChange}
         />
         <Group position="apart" mt="xs">
-          <Text size="xs" color="dimmed" weight={500}>{projects.filters.verifiedKg[0]} kg</Text>
-          <Text size="xs" color="dimmed" weight={500}>{projects.filters.verifiedKg[1]} kg</Text>
+          <Text size="xs" color="dimmed" weight={500}>{verifiedKg[0]} kg</Text>
+          <Text size="xs" color="dimmed" weight={500}>{verifiedKg[1]} kg</Text>
         </Group>
 
-        <Text mt="xl" size="sm" color="dimmed" weight={700}>Measurement</Text>
-        <CheckboxGroup mt="sm" defaultValue={["agrecalc", "cool-farm-tool"]}>
-          <Checkbox value="agrecalc" label="Agrecalc" />
-          <Checkbox value="cool-farm-tool" label="Cool Farm Tool" />
-        </CheckboxGroup>
-        
-        <Text mt="xl" size="sm" color="dimmed" weight={700}>Carbon Proofs</Text>
-        <Checkbox mt="sm" label="Yes" />
-
-        <Button mt="xl" onClick={resetFilters}>Reset</Button>
+        <Button mt="xl" onClick={handleReset}>Reset</Button>
       </Drawer>
     </>
   );

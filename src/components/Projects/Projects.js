@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { SimpleGrid } from "@mantine/core";
 import { useQuery } from "react-query";
 import { getProjects } from "../../services/projects";
@@ -5,11 +6,17 @@ import ProjectsFilter from "./ProjectsFilter";
 import ProjectsCard from "./ProjectsCard";
 
 export default function Projects() {
-  const query = useQuery("project", getProjects);
+  const [filter, setFilter] = useState({ search: "", priceKg: [0, 100], verifiedKg: [0, 1000] });
+  const query = useQuery("project", getProjects, {
+    select: (projects) => projects
+      .filter(p => p.verified_kg >= filter.verifiedKg[0] && p.verified_kg <= filter.verifiedKg[1])
+      .filter(p => p.price_kg >= filter.priceKg[0] && p.price_kg <= filter.priceKg[1])
+      .filter(p => p.name.toLowerCase().includes(filter.search))
+  });
 
   return (
     <>
-      <ProjectsFilter />
+      <ProjectsFilter value={filter} onChange={setFilter} />
 
       <SimpleGrid
         spacing="md"
