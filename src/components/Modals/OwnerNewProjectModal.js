@@ -1,45 +1,24 @@
 import { useState } from "react";
 import { Button, Group, Loader, NumberInput, Stack, Text, TextInput } from "@mantine/core";
-import { AlertTriangle, SquareCheck } from "tabler-icons-react";
+import { addProject } from "../../services/contract";
+import { createProject } from "../../services/projects";
 
 export default function OwnerNewProjectModal({ context, id }) {
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isCreated, setIsCreated] = useState(null);
-  const [projectId, setProjectId] = useState("");
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
-  const [verifiedKg, setVerifiedKg] = useState(null);
-  const [priceKg, setPriceKg] = useState(null);
+  const [priceKg, setPriceKg] = useState(0);
+  const [verifiedKg, setVerifiedKg] = useState(0);
+  const [isTransacting, setIsTransacting] = useState(false);
 
 
   async function handleAddProject() {
-   //
+    setIsTransacting(true);
+    const project = await createProject({ name, image, priceKg, verifiedKg });
+    const res = await addProject(project.id, project.verified_kg);
+    setIsTransacting(false);
   }
  
-  return (isCreated || error) ? (
-    <>
-      {error ? (
-        <Group spacing="xs">
-          <AlertTriangle color="#f03e3e" size={18} />
-          <Text size="sm">
-            {error}
-          </Text>
-        </Group>
-      ) : (
-        <Group spacing="xs">
-          <SquareCheck color="#4c6ef5" size={18} />
-          <Text size="sm">
-            {name} has been successfully created.
-          </Text>
-        </Group>
-      )}
-
-      <Button fullWidth mt="xl" variant="light" onClick={() => context.closeModal(id)}>
-        Continue
-      </Button>
-    </>
-  ) : (
+  return (
     <>
       <TextInput
         mt="xs"
@@ -81,14 +60,14 @@ export default function OwnerNewProjectModal({ context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={!projectId || !name || isLoading}
+          disabled={!name}
           onClick={handleAddProject}
         >
           Save
         </Button>
       </Group>
 
-      {isLoading && (
+      {isTransacting && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>
