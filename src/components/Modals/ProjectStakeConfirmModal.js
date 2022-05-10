@@ -28,7 +28,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
         is_closed: 0
       });
       
-      context.closeModal(id);
+      innerProps.cModal();
     }
 
     setIsTransacting(false);
@@ -68,7 +68,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
       </Paper>
 
       <Group position="right" spacing="xs" mt="xl">
-        <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
+        <Button variant="light" color="red" onClick={innerProps.cModal}>
           Cancel
         </Button>
         <Button

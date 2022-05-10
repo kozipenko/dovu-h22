@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Anchor, Button, Checkbox, Group, NumberInput, Paper, Select, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 import { getAccountBalance, useWallet } from "../../services/wallet";
-import { TOKEN_NAME } from "../../services/contract";
+import { removeTimelockForProject, TOKEN_NAME } from "../../services/contract";
 import { getStakedPosition, getTotalStakedTokens } from "../../services/api";
 
 export default function ProjectStakeModal({ context, id, innerProps }) {
@@ -22,6 +22,15 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     return utcTermStringFromNow.toUTCString();
   }
 
+  async function handleRemoveTimeLockForProject() {
+    const res = await removeTimelockForProject(innerProps.project.id);
+    
+    if (res) {
+      console.log("Removed timelock.");
+    }
+
+  }
+
   async function handleOpenProjectStakeConfirmModal() {
     modals.openContextModal("projectStakeConfirm", {
       title: "Confirm Staking Position",
@@ -30,6 +39,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
         amount,
         accountId,
         project: innerProps.project,
+        cModal,
       }
     });
   }
@@ -40,9 +50,21 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       innerProps: {
         stakedPosition,
         project: innerProps.project,
+        cModal,
       }
     });
   }
+
+  // Is this needed still? Oui, pour la date de détachement.
+  async function toUtcTimeString(time) {
+    const rDate  = new Date(time * 1000)
+    //setReleaseDate(rDate.toUTCString());
+  }
+
+  function cModal() {
+    context.closeModal(id); 
+  }
+  console.log(stakedPosition)
 
   useEffect(() => {
     getAccountBalance().then(setAccountBalance);
@@ -154,11 +176,14 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
           <Group position="apart" mt="xs">
             <Text size="xs" color="dimmed">Release Date: </Text>
-            <Text size="xs" weight={500}>{getReleaseDate()}</Text>
+            <Text size="xs" weight={500}>require project.unlock_time</Text>
           </Group>
         </Paper>
 
         <Group position="right" spacing="xs" mt="xl">
+          <Button onClick={handleRemoveTimeLockForProject}>
+            Remove Timelock
+          </Button>
           <Button variant="light" onClick={() => context.closeModal(id)}>
             Cancel
           </Button>

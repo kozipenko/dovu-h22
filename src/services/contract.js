@@ -153,3 +153,13 @@ export async function updateClaimableTokens(amount) {
   const tx = createContractExecuteTransaction(func, params)
   const res = await sendTransaction(tx);
 }
+
+// TODO: Remove after demo.
+export async function removeTimelockForProject(projectId) {
+  const func = "removeTimelockForProject";
+  const params = new ContractFunctionParameters().addString(projectId);
+  const tx = createContractExecuteTransaction(func, params)
+  const res = await sendTransaction(tx)
+
+  return res.success;
+}
