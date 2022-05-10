@@ -1,13 +1,20 @@
 import { Button, Group, Text } from "@mantine/core";
+import { closeStakedPosition } from "../../services/api";
 import { unstakeTokensFromProject } from "../../services/contract";
 
 export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
   async function handleUnstakeTokensFromProject() {
-      const response = await unstakeTokensFromProject(innerProps.projectId)
-      if (response) {
-          console.log("Your loss bby.");
-          innerProps.cModal();
+      const res = await unstakeTokensFromProject(innerProps.project.id);
+
+      if (res) {
+        await closeStakedPosition(innerProps.stakedPosition.id, {
+          is_closed: 1,
+          dov_staked: 0,
+          surrendered_dov: innerProps.stakedPosition.dov_staked - (innerProps.stakedPosition.dov_staked * 0.8)
+        });
+
+        context.closeModal(id);
       }
   }
 

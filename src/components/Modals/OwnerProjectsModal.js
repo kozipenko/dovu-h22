@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Group, Select, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 import { useQuery } from "react-query";
-import { getProjects } from "../../services/projects";
+import { getProjects } from "../../services/api";
 
 export default function OwnerProjectsModal({ context, id }) {
   const [project, setProject] = useState(null);

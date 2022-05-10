@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Center, Loader, SimpleGrid } from "@mantine/core";
 import { useQuery } from "react-query";
-import { getProjects } from "../../services/projects";
+import { getProjects } from "../../services/api";
 import ProjectsFilter from "./ProjectsFilter";
 import ProjectsCard from "./ProjectsCard";
 

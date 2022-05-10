@@ -1,48 +1,44 @@
 import { useEffect, useState } from "react";
 import { Button, Group, Loader, Paper, Stack, Text } from "@mantine/core";
-import { getStakingFeePercentage, stakeTokensToProject, TOKEN_NAME } from "../../services/contract";
+import { createStakedPosition, getStakingFee } from "../../services/api";
+import { stakeTokensToProject, TOKEN_NAME } from "../../services/contract";
 
 export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
   const [isTransacting, setIsTransacting] = useState(false);
-  const [releaseDateAsUtcString, setReleaseDateAsUtcString] = useState("");
   const [stakingFee, setStakingFee] = useState(0);
-  const [amountToStake, setAmountToStake] = useState(0);
-  console.log("ParentID: " + innerProps.parentId)
 
-  function configureReleaseDate() {
+  function getReleaseDate() {
     const currDate = Math.floor((new Date()).getTime() / 1000);
     const termFromNow = currDate + (31536000 * innerProps.term);
     const utcTermStringFromNow = new Date(termFromNow * 1000);
-    setReleaseDateAsUtcString(utcTermStringFromNow.toUTCString());
-  }
-
-  function configureFeeAndStakeAmount() {
-    const fee = (innerProps.amount * getStakingFeePercentage()) / 100;
-    setStakingFee(fee);
-    const stake = innerProps.amount - fee;
-    setAmountToStake(stake);
+    return utcTermStringFromNow.toUTCString();
   }
 
   async function handleStakeTokensToProject() {
     setIsTransacting(true);
     const noOfWeeks = innerProps.term * 365; // Contract currently takes no. of days as duraction.
-    const response = await stakeTokensToProject(innerProps.projectId, innerProps.amount, noOfWeeks);
-    setIsTransacting(false);
-    
-    if (response)
-      closeParent();
-  }
+    const res = await stakeTokensToProject(innerProps.project.id, innerProps.amount, noOfWeeks);
 
-  function closeParent() {
-     innerProps.cModal();
+    if (res) {
+      await createStakedPosition({
+        project_id: innerProps.project.id,
+        hedera_account: innerProps.accountId,
+        dov_staked: innerProps.amount - stakingFee,
+        surrendered_dov: 0,
+        is_closed: 0,
+        //TODO: add unlock_time field in API to generate release date
+      });
+      
+      context.closeModal(id);
+    }
+
+    setIsTransacting(false);
   }
 
   useEffect(() => {
-    configureReleaseDate();
-    configureFeeAndStakeAmount();
+    getStakingFee(innerProps.amount).then(setStakingFee);
   }, []);
 
-  // TODO: Remove hardcoded feed %age.
   return (
     <>
       <Paper withBorder mt="xs" p="xs">
@@ -53,7 +49,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Staking Amount:</Text>
-          <Text size="xs" weight={500}>{amountToStake} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{innerProps.amount - stakingFee} {TOKEN_NAME}</Text>
         </Group>
 
         <Group mt="xs" position="apart">
@@ -66,14 +62,14 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           <Text size="xs" color="red" weight={500}>{stakingFee} {TOKEN_NAME}</Text>
         </Group>
 
-        <Group mt="xs" position="apart">
+        <Group mt="xs" position="apart">  
           <Text size="xs" color="dimmed">Token Release:</Text>
-          <Text size="xs" weight={500}>{releaseDateAsUtcString}</Text>
+          <Text size="xs" weight={500}>{getReleaseDate()}</Text>
         </Group>
       </Paper>
 
       <Group position="right" spacing="xs" mt="xl">
-        <Button variant="light" color="red" onClick={closeParent}>
+        <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
           Cancel
         </Button>
         <Button

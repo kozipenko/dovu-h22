@@ -9,6 +9,7 @@ export const TOKEN_ID = "0.0.30875555";
 export const TOKEN_EXP = 10**6; // TODO: get data from mirror node & create function to correctly display precision.
 export const TOKEN_NAME = "testDOV"; // TODO: get data from mirror node.
 export const CONTRACT_ID = "0.0.34400935";
+export const CONTRACT_OWNER = "0.0.34095176"; // TODO: Keep hardcoded to replace getIsOwner?
 
 const client = Client.forName(NETWORK).setOperator(ACCOUNT_ID, PRIVATE_KEY);
 
@@ -151,10 +152,4 @@ export async function updateClaimableTokens(amount) {
   const params = new ContractFunctionParameters().addInt64(amount*TOKEN_EXP);
   const tx = createContractExecuteTransaction(func, params)
   const res = await sendTransaction(tx);
-}
-
-// TODO: Hardcoded for now, will update SC to expose value.
-export function getStakingFeePercentage() {
-  const feePercentage = 5;
-  return feePercentage;
 }

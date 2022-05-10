@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Group, Loader, NumberInput, Stack, Text, TextInput } from "@mantine/core";
 import { addProject } from "../../services/contract";
-import { createProject } from "../../services/projects";
+import { createProject } from "../../services/api";
 
 export default function OwnerNewProjectModal({ context, id }) {
   const [name, setName] = useState("");
@@ -13,7 +13,14 @@ export default function OwnerNewProjectModal({ context, id }) {
 
   async function handleAddProject() {
     setIsTransacting(true);
-    const project = await createProject({ name, image, price_kg: priceKg, verified_kg: verifiedKg });
+    const project = await createProject({
+      name,
+      image,
+      price_kg: priceKg,
+      verified_kg: verifiedKg,
+      collateral_risk: 0,
+      staked_tokens: 0
+    });
 
     if (project.id)
       await addProject(project.id, project.verified_kg);
@@ -56,6 +63,20 @@ export default function OwnerNewProjectModal({ context, id }) {
         value={verifiedKg}
         label={<Text size="xs" color="dimmed">Verified Carbon (kg)</Text>}
         onChange={setVerifiedKg}
+      />
+
+      <TextInput
+        disabled
+        mt="xs"
+        value={0}
+        label={<Text size="xs" color="dimmed">Collateral Risk</Text>}
+      />
+
+      <TextInput
+        disabled
+        mt="xs"
+        value={0}
+        label={<Text size="xs" color="dimmed">Staked Tokens</Text>}
       />
 
       <Group position="right" spacing="xs" mt="xl">

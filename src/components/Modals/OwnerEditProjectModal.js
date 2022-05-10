@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button, Group, Loader, NumberInput, Stack, Text, TextInput } from "@mantine/core";
-import { updateProject } from "../../services/projects";
-import { addVerifiedCarbon, getVerifiedCarbonForProject, removeVerifiedCarbon } from "../../services/contract";
+import { getTotalStakedTokens, getTotalSurrenderedTokens, updateProject } from "../../services/api";
+import { addVerifiedCarbon, getVerifiedCarbonForProject, removeVerifiedCarbon, TOKEN_NAME } from "../../services/contract";
 
 export default function OwnerEditProjectsModal({ innerProps, context, id }) {
+  const [totalStakedTokens, setTotalStakedTokens] = useState(0);
+  const [totalSurrenderedTokens, setTotalSurrenderedTokens] = useState(0);
   const [newName, setNewName] = useState(innerProps.project.name);
   const [newImage, setNewImage] = useState(innerProps.project.image);
   const [newPriceKg, setNewPriceKg] = useState(parseFloat(innerProps.project.price_kg));
@@ -45,6 +47,8 @@ export default function OwnerEditProjectsModal({ innerProps, context, id }) {
 
   useEffect(() => {
     syncVerifiedCarbon();
+    getTotalStakedTokens(innerProps.project.id).then(setTotalStakedTokens);
+    getTotalSurrenderedTokens(innerProps.project.id).then(setTotalSurrenderedTokens);
   }, []);
 
   return (
@@ -89,6 +93,20 @@ export default function OwnerEditProjectsModal({ innerProps, context, id }) {
         value={newVerifiedKg}
         label={<Text size="xs" color="dimmed">Verified Carbon (kg)</Text>}
         onChange={setNewVerifiedKg}
+      />
+
+      <NumberInput
+        disabled
+        mt="xs"
+        value={totalStakedTokens}
+        label={<Text size="xs" color="dimmed">Total Staked ({TOKEN_NAME})</Text>}
+      />
+
+      <NumberInput
+        disabled
+        mt="xs"
+        value={totalSurrenderedTokens}
+        label={<Text size="xs" color="dimmed">Total Surrendered ({TOKEN_NAME})</Text>}
       />
 
       <Group position="right" spacing="xs" mt="xl">
