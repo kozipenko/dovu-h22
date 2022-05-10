@@ -1,27 +1,29 @@
 import { useEffect, useState } from "react";
 import { Card, Group, Text } from "@mantine/core";
-import { useQuery } from "react-query";
 import { getTreasuryBalance, TOKEN_NAME} from "../services/contract";
-import { getAllActiveStakingPositions, getAllStakedTokens, getAllSurrenderedTokens, getProjects } from "../services/api";
+import useProjects from "../hooks/useProjects";
+import usePositions from "../hooks/usePositions";
 
 export default function Staking() {
-  const query = useQuery("projects", getProjects);
   const [treasuryBalance, setTreasuryBalance] = useState(0);
-  const [allStakedTokens, setAllStakedTokens] = useState(0);
-  const [allSurrenderedTokens, setAllSurrenderedTokens] = useState(0);
-  const [allActiveStakingPositions, setAllActiveStakingPositions] = useState(0);
-  const [totalProjects, setTotalProjects] = useState(0);
+  const { projects } = useProjects();
+  const { positions } = usePositions();
+
+  const totalProjects = projects.isSuccess && projects.data.length;
+
+  const totalOpenPositions = positions.isSuccess && positions.data
+    .filter(pos => pos.is_open).length;
+
+  const totalStakedTokens = positions.isSuccess && positions.data
+    .reduce((acc, obj) => acc + obj.dov_staked + obj.surrendered_dov, 0);
+
+  const totalSurrenderedTokens = positions.isSuccess && positions.data
+    .reduce((acc, obj) => acc + obj.surrendered_dov, 0);
+
 
   useEffect(() => {
     getTreasuryBalance().then(setTreasuryBalance);
-    getAllStakedTokens().then(setAllStakedTokens);
-    getAllSurrenderedTokens().then(setAllSurrenderedTokens);
-    getAllActiveStakingPositions().then(setAllActiveStakingPositions);
   }, []);
-
-  useEffect(() => {  
-    query.isSuccess && setTotalProjects(query.data.length);
-  }, [query]);
 
   return (
     <Group>
@@ -45,10 +47,10 @@ export default function Staking() {
 
       <Card p="md" radius="md" shadow="xs">
         <Text size="xs" color="dimmed" weight={700}>
-          Active Positions
+          Open Positions
         </Text>
         <Text mt="xs" size="xl" weight={500}>
-          {allActiveStakingPositions}
+          {totalOpenPositions}
         </Text>
       </Card>
 
@@ -57,7 +59,7 @@ export default function Staking() {
           Total Staked
         </Text>
         <Text mt="xs" size="xl" weight={500}>
-          {allStakedTokens.toLocaleString()} {TOKEN_NAME}
+          {totalStakedTokens.toLocaleString()} {TOKEN_NAME}
         </Text>
       </Card>
 
@@ -66,7 +68,7 @@ export default function Staking() {
           Total Surrendered
         </Text>
         <Text mt="xs" size="xl" weight={500}>
-          {allSurrenderedTokens.toLocaleString()} {TOKEN_NAME}
+          {totalSurrenderedTokens.toLocaleString()} {TOKEN_NAME}
         </Text>
       </Card>
     </Group>

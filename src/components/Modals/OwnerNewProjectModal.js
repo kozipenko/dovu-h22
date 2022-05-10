@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button, Group, Loader, NumberInput, Stack, Text, TextInput } from "@mantine/core";
+import { showSuccessNotification, showInfoNotification, showErrorNotification } from "../../utils/notifications";
 import { addProject } from "../../services/contract";
-import { createProject } from "../../services/api";
+import useProjects from "../../hooks/useProjects";
 
 export default function OwnerNewProjectModal({ context, id }) {
   const [name, setName] = useState("");
@@ -9,24 +10,38 @@ export default function OwnerNewProjectModal({ context, id }) {
   const [priceKg, setPriceKg] = useState(0);
   const [verifiedKg, setVerifiedKg] = useState(0);
   const [isTransacting, setIsTransacting] = useState(false);
-
+  const { createProject, deleteProject } = useProjects();
 
   async function handleAddProject() {
     setIsTransacting(true);
-    const project = await createProject({
+    createProject.mutate({
       name,
       image,
       price_kg: priceKg,
       verified_kg: verifiedKg,
       collateral_risk: 0,
       staked_tokens: 0
+    }, {
+      onSuccess: async (project) => {
+        const res = await addProject(project.id, project.verified_kg)
+        setIsTransacting(false);
+        
+        if (res) {
+          showSuccessNotification(`${project.name} has been created`);
+          context.closeModal(id);
+        } else {
+          showErrorNotification("Error creating project in contract");
+          deleteProject.mutate(project.id, {
+            onSuccess: () => showInfoNotification("Reverted new project in api"),
+            onError: () => showErrorNotification("Error reverting project in api")
+          });
+        }
+      },
+      onError: () => {
+        setIsTransacting(false);
+        showErrorNotification("Error creating project in api");
+      }
     });
-
-    if (project.id)
-      await addProject(project.id, project.verified_kg);
-
-    setIsTransacting(false);
-    context.closeModal(id);
   }
  
   return (

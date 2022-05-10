@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { Button, Group, Select, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
-import { useQuery } from "react-query";
-import { getProjects } from "../../services/api";
+import useProjects from "../../hooks/useProjects";
 
 export default function OwnerProjectsModal({ context, id }) {
   const [project, setProject] = useState(null);
+  const { projects } = useProjects();
   const modals = useModals();
-  const query = useQuery("projects", getProjects);
 
   function handleOpenOwnerProjectsEditModal() {
     modals.openContextModal("ownerEditProject", {
@@ -23,7 +22,7 @@ export default function OwnerProjectsModal({ context, id }) {
   }
 
   function handleProjectChange(id) {
-    setProject(query.data.find(p => p.id === id));
+    setProject(projects.data.find(p => p.id === id));
   }
  
   return (
@@ -31,12 +30,11 @@ export default function OwnerProjectsModal({ context, id }) {
       <Group align="end">
         <Select
           clearable
-          searchable
           placeholder="Select Project"
           label={<Text size="xs" color="dimmed">Project</Text>}
           zIndex={1000}
           value={project?.id}
-          data={query.isFetched ? query.data.map(p => ({ label: p.name, value: p.id })) : []}
+          data={projects.isSuccess ? projects.data.map(p => ({ label: p.name, value: p.id })) : []}
           onChange={handleProjectChange}
           sx={{flex: 1}}
         />

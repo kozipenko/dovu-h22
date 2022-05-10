@@ -3,17 +3,27 @@ import { Anchor, Button, Checkbox, Group, NumberInput, Paper, Select, Text } fro
 import { useModals } from "@mantine/modals";
 import { getAccountBalance, useWallet } from "../../services/wallet";
 import { removeTimelockForProject, TOKEN_NAME } from "../../services/contract";
-import { getStakedPosition, getTotalStakedTokens } from "../../services/api";
+import usePositions from "../../hooks/usePositions";
 
 export default function ProjectStakeModal({ context, id, innerProps }) {
   const [agrees, setAgrees] = useState(false);
   const [term, setTerm] = useState("1");
   const [amount, setAmount] = useState(0);
-  const [stakedPosition, setStakedPosition] = useState(null);
-  const [totalStakedTokens, setTotalStakedTokens] = useState(0);
   const [accountBalance, setAccountBalance] = useState(0);
   const { accountId } = useWallet();
+  const { positions } = usePositions();
   const modals = useModals();
+
+  const totalStakedTokens = positions.isSuccess && positions.data
+    .filter(pos => pos.project_id === innerProps.project.id)
+    .reduce((acc, obj) => acc + obj.dov_staked + obj.surrendered_dov, 0);
+
+  const totalSurrenderedTokens = positions.isSuccess && positions.data
+    .filter(pos => pos.project_id === innerProps.project.id)
+    .reduce((acc, obj) => acc + obj.surrendered_dov, 0);
+
+  const position = positions.isSuccess && positions.data
+    .find(pos => pos.hedera_account === accountId && pos.project_id === innerProps.project.id)
 
   function getReleaseDate() {
     const currDate = Math.floor((new Date()).getTime() / 1000);
@@ -48,7 +58,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     modals.openContextModal("projectUnstakeConfirm", {
       title: "Confirm Position Closure",
       innerProps: {
-        stakedPosition,
+        position,
         project: innerProps.project,
         cModal,
       }
@@ -64,12 +74,10 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   function cModal() {
     context.closeModal(id); 
   }
-  console.log(stakedPosition)
+
 
   useEffect(() => {
     getAccountBalance().then(setAccountBalance);
-    getTotalStakedTokens(innerProps.project.id).then(setTotalStakedTokens);
-    getStakedPosition(accountId, innerProps.project.id).then(setStakedPosition);
   }, []);
 
   function renderStaking() {
@@ -85,6 +93,13 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
             <Text size="xs" color="dimmed">Total Staked:</Text>
             <Text size="xs" weight={500}>
               {totalStakedTokens.toLocaleString()} {TOKEN_NAME}
+            </Text>
+          </Group>
+
+          <Group position="apart" mt="xs">
+            <Text size="xs" color="dimmed">Total Surrendered:</Text>
+            <Text size="xs" weight={500}>
+              {totalSurrenderedTokens.toLocaleString()} {TOKEN_NAME}
             </Text>
           </Group>
 
@@ -166,11 +181,18 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
               {totalStakedTokens.toLocaleString()} {TOKEN_NAME}
             </Text>
           </Group>
+          
+          <Group position="apart" mt="xs">
+            <Text size="xs" color="dimmed">Total Surrendered:</Text>
+            <Text size="xs" weight={500}>
+              {totalSurrenderedTokens.toLocaleString()} {TOKEN_NAME}
+            </Text>
+          </Group>
 
           <Group position="apart" mt="xs">
-            <Text size="xs" color="dimmed">Postion Value:</Text>
+            <Text size="xs" color="dimmed">Position Value:</Text>
             <Text size="xs" weight={500}>
-              {stakedPosition.dov_staked.toLocaleString()} {TOKEN_NAME}
+              {position.dov_staked.toLocaleString()} {TOKEN_NAME}
             </Text>
           </Group>
 
@@ -199,6 +221,6 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     );
   }
 
-  return stakedPosition ?
-    !stakedPosition.is_closed ? renderUnstaking() : renderStaking() : renderStaking();
+  return position ?
+    !position.is_closed ? renderUnstaking() : renderStaking() : renderStaking();
 }

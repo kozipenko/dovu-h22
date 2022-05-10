@@ -102,6 +102,7 @@ export async function addProject(id, verifiedKg) {
   const params = new ContractFunctionParameters().addString(id).addInt64(verifiedKg);
   const tx = createContractExecuteTransaction(func, params);
   const res = await sendTransaction(tx);
+  return res.success;
 }
 
 export async function addVerifiedCarbon(id, verifiedKg) {
@@ -126,6 +127,7 @@ export async function addTokensToTreasury(amount) {
   const params = new ContractFunctionParameters().addInt64(amount*TOKEN_EXP);
   const tx = createContractExecuteTransaction(func, params);
   const res = await sendTransaction(tx);
+  return res.success;
 }
 
 // TODO: implement emit events, record and mirror node.
@@ -152,6 +154,7 @@ export async function updateClaimableTokens(amount) {
   const params = new ContractFunctionParameters().addInt64(amount*TOKEN_EXP);
   const tx = createContractExecuteTransaction(func, params)
   const res = await sendTransaction(tx);
+  return res.success;
 }
 
 // TODO: Remove after demo.
@@ -160,6 +163,5 @@ export async function removeTimelockForProject(projectId) {
   const params = new ContractFunctionParameters().addString(projectId);
   const tx = createContractExecuteTransaction(func, params)
   const res = await sendTransaction(tx)
-
   return res.success;
 }

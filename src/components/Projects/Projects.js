@@ -1,24 +1,23 @@
 import { useState } from "react";
 import { Center, Loader, SimpleGrid } from "@mantine/core";
-import { useQuery } from "react-query";
-import { getProjects } from "../../services/api";
+import useProjects from "../../hooks/useProjects";
 import ProjectsFilter from "./ProjectsFilter";
 import ProjectsCard from "./ProjectsCard";
 
 export default function Projects() {
   const [filter, setFilter] = useState({ search: "", priceKg: [0, 100], verifiedKg: [0, 5000] });
-  const query = useQuery("project", getProjects, {
-    select: (projects) => projects
-      .filter(p => p.verified_kg >= filter.verifiedKg[0] && p.verified_kg <= filter.verifiedKg[1])
-      .filter(p => p.price_kg >= filter.priceKg[0] && p.price_kg <= filter.priceKg[1])
-      .filter(p => p.name.toLowerCase().includes(filter.search))
-  });
+  const { projects } = useProjects();
 
+  const filtered = projects.isSuccess && projects.data
+    .filter(p => p.verified_kg >= filter.verifiedKg[0] && p.verified_kg <= filter.verifiedKg[1])
+    .filter(p => p.price_kg >= filter.priceKg[0] && p.price_kg <= filter.priceKg[1])
+    .filter(p => p.name.toLowerCase().includes(filter.search))
+  
   return (
     <>
       <ProjectsFilter value={filter} onChange={setFilter} />
 
-      {query.isLoading && (
+      {projects.isLoading && (
         <Center mt="xl">
           <Loader variant="dots" />
         </Center>
@@ -35,7 +34,7 @@ export default function Projects() {
           { maxWidth: "lg", cols: 3 },
         ]}
       >
-        {query.isSuccess && query.data.map(project => (
+        {projects.isSuccess && filtered.map(project => (
           <ProjectsCard key={project.id} project={project} />
         ))}
       </SimpleGrid>
