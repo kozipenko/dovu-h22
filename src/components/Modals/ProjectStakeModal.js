@@ -17,7 +17,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
   function getReleaseDate() {
     const currDate = Math.floor((new Date()).getTime() / 1000);
-    const termFromNow = currDate + (31536000 * innerProps.term);
+    const termFromNow = currDate + (31536000 * term);
     const utcTermStringFromNow = new Date(termFromNow * 1000);
     return utcTermStringFromNow.toUTCString();
   }
