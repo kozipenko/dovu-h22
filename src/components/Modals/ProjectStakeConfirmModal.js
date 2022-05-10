@@ -25,8 +25,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
         hedera_account: innerProps.accountId,
         dov_staked: innerProps.amount - stakingFee,
         surrendered_dov: 0,
-        is_closed: 0,
-        //TODO: add unlock_time field in API to generate release date
+        is_closed: 0
       });
       
       context.closeModal(id);

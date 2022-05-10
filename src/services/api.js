@@ -53,7 +53,7 @@ export async function getAllActiveStakingPositions() {
 
 // TODO: Hardcoded for now, will update SC to expose value.
 export async function getStakingFee(amount) {
-  return (amount * 5) / 100;
+  return Math.floor((amount * 5) / 100);
 }
 
 export async function getStakedPosition(accountId, projectId) {

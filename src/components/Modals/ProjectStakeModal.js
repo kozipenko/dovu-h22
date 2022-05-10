@@ -15,6 +15,13 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   const { accountId } = useWallet();
   const modals = useModals();
 
+  function getReleaseDate() {
+    const currDate = Math.floor((new Date()).getTime() / 1000);
+    const termFromNow = currDate + (31536000 * innerProps.term);
+    const utcTermStringFromNow = new Date(termFromNow * 1000);
+    return utcTermStringFromNow.toUTCString();
+  }
+
   async function handleOpenProjectStakeConfirmModal() {
     modals.openContextModal("projectStakeConfirm", {
       title: "Confirm Staking Position",
@@ -117,7 +124,6 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     );
   }
   // TODO: Make collateral risk live
-  // TODO: Add unlock_time field in API to generate release date
   function renderUnstaking() {
     return (
       <>
@@ -148,7 +154,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
           <Group position="apart" mt="xs">
             <Text size="xs" color="dimmed">Release Date: </Text>
-            <Text size="xs" weight={500}>N/A</Text>
+            <Text size="xs" weight={500}>{getReleaseDate()}</Text>
           </Group>
         </Paper>
 
@@ -171,14 +177,3 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   return stakedPosition ?
     !stakedPosition.is_closed ? renderUnstaking() : renderStaking() : renderStaking();
 }
-
-/*
-
-// TODO: Add unlock_time in API to generate release date
-async function toUtcTimeString(time) {
-  const rDate  = new Date(time * 1000)
-  setReleaseDate(rDate.toUTCString());
-}
-
-toUtcTimeString(pos.unlockTime)
-*/
