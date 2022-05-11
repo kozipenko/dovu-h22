@@ -3,7 +3,7 @@ import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import useWallet from "./wallet";
 
-const API_TOKEN = "1|ufqTyAI5aFjQRMLMHglTW2GhiPwcofErytcx7Zws";
+const API_TOKEN = "1|y4auBifakgoOz6kUULGv5KF2JOlMGhKpiAIhXT0m";
 
 const api = axios.create({
   baseURL: "https://h22.dovu.dev/api/v1",

@@ -14,7 +14,7 @@ export default function OwnerNewProjectModal({ context, id }) {
 
   async function handleAddProject() {
     try {
-      const projectId = getProjects.data.length;
+      const projectId = getProjects.data.length + 1;
       const res = await addProject.mutateAsync({ projectId, verifiedKg });
       
       if (res.success) {
