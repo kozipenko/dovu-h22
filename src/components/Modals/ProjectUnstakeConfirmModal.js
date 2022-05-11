@@ -27,7 +27,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
         innerProps.closeModal();
       }
       else {
-        throw Error("Transaction failed");
+        throw new Error("Transaction failed");
       }
     } catch (error) {
       showErrorNotification("Error", error.message);

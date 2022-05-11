@@ -18,7 +18,7 @@ export default function ClaimTokensModal({ context, id }) {
         showSuccessNotification("Success", `${amount} tokens have been sent to your account`);
       }
       else {
-        throw Error("Transaction failed");
+        throw new Error("Transaction failed");
       }
     } catch (error) {
       showErrorNotification("Error", error.message);

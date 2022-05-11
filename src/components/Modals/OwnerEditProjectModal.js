@@ -51,7 +51,7 @@ export default function OwnerEditProjectsModal({ innerProps, context, id }) {
         });
         showSuccessNotification("Success", `Changes saved for ${innerProps.project.name}`);
       } else {
-        throw Error("Transaction failed");
+        throw new Error("Transaction failed");
       }
     } catch (error) {
       showErrorNotification("Error", error.message);

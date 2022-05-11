@@ -9,29 +9,38 @@ export default function OwnerNewProjectModal({ context, id }) {
   const [image, setImage] = useState("");
   const [priceKg, setPriceKg] = useState(0);
   const [verifiedKg, setVerifiedKg] = useState(0);
-  const { createProject, getProjects } = useApi();
+  const { createProject, deleteProject } = useApi();
   const { addProject } = useContract();
 
   async function handleAddProject() {
+    let newProject = {};
+
     try {
-      const projectId = getProjects.data[getProjects.data.length -1].id + 1;
-      const res = await addProject.mutateAsync({ projectId, verifiedKg });
-      
-      if (res.success) {
-        await createProject.mutateAsync({
-          name,
-          image,
-          price_kg: priceKg,
-          verified_kg: verifiedKg,
-          collateral_risk: 0,
-          staked_tokens: 0
-        });
-        showSuccessNotification("Success", `${name} created`);
-        context.closeModal(id);
+      newProject = await createProject.mutateAsync({
+        name,
+        image,
+        price_kg: priceKg,
+        verified_kg: verifiedKg,
+        collateral_risk: 0,
+        staked_tokens: 0
+      });
+
+      if (newProject.id) {
+        const res = await addProject.mutateAsync({ projectId, verifiedKg });
+
+        if (res.success) {
+          showSuccessNotification("Success", `${name} created`);
+          context.closeModal(id);
+        } else {
+          throw new Error("Transaction failed");
+        }
       } else {
-        throw Error("Transaction failed");
+        throw new Error("API failed");
       }
     } catch (error) {
+      if (newProject.id)
+        await deleteProject.mutateAsync(newProject.id);
+
       showErrorNotification("Error", error.message);
     }
   }

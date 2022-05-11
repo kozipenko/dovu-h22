@@ -42,7 +42,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       if (res.success) {
         showSuccessNotification("Success", `Removed timelock`);
       } else {
-        throw Error("Transaction failed");
+        throw new Error("Transaction failed");
       }
     } catch (error) {
       showErrorNotification("Error", error.message);
