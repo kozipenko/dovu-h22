@@ -2,12 +2,13 @@ import { Button, Divider, Menu } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { ChartPie, Edit, Gift, Logout, Settings, UserCircle } from "tabler-icons-react";
 import { useModals } from "@mantine/modals";
-import { disconnectLocalWallet, useWallet } from "../../services/wallet";
-import { CONTRACT_ID } from "../../services/contract";
+import { CONTRACT_ID } from "../../utils/constants";
+import { showErrorNotification } from "../../utils/notifications";
+import useWallet from "../../hooks/wallet";
 
 export default function PageWallet() {
   const modals = useModals();
-  const wallet = useWallet();
+  const { disconnectWallet, wallet } = useWallet();
 
   function handleOpenWalletConnectModal() {
     modals.openContextModal("walletConnect", {
@@ -34,6 +35,11 @@ export default function PageWallet() {
         pairedAccount: wallet.accountId
       }
     });
+  }
+
+  async function handleDisconnectWallet() {
+    disconnectWallet.mutateAsync()
+      .catch(() => showErrorNotification("Error disconnecting from wallet"));
   }
 
   return wallet.accountId ? (
@@ -67,7 +73,7 @@ export default function PageWallet() {
       )}
 
       <Divider />
-      <Menu.Item icon={<Logout size={18} />} onClick={disconnectLocalWallet}>
+      <Menu.Item icon={<Logout size={18} />} onClick={handleDisconnectWallet}>
         Disconnect
       </Menu.Item>
     </Menu>

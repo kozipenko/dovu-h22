@@ -1,29 +1,18 @@
-import { useEffect, useState } from "react";
 import { Card, Group, Text } from "@mantine/core";
-import { getTreasuryBalance, TOKEN_NAME} from "../services/contract";
-import useProjects from "../hooks/useProjects";
-import usePositions from "../hooks/usePositions";
+import { TOKEN_NAME } from "../utils/constants";
+import useApi from "../hooks/api";
 
 export default function Staking() {
-  const [treasuryBalance, setTreasuryBalance] = useState(0);
-  const { projects } = useProjects();
-  const { positions } = usePositions();
+  const { getTreasuryBalance, getProjects, getPositions } = useApi();
 
-  const totalProjects = projects.isSuccess && projects.data.length;
+  const totalOpenPositions = getPositions.data
+    .filter(pos => !pos.is_closed).length;
 
-  const totalOpenPositions = positions.isSuccess && positions.data
-    .filter(pos => pos.is_open).length;
-
-  const totalStakedTokens = positions.isSuccess && positions.data
+  const totalStakedTokens = getPositions.data
     .reduce((acc, obj) => acc + obj.dov_staked + obj.surrendered_dov, 0);
 
-  const totalSurrenderedTokens = positions.isSuccess && positions.data
+  const totalSurrenderedTokens = getPositions.data
     .reduce((acc, obj) => acc + obj.surrendered_dov, 0);
-
-
-  useEffect(() => {
-    getTreasuryBalance().then(setTreasuryBalance);
-  }, []);
 
   return (
     <Group>
@@ -32,7 +21,7 @@ export default function Staking() {
           Total Projects
         </Text>
         <Text mt="xs" size="xl" weight={500}>
-          {totalProjects}
+          {getProjects.data.length}
         </Text>
       </Card>
 
@@ -41,7 +30,7 @@ export default function Staking() {
           Treasury Balance
         </Text>
         <Text mt="xs" size="xl" weight={500}>
-          {treasuryBalance.toLocaleString()} {TOKEN_NAME}
+          {getTreasuryBalance.data.toLocaleString()} {TOKEN_NAME}
         </Text>
       </Card>
 

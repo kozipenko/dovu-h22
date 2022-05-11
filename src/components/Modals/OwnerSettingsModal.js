@@ -1,49 +1,61 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Text, Paper, Group, NumberInput, Button, Stack, Loader } from "@mantine/core";
-import { addTokensToTreasury, getMaximumClaimableTokens, getTreasuryBalance, updateClaimableTokens, TOKEN_NAME } from "../../services/contract";
+import { showErrorNotification, showSuccessNotification } from "../../utils/notifications";
+import { TOKEN_NAME } from "../../utils/constants";
+import useApi from "../../hooks/api";
+import useContract from "../../hooks/contract";
 
-export default function OwnerSettingsModal() {
-  const [isTransacting, setIsTransacting] = useState(false);
-  const [treasuryBalance, setTreasuryBalance] = useState(0);
-  const [maxClaimableTokens, setMaxClaimableTokens] = useState(0);
+export default function OwnerSettingsModal({ context, id }) {
   const [newMaxClaimableTokens, setNewMaxClaimableTokens] = useState(0);
   const [xferToTreasury, setXferToTreasury] = useState(0);
-
+  const { getTreasuryBalance, getMaxClaimableTokens, updateMaxClaimableTokens } = useApi();
+  const { addTokensToTreasury, updateClaimableTokens } = useContract();
+  
   async function handleAddTokenstoTreasury() {
-    setIsTransacting(true);
-    const response = await addTokensToTreasury(xferToTreasury);
-    if (response.success) {
-      setTreasuryBalance(treasuryBalance + xferToTreasury)
+    try {
+      const res = await addTokensToTreasury.mutateAsync(xferToTreasury);
+
+      if (res.success) {
+        showSuccessNotification("Success", `${xferToTreasury.toLocaleString()} tokens transferred to treasury`);
+      }
+      else {
+        throw new Error("Transaction failed");
+      }
+    } catch (error) {
+      showErrorNotification("Error", error.message);
+    } finally {
       setXferToTreasury(0);
     }
-    setIsTransacting(false);
   }
 
   async function handleUpdateClaimableTokens() {
-    setIsTransacting(true);
-    const response = await updateClaimableTokens(newMaxClaimableTokens);
-    if (response) {
-      setMaxClaimableTokens(newMaxClaimableTokens);
+    try {
+      const res = await updateClaimableTokens.mutateAsync(newMaxClaimableTokens);
+
+      if (res.success) {
+        await updateMaxClaimableTokens.mutateAsync(newMaxClaimableTokens);
+        showSuccessNotification("Success", `Max claimable tokens set to ${newMaxClaimableTokens.toLocaleString()}`);
+      }
+      else {
+        throw new Error("Transaction failed");
+      }
+    } catch (error) {
+      showErrorNotification("Error", error.message);
+    } finally {
       setNewMaxClaimableTokens(0);
     }
-    setIsTransacting(false);
   }
-
-  useEffect(() => {
-    getTreasuryBalance().then(setTreasuryBalance);
-    getMaximumClaimableTokens().then(setMaxClaimableTokens);
-  }, [isTransacting]);
 
   return (
     <>
       <Paper withBorder my="xs" p="xs">
         <Group position="apart">
           <Text size="xs" color="dimmed">Treasury Balance:</Text>
-          <Text size="xs" weight={500}>{treasuryBalance.toLocaleString()} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{getTreasuryBalance.data.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
         <Group position="apart">
           <Text size="xs" color="dimmed">Current Claimable Max:</Text>
-          <Text size="xs" weight={500}>{maxClaimableTokens.toLocaleString()} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{getMaxClaimableTokens.data.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
@@ -86,7 +98,13 @@ export default function OwnerSettingsModal() {
         </Button>
       </Group>
 
-      {isTransacting && (
+      <Group position="right" spacing="xs" mt="xl">
+        <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
+          Cancel
+        </Button>
+      </Group>
+
+      {(addTokensToTreasury.isLoading || updateClaimableTokens.isLoading) && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>

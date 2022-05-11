@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { initializeWallet } from "../services/wallet";
 import contextModals from "./Modals";
 import Page from "../components/Page/Page";
 import Home from "../pages/Home";
@@ -18,10 +17,6 @@ export default function App() {
   function toggleColorScheme() {
     setColorScheme(colorScheme === "light" ? "dark" : "light");
   }
-
-  useEffect(() => {
-    initializeWallet();
-  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

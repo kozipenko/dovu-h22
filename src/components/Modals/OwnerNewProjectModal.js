@@ -1,47 +1,39 @@
 import { useState } from "react";
 import { Button, Group, Loader, NumberInput, Stack, Text, TextInput } from "@mantine/core";
-import { showSuccessNotification, showInfoNotification, showErrorNotification } from "../../utils/notifications";
-import { addProject } from "../../services/contract";
-import useProjects from "../../hooks/useProjects";
+import { showSuccessNotification, showErrorNotification } from "../../utils/notifications";
+import useApi from "../../hooks/api";
+import useContract from "../../hooks/contract";
 
 export default function OwnerNewProjectModal({ context, id }) {
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
   const [priceKg, setPriceKg] = useState(0);
   const [verifiedKg, setVerifiedKg] = useState(0);
-  const [isTransacting, setIsTransacting] = useState(false);
-  const { createProject, deleteProject } = useProjects();
+  const { createProject, getProjects } = useApi();
+  const { addProject } = useContract();
 
   async function handleAddProject() {
-    setIsTransacting(true);
-    createProject.mutate({
-      name,
-      image,
-      price_kg: priceKg,
-      verified_kg: verifiedKg,
-      collateral_risk: 0,
-      staked_tokens: 0
-    }, {
-      onSuccess: async (project) => {
-        const res = await addProject(project.id, project.verified_kg)
-        setIsTransacting(false);
-        
-        if (res) {
-          showSuccessNotification(`${project.name} has been created`);
-          context.closeModal(id);
-        } else {
-          showErrorNotification("Error creating project in contract");
-          deleteProject.mutate(project.id, {
-            onSuccess: () => showInfoNotification("Reverted new project in api"),
-            onError: () => showErrorNotification("Error reverting project in api")
-          });
-        }
-      },
-      onError: () => {
-        setIsTransacting(false);
-        showErrorNotification("Error creating project in api");
+    try {
+      const projectId = getProjects.data.length;
+      const res = await addProject.mutateAsync({ projectId, verifiedKg });
+      
+      if (res.success) {
+        await createProject.mutateAsync({
+          name,
+          image,
+          price_kg: priceKg,
+          verified_kg: verifiedKg,
+          collateral_risk: 0,
+          staked_tokens: 0
+        });
+        showSuccessNotification("Success", `${name} created`);
+        context.closeModal(id);
+      } else {
+        throw Error("Transaction failed");
       }
-    });
+    } catch (error) {
+      showErrorNotification("Error", error.message);
+    }
   }
  
   return (
@@ -100,14 +92,14 @@ export default function OwnerNewProjectModal({ context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={!name || isTransacting}
+          disabled={!name || addProject.isLoading}
           onClick={handleAddProject}
         >
           Save
         </Button>
       </Group>
 
-      {isTransacting && (
+      {addProject.isLoading && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>

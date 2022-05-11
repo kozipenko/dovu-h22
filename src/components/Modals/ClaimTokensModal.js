@@ -1,34 +1,41 @@
-import { useEffect, useState } from "react";
 import { Button, Group, Loader, Paper, Stack, Text } from "@mantine/core";
-import { claimDemoTokensForStaking, getMaximumClaimableTokens, getTotalTokensClaimed, TOKEN_NAME } from "../../services/contract";
+import { showErrorNotification, showSuccessNotification } from "../../utils/notifications";
+import { TOKEN_NAME } from "../../utils/constants";
+import useApi from "../../hooks/api";
+import useContract from "../../hooks/contract";
 
 export default function ClaimTokensModal({ context, id }) {
-  const [isTransacting, setIsTransacting] = useState(false);
-  const [maximumClaimableTokens, setMaximumClaimableTokens] = useState(0);
-  const [totalTokensClaimed, setTotalTokensClaimed] = useState(0);
+  const { createClaimedToken, getClaimedTokens, getMaxClaimableTokens } = useApi();
+  const { claimDemoTokens } = useContract();
 
   async function handleClaimDemoTokensForStaking() {
-    setIsTransacting(true);
-    await claimDemoTokensForStaking(maximumClaimableTokens-totalTokensClaimed).catch(() => setIsTransacting(false));
-    setIsTransacting(false);
-  }
+    try {
+      const amount = getMaxClaimableTokens.data - getClaimedTokens.data
+      const res = await claimDemoTokens.mutateAsync(amount);
 
-  useEffect(() => {
-    getTotalTokensClaimed().then(setTotalTokensClaimed);
-    getMaximumClaimableTokens().then(setMaximumClaimableTokens);
-  }, []);
+      if (res.success) {
+        await createClaimedToken.mutateAsync(amount);
+        showSuccessNotification("Success", `${amount} tokens have been sent to your account`);
+      }
+      else {
+        throw Error("Transaction failed");
+      }
+    } catch (error) {
+      showErrorNotification("Error", error.message);
+    }
+  }
 
   return (
     <>
       <Paper withBorder mt="xl" p="xs">
         <Group position="apart">
           <Text size="xs" color="dimmed">Total Tokens Claimed:</Text>
-          <Text size="xs" weight={500}>{totalTokensClaimed} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{getClaimedTokens.data.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
         <Group position="apart" mt="xs">
           <Text size="xs" color="dimmed">Max Claimable Tokens:</Text>
-          <Text size="xs" weight={500}>{maximumClaimableTokens} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{getMaxClaimableTokens.data.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
@@ -38,14 +45,14 @@ export default function ClaimTokensModal({ context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={isTransacting || !maximumClaimableTokens}
+          disabled={claimDemoTokens.isLoading}
           onClick={handleClaimDemoTokensForStaking}
         >
           Claim
         </Button>
       </Group>
 
-      {isTransacting && (
+      {claimDemoTokens.isLoading && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>

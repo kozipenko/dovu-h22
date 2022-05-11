@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Button, Group, Select, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
-import useProjects from "../../hooks/useProjects";
+import useApi from "../../hooks/api";
 
 export default function OwnerProjectsModal({ context, id }) {
   const [project, setProject] = useState(null);
-  const { projects } = useProjects();
+  const { getProjects } = useApi();
   const modals = useModals();
 
   function handleOpenOwnerProjectsEditModal() {
@@ -22,7 +22,7 @@ export default function OwnerProjectsModal({ context, id }) {
   }
 
   function handleProjectChange(id) {
-    setProject(projects.data.find(p => p.id === id));
+    setProject(getProjects.data.find(p => p.id === id));
   }
  
   return (
@@ -34,7 +34,7 @@ export default function OwnerProjectsModal({ context, id }) {
           label={<Text size="xs" color="dimmed">Project</Text>}
           zIndex={1000}
           value={project?.id}
-          data={projects.isSuccess ? projects.data.map(p => ({ label: p.name, value: p.id })) : []}
+          data={getProjects.data.map(p => ({ label: p.name, value: p.id }))}
           onChange={handleProjectChange}
           sx={{flex: 1}}
         />

@@ -1,72 +1,61 @@
 import { useState } from "react";
 import { Button, Group, Loader, NumberInput, Stack, Text, TextInput } from "@mantine/core";
-import { showSuccessNotification, showErrorNotification, showInfoNotification } from "../../utils/notifications";
-import { addVerifiedCarbon, removeVerifiedCarbon, TOKEN_NAME } from "../../services/contract";
-import useProjects from "../../hooks/useProjects";
-import usePositions from "../../hooks/usePositions";
+import { showSuccessNotification, showErrorNotification } from "../../utils/notifications";
+import { TOKEN_NAME } from "../../utils/constants";
+import useApi from "../../hooks/api";
+import useContract from "../../hooks/contract";
 
 export default function OwnerEditProjectsModal({ innerProps, context, id }) {
   const [newName, setNewName] = useState(innerProps.project.name);
   const [newImage, setNewImage] = useState(innerProps.project.image);
   const [newPriceKg, setNewPriceKg] = useState(parseFloat(innerProps.project.price_kg));
   const [newVerifiedKg, setNewVerifiedKg] = useState(innerProps.project.verified_kg);
-  const [isTransacting, setIsTransacting] = useState(false);
-  const { positions } = usePositions();
-  const { updateProject } = useProjects();
+  const { getPositions, updateProject } = useApi();
+  const { addVerifiedCarbon, removeVerifiedCarbon } = useContract();
 
-  const totalStakedTokens = positions.isSuccess && positions.data
+  const totalStakedTokens = getPositions.isSuccess && getPositions.data
     .filter(pos => pos.project_id === innerProps.project.id)
     .reduce((acc, obj) => acc + obj.dov_staked + obj.surrendered_dov, 0);
 
-  const totalSurrenderedTokens = positions.isSuccess && positions.data
+  const totalSurrenderedTokens = getPositions.isSuccess && getPositions.data
     .filter(pos => pos.project_id === innerProps.project.id)
     .reduce((acc, obj) => acc + obj.surrendered_dov, 0);
 
   async function editVerifiedCarbon() {
-    if (newVerifiedKg > innerProps.project.verified_kg)
-      return await addVerifiedCarbon(innerProps.project.id, newVerifiedKg-innerProps.project.verified_kg);
-    else if (newVerifiedKg < innerProps.project.verified_kg)
-      return await removeVerifiedCarbon(innerProps.project.id, innerProps.project.verified_kg-newVerifiedKg)
-    else
-      return true;
+    if (newVerifiedKg > innerProps.project.verified_kg) {
+      return await addVerifiedCarbon.mutateAsync({
+        projectId: innerProps.project.id, 
+        verifiedKg: newVerifiedKg-innerProps.project.verified_kg
+      });
+    } else if (newVerifiedKg < innerProps.project.verified_kg) {
+      return await removeVerifiedCarbon.mutateAsync({
+        projectId: innerProps.project.id,
+        verifiedKg: innerProps.project.verified_kg-newVerifiedKg
+      });
+    } else {
+      return { success: true };
+    }
   }
 
   async function handleEditProject() {
-    setIsTransacting(true);
-
-    updateProject.mutate({
-      id: innerProps.project.id, 
-      name: newName,
-      image: newImage,
-      price_kg: newPriceKg,
-      verified_kg: newVerifiedKg
-    }, {
-      onSuccess: async () => {
-        const res = await editVerifiedCarbon();
-        setIsTransacting(false);
-
-        if (res) {
-          showSuccessNotification("Saved project changes")
-          context.closeModal(id);
-        } else {
-          showErrorNotification("Error saving project changes to contract");
-          updateProject.mutate({
-            id: innerProps.project.id,
-            name: innerProps.project.name,
-            image: innerProps.project.image,
-            price_kg: innerProps.project.price_kg,
-            verified_kg: innerProps.project.verified_kg
-          }, {
-            onSuccess: () => showInfoNotification("Reverted project changes in api"),
-            onError: () => showErrorNotification("Error reverting project changes in api")
-          });
-        }
-      },
-      onError: () => {
-        setIsTransacting(false);
-        showErrorNotification("Error saving project changes to api");
+    try {
+      const res = await editVerifiedCarbon();
+      
+      if (res.success) {
+        await updateProject.mutateAsync({
+          id: innerProps.project.id, 
+          name: newName,
+          image: newImage,
+          price_kg: newPriceKg,
+          verified_kg: newVerifiedKg
+        });
+        showSuccessNotification("Success", `Changes saved for ${innerProps.project.name}`);
+      } else {
+        throw Error("Transaction failed");
       }
-    });
+    } catch (error) {
+      showErrorNotification("Error", error.message);
+    }
   }
 
   return (
@@ -131,14 +120,14 @@ export default function OwnerEditProjectsModal({ innerProps, context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={isTransacting}
+          disabled={addVerifiedCarbon.isLoading || removeVerifiedCarbon.isLoading}
           onClick={handleEditProject}
         >
           Save
         </Button>
       </Group>
 
-      {isTransacting && (
+      {(addVerifiedCarbon.isLoading || removeVerifiedCarbon.isLoading) && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>

@@ -3,13 +3,14 @@ import { ActionIcon, Anchor, Button, Group, Loader, Paper, Stack, Text, TextInpu
 import { useClipboard } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { Copy, Help, SquareCheck } from "tabler-icons-react";
-import { connectToLocalWallet, getAccountBalance, useWallet } from "../../services/wallet";
-import { TOKEN_NAME } from "../../services/contract";
+import { showErrorNotification } from "../../utils/notifications";
+import { TOKEN_NAME } from "../../utils/constants";
+import useWallet from "../../hooks/wallet";
 
 export default function WalletConnectModal({ context, id }) {
   const [accountBalance, setAccountBalance] = useState(0);
   const clipboard = useClipboard();
-  const wallet = useWallet();
+  const { wallet, connectWallet, getAccountBalance } = useWallet();
 
   function handleCopyPairingString() {
     clipboard.copy(wallet.pairingString);
@@ -20,7 +21,9 @@ export default function WalletConnectModal({ context, id }) {
 
   useEffect(() => {
     if (wallet.accountId)
-      getAccountBalance().then(setAccountBalance);
+      getAccountBalance.mutateAsync()
+        .then(setAccountBalance)
+        .catch(() => showErrorNotification("Error fetching account balance"));
   }, [wallet.accountId]);
 
   return wallet.accountId ? (
@@ -73,7 +76,7 @@ export default function WalletConnectModal({ context, id }) {
       <Text size="xs" mt="md" color="dimmed">Extension</Text>
 
       {wallet.extensions.map(extension => (
-        <Button fullWidth mt="xs" onClick={() => connectToLocalWallet(extension)}>
+        <Button fullWidth mt="xs" onClick={() => connectWallet.mutate(extension)}>
           {extension.name}
         </Button>
       ))}
