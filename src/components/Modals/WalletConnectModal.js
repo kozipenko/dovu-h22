@@ -19,7 +19,7 @@ export default function WalletConnectModal({ context, id }) {
 
   useEffect(() => {
     wallet.initializeWallet.mutateAsync();
-  }, []);
+  }, [wallet.local]);
 
   return wallet.local.accountId ? (
     <>

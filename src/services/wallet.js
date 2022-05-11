@@ -46,7 +46,9 @@ export function useWallet() {
         store.isContractOwner = event.accountIds[0] === CONTRACT_OWNER;
       });
   
-      hashConnect.foundExtensionEvent.on((extension) => store.extensions.push(extension));
+      hashConnect.foundExtensionEvent.on((extension) => {
+        store.extensions = [extension];
+      });
     }
   });
 
