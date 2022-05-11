@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 import { ChartPie, Edit, Gift, Logout, Settings, UserCircle } from "tabler-icons-react";
 import { useModals } from "@mantine/modals";
 import { CONTRACT_ID } from "../../utils/constants";
-import { showErrorNotification } from "../../utils/notifications";
-import useWallet from "../../hooks/wallet";
+import { showErrorNotification, showSuccessNotification } from "../../utils/notifications";
+import { useWallet } from "../../services/wallet";
 
 export default function PageWallet() {
   const modals = useModals();
-  const { disconnectWallet, wallet } = useWallet();
+  const wallet = useWallet();
 
   function handleOpenWalletConnectModal() {
     modals.openContextModal("walletConnect", {
@@ -32,22 +32,26 @@ export default function PageWallet() {
     modals.openContextModal("claimTokens", {
       title: "Claim Tokens",
       innerProps: {
-        pairedAccount: wallet.accountId
+        pairedAccount: wallet.local.accountId
       }
     });
   }
 
   async function handleDisconnectWallet() {
-    disconnectWallet.mutateAsync()
-      .catch(() => showErrorNotification("Error disconnecting from wallet"));
+    try {
+      await wallet.disconnectWallet.mutateAsync();
+      showSuccessNotification("Success", `${wallet.local.accountId} has been disconnected`);
+    } catch {
+      showErrorNotification("Error", "There was a problem disconnecting from wallet");
+    }
   }
 
-  return wallet.accountId ? (
+  return wallet.local.accountId ? (
     <Menu
       zIndex={1000}
       control={
         <Button variant="light" leftIcon={<UserCircle size={18} />}>
-          {wallet.accountId}
+          {wallet.local.accountId}
         </Button>
       }
     >
@@ -59,7 +63,7 @@ export default function PageWallet() {
         Claim Tokens
       </Menu.Item>
 
-      {wallet.isContractOwner && (
+      {wallet.local.isContractOwner && (
         <>
           <Divider />
           <Menu.Label>Owner</Menu.Label>
@@ -83,17 +87,3 @@ export default function PageWallet() {
     </Button>
   );
 }
-
-/*
-// Add back to menu or find somewhere else for account balance?
-function handleLoadAccountBalance() {
-  loadAccountBalance().catch(error => showNotification({
-    title: "An erorr has occured loading account balance",
-    message: error.message
-  }));
-}
-<Group position="apart" px="sm" py="xs">
-  <Text size="xs" weight={500}>Balance:</Text>
-  <Text size="xs" weight={500}>{contract.accountBalance} {TOKEN_NAME}</Text>
-</Group>
-*/

@@ -1,17 +1,17 @@
 import { Card, Group, Text } from "@mantine/core";
 import { TOKEN_NAME } from "../utils/constants";
-import useApi from "../hooks/api";
+import { useApi } from "../services/api";
 
 export default function Staking() {
-  const { getTreasuryBalance, getProjects, getPositions } = useApi();
+  const api = useApi();
 
-  const totalOpenPositions = getPositions.data
+  const totalOpenPositions = api.positions.data
     .filter(pos => !pos.is_closed).length;
 
-  const totalStakedTokens = getPositions.data
+  const totalStakedTokens = api.positions.data
     .reduce((acc, obj) => acc + obj.dov_staked + obj.surrendered_dov, 0);
 
-  const totalSurrenderedTokens = getPositions.data
+  const totalSurrenderedTokens = api.positions.data
     .reduce((acc, obj) => acc + obj.surrendered_dov, 0);
 
   return (
@@ -21,7 +21,7 @@ export default function Staking() {
           Total Projects
         </Text>
         <Text mt="xs" size="xl" weight={500}>
-          {getProjects.data.length}
+          {api.projects.data.length}
         </Text>
       </Card>
 
@@ -30,7 +30,7 @@ export default function Staking() {
           Treasury Balance
         </Text>
         <Text mt="xs" size="xl" weight={500}>
-          {getTreasuryBalance.data.toLocaleString()} {TOKEN_NAME}
+          {api.treasuryBalance.data.toLocaleString()} {TOKEN_NAME}
         </Text>
       </Card>
 

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Center, Loader, SimpleGrid } from "@mantine/core";
-import useApi from "../../hooks/api";
+import { useApi } from "../../services/api";
 import ProjectsFilter from "./ProjectsFilter";
 import ProjectsCard from "./ProjectsCard";
 
 export default function Projects() {
   const [filter, setFilter] = useState({ search: "", priceKg: [0, 100], verifiedKg: [0, 5000] });
-  const { getProjects } = useApi();
+  const api = useApi();
 
-  const filtered = getProjects.data
+  const filtered = api.projects.data
     .filter(p => p.verified_kg >= filter.verifiedKg[0] && p.verified_kg <= filter.verifiedKg[1])
     .filter(p => p.price_kg >= filter.priceKg[0] && p.price_kg <= filter.priceKg[1])
     .filter(p => p.name.toLowerCase().includes(filter.search))
@@ -17,7 +17,7 @@ export default function Projects() {
     <>
       <ProjectsFilter value={filter} onChange={setFilter} />
 
-      {getProjects.isLoading && (
+      {api.projects.isLoading && (
         <Center mt="xl">
           <Loader variant="dots" />
         </Center>
@@ -34,7 +34,7 @@ export default function Projects() {
           { maxWidth: "lg", cols: 3 },
         ]}
       >
-        {getProjects.isSuccess && filtered.map(project => (
+        {api.projects.isSuccess && filtered.map(project => (
           <ProjectsCard key={project.id} project={project} />
         ))}
       </SimpleGrid>

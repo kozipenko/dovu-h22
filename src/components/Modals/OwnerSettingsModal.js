@@ -2,21 +2,21 @@ import { useState } from "react";
 import { Text, Paper, Group, NumberInput, Button, Stack, Loader } from "@mantine/core";
 import { showErrorNotification, showSuccessNotification } from "../../utils/notifications";
 import { TOKEN_NAME } from "../../utils/constants";
-import useApi from "../../hooks/api";
-import useContract from "../../hooks/contract";
+import { useApi } from "../../services/api";
+import { useContract } from "../../services/contract";
 
 export default function OwnerSettingsModal({ context, id }) {
   const [newMaxClaimableTokens, setNewMaxClaimableTokens] = useState(0);
   const [xferToTreasury, setXferToTreasury] = useState(0);
-  const { getTreasuryBalance, getMaxClaimableTokens, updateMaxClaimableTokens } = useApi();
-  const { addTokensToTreasury, updateClaimableTokens } = useContract();
+  const api = useApi();
+  const contract = useContract();
   
   async function handleAddTokenstoTreasury() {
     try {
-      const res = await addTokensToTreasury.mutateAsync(xferToTreasury);
+      const res = await contract.addTokensToTreasury.mutateAsync(xferToTreasury);
 
       if (res.success) {
-        showSuccessNotification("Success", `${xferToTreasury.toLocaleString()} tokens transferred to treasury`);
+        showSuccessNotification("Success", `${xferToTreasury.toLocaleString()} ${TOKEN_NAME} transferred to treasury`);
       }
       else {
         throw new Error("Transaction failed");
@@ -30,11 +30,11 @@ export default function OwnerSettingsModal({ context, id }) {
 
   async function handleUpdateClaimableTokens() {
     try {
-      const res = await updateClaimableTokens.mutateAsync(newMaxClaimableTokens);
+      const res = await contract.updateClaimableTokens.mutateAsync(newMaxClaimableTokens);
 
       if (res.success) {
-        await updateMaxClaimableTokens.mutateAsync(newMaxClaimableTokens);
-        showSuccessNotification("Success", `Max claimable tokens set to ${newMaxClaimableTokens.toLocaleString()}`);
+        await api.updateMaxClaimableTokens.mutateAsync(newMaxClaimableTokens);
+        showSuccessNotification("Success", `Max claimable tokens set to ${newMaxClaimableTokens.toLocaleString()} ${TOKEN_NAME}`);
       }
       else {
         throw new Error("Transaction failed");
@@ -51,11 +51,11 @@ export default function OwnerSettingsModal({ context, id }) {
       <Paper withBorder my="xs" p="xs">
         <Group position="apart">
           <Text size="xs" color="dimmed">Treasury Balance:</Text>
-          <Text size="xs" weight={500}>{getTreasuryBalance.data.toLocaleString()} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{api.treasuryBalance.data.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
         <Group position="apart">
           <Text size="xs" color="dimmed">Current Claimable Max:</Text>
-          <Text size="xs" weight={500}>{getMaxClaimableTokens.data.toLocaleString()} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{api.maxClaimableTokens.data.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
@@ -104,7 +104,7 @@ export default function OwnerSettingsModal({ context, id }) {
         </Button>
       </Group>
 
-      {(addTokensToTreasury.isLoading || updateClaimableTokens.isLoading) && (
+      {(contract.addTokensToTreasury.isLoading || contract.updateClaimableTokens.isLoading) && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>

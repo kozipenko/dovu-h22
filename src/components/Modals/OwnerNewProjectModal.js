@@ -1,46 +1,38 @@
 import { useState } from "react";
 import { Button, Group, Loader, NumberInput, Stack, Text, TextInput } from "@mantine/core";
 import { showSuccessNotification, showErrorNotification } from "../../utils/notifications";
-import useApi from "../../hooks/api";
-import useContract from "../../hooks/contract";
+import { useApi } from "../../services/api";
+import { useContract } from "../../services/contract";
 
 export default function OwnerNewProjectModal({ context, id }) {
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
   const [priceKg, setPriceKg] = useState(0);
   const [verifiedKg, setVerifiedKg] = useState(0);
-  const { createProject, deleteProject } = useApi();
-  const { addProject } = useContract();
+  const api = useApi();
+  const contract = useContract();
 
   async function handleAddProject() {
-    let newProject = {};
-
     try {
-      newProject = await createProject.mutateAsync({
-        name,
-        image,
-        price_kg: priceKg,
-        verified_kg: verifiedKg,
-        collateral_risk: 0,
-        staked_tokens: 0
-      });
+      const lastProject = api.projects.data[api.projects.data.length-1];
+      const projectId = lastProject ? lastProject.id + 1 : 1;
+      const res = await contract.addProject.mutateAsync({ id: projectId, verified_kg: verifiedKg });
 
-      if (newProject.id) {
-        const res = await addProject.mutateAsync({ projectId: newProject.id, verifiedKg });
-
-        if (res.success) {
-          showSuccessNotification("Success", `${name} created`);
-          context.closeModal(id);
-        } else {
-          throw new Error("Transaction failed");
-        }
+      if (res.success) {
+        await api.createProject.mutateAsync({
+          name,
+          image,
+          price_kg: priceKg,
+          verified_kg: verifiedKg,
+          collateral_risk: 0,
+          staked_tokens: 0
+        });
+        context.closeModal(id);
+        showSuccessNotification("Success", `Created project ${name}`);
       } else {
-        throw new Error("API failed");
+        throw new Error("Transaction failed");
       }
     } catch (error) {
-      if (newProject.id)
-        await deleteProject.mutateAsync(newProject.id);
-
       showErrorNotification("Error", error.message);
     }
   }
@@ -101,14 +93,14 @@ export default function OwnerNewProjectModal({ context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={!name || addProject.isLoading}
+          disabled={!name || contract.addProject.isLoading}
           onClick={handleAddProject}
         >
           Save
         </Button>
       </Group>
 
-      {addProject.isLoading && (
+      {contract.addProject.isLoading && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>

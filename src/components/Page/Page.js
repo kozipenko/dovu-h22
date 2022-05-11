@@ -1,9 +1,6 @@
-import { useEffect } from "react";
 import { Box, Container, createStyles } from "@mantine/core";
 import { Outlet } from "react-router-dom";
-import useWallet from "../../hooks/wallet";
 import PageHeader from "./PageHeader";
-import { showErrorNotification } from "../../utils/notifications";
 
 const useStyles = createStyles(theme => ({
   root: {
@@ -14,11 +11,6 @@ const useStyles = createStyles(theme => ({
 
 export default function Page() {
   const { classes } = useStyles();
-  const { initializeWallet } = useWallet();
-
-  useEffect(() => {
-    initializeWallet.mutateAsync().catch(() => showErrorNotification("Error initializing wallet"));
-  }, []);
 
   return (
     <Box className={classes.root}>

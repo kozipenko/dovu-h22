@@ -3,30 +3,29 @@ import { Anchor, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, St
 import { useModals } from "@mantine/modals";
 import { showErrorNotification, showSuccessNotification } from "../../utils/notifications";
 import { TOKEN_NAME } from "../../utils/constants";
-import useWallet from "../../hooks/wallet";
-import useApi from "../../hooks/api";
-import useContract from "../../hooks/contract";
+import { useApi } from "../../services/api";
+import { useWallet } from "../../services/wallet";
+import { useContract } from "../../services/contract";
 
 export default function ProjectStakeModal({ context, id, innerProps }) {
   const [agrees, setAgrees] = useState(false);
   const [term, setTerm] = useState("1");
   const [amount, setAmount] = useState(0);
-  const [accountBalance, setAccountBalance] = useState(0);
-  const { wallet, getAccountBalance } = useWallet();
-  const { getPositions } = useApi();
-  const { removeTimelockForProject } = useContract();
+  const api = useApi();
+  const wallet = useWallet();
+  const contract = useContract();
   const modals = useModals();
 
-  const totalStakedTokens = getPositions.data
+  const totalStakedTokens = api.positions.data
     .filter(pos => pos.project_id === innerProps.project.id)
     .reduce((acc, obj) => acc + obj.dov_staked + obj.surrendered_dov, 0);
 
-  const totalSurrenderedTokens = getPositions.data
+  const totalSurrenderedTokens = api.positions.data
     .filter(pos => pos.project_id === innerProps.project.id)
     .reduce((acc, obj) => acc + obj.surrendered_dov, 0);
 
-  const position = getPositions.data.slice().reverse()
-    .find(pos => pos.hedera_account === wallet.accountId && pos.project_id === innerProps.project.id);
+  const position = api.positions.data.slice().reverse()
+    .find(pos => pos.hedera_account === wallet.local.accountId && pos.project_id === innerProps.project.id);
     
   function getReleaseDate() {
     const currDate = Math.floor((new Date()).getTime() / 1000);
@@ -37,7 +36,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
   async function handleRemoveTimeLockForProject() {
     try {
-      const res = await removeTimelockForProject.mutateAsync(innerProps.project.id);
+      const res = await contract.removeTimelockForProject.mutateAsync(innerProps.project.id);
       
       if (res.success) {
         showSuccessNotification("Success", `Removed timelock`);
@@ -55,7 +54,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       innerProps: {
         term,
         amount,
-        accountId: wallet.accountId,
+        accountId: wallet.local.accountId,
         project: innerProps.project,
         closeModal: () => context.closeModal(id)
       }
@@ -78,13 +77,6 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     const rDate  = new Date(time * 1000)
     //setReleaseDate(rDate.toUTCString());
   }
-
-  useEffect(() => {
-    if (wallet.accountId)
-      getAccountBalance.mutateAsync()
-        .then(setAccountBalance)
-        .catch(() => showErrorNotification("Error fetching account balance"));
-  }, [wallet.accountId]);
 
   function renderStaking() {
     return (
@@ -116,7 +108,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
           <Group position="apart" mt="xs">
             <Text size="xs" color="dimmed">Account Balance:</Text>
-            <Text size="xs" weight={500}>{accountBalance.toLocaleString()} {TOKEN_NAME}</Text>
+            <Text size="xs" weight={500}>{wallet.accountBalance.data.toLocaleString()} {TOKEN_NAME}</Text>
           </Group>
         </Paper>
 
@@ -157,7 +149,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
           </Button>
           <Button
             variant="light"
-            disabled={!amount || !agrees || !accountBalance}
+            disabled={!amount || !agrees || !wallet.accountBalance.data}
             onClick={handleOpenProjectStakeConfirmModal}
           >
             Stake
@@ -226,7 +218,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
           </Group>
         </Group>
 
-        {removeTimelockForProject.isLoading && (
+        {contract.removeTimelockForProject.isLoading && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>

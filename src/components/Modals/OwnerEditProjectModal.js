@@ -2,35 +2,35 @@ import { useState } from "react";
 import { Button, Group, Loader, NumberInput, Stack, Text, TextInput } from "@mantine/core";
 import { showSuccessNotification, showErrorNotification } from "../../utils/notifications";
 import { TOKEN_NAME } from "../../utils/constants";
-import useApi from "../../hooks/api";
-import useContract from "../../hooks/contract";
+import { useApi } from "../../services/api";
+import { useContract } from "../../services/contract";
 
-export default function OwnerEditProjectsModal({ innerProps, context, id }) {
+export default function OwnerEditProjectsModal({ context, id, innerProps }) {
   const [newName, setNewName] = useState(innerProps.project.name);
   const [newImage, setNewImage] = useState(innerProps.project.image);
   const [newPriceKg, setNewPriceKg] = useState(parseFloat(innerProps.project.price_kg));
   const [newVerifiedKg, setNewVerifiedKg] = useState(innerProps.project.verified_kg);
-  const { getPositions, updateProject } = useApi();
-  const { addVerifiedCarbon, removeVerifiedCarbon } = useContract();
+  const api = useApi();
+  const contract = useContract();
 
-  const totalStakedTokens = getPositions.isSuccess && getPositions.data
+  const totalStakedTokens = api.positions.data
     .filter(pos => pos.project_id === innerProps.project.id)
     .reduce((acc, obj) => acc + obj.dov_staked + obj.surrendered_dov, 0);
 
-  const totalSurrenderedTokens = getPositions.isSuccess && getPositions.data
+  const totalSurrenderedTokens = api.positions.data
     .filter(pos => pos.project_id === innerProps.project.id)
     .reduce((acc, obj) => acc + obj.surrendered_dov, 0);
 
   async function editVerifiedCarbon() {
     if (newVerifiedKg > innerProps.project.verified_kg) {
-      return await addVerifiedCarbon.mutateAsync({
-        projectId: innerProps.project.id, 
-        verifiedKg: newVerifiedKg-innerProps.project.verified_kg
+      return await contract.addVerifiedCarbon.mutateAsync({
+        id: innerProps.project.id, 
+        verified_kg: newVerifiedKg-innerProps.project.verified_kg
       });
     } else if (newVerifiedKg < innerProps.project.verified_kg) {
-      return await removeVerifiedCarbon.mutateAsync({
-        projectId: innerProps.project.id,
-        verifiedKg: innerProps.project.verified_kg-newVerifiedKg
+      return await contract.removeVerifiedCarbon.mutateAsync({
+        id: innerProps.project.id,
+        verified_kg: innerProps.project.verified_kg-newVerifiedKg
       });
     } else {
       return { success: true };
@@ -42,14 +42,15 @@ export default function OwnerEditProjectsModal({ innerProps, context, id }) {
       const res = await editVerifiedCarbon();
       
       if (res.success) {
-        await updateProject.mutateAsync({
+        await api.updateProject.mutateAsync({
           id: innerProps.project.id, 
           name: newName,
           image: newImage,
           price_kg: newPriceKg,
           verified_kg: newVerifiedKg
         });
-        showSuccessNotification("Success", `Changes saved for ${innerProps.project.name}`);
+        context.closeModal(id);
+        showSuccessNotification("Success", `Saved changes for ${innerProps.project.name}`);
       } else {
         throw new Error("Transaction failed");
       }
@@ -120,14 +121,14 @@ export default function OwnerEditProjectsModal({ innerProps, context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={addVerifiedCarbon.isLoading || removeVerifiedCarbon.isLoading}
+          disabled={contract.addVerifiedCarbon.isLoading || contract.removeVerifiedCarbon.isLoading}
           onClick={handleEditProject}
         >
           Save
         </Button>
       </Group>
 
-      {(addVerifiedCarbon.isLoading || removeVerifiedCarbon.isLoading) && (
+      {(contract.addVerifiedCarbon.isLoading || contract.removeVerifiedCarbon.isLoading) && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>

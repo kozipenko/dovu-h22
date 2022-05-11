@@ -1,29 +1,29 @@
 import { Button, Group, Loader, Paper, Stack, Text } from "@mantine/core";
 import { showErrorNotification, showSuccessNotification } from "../../utils/notifications";
 import { TOKEN_NAME } from "../../utils/constants";
-import useApi from "../../hooks/api";
-import useContract from "../../hooks/contract";
+import { useApi } from "../../services/api";
+import { useContract } from "../../services/contract";
 
 export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
-  const { updatePosition } = useApi();
-  const { unstakeTokensFromProject } = useContract();
+  const api = useApi();
+  const contract = useContract();
 
   const surrendered = innerProps.position.dov_staked * 0.8;
   const redeemable = innerProps.position.dov_staked - (innerProps.position.dov_staked * 0.8);
 
   async function handleUnstakeTokensFromProject() {
     try {
-      const res = await unstakeTokensFromProject.mutateAsync(innerProps.project.id);
+      const res = await contract.unstakeTokensFromProject.mutateAsync(innerProps.project.id);
 
       if (res.success) {
-        await updatePosition.mutateAsync({
+        await api.updatePosition.mutateAsync({
           id: innerProps.position.id,
           is_closed: 1,
           dov_staked: 0,
           surrendered_dov: innerProps.position.dov_staked * 0.8,
           hedera_account: innerProps.position.hedera_account
         })
-        showSuccessNotification("Success", `Unstaked ${redeemable.toLocaleString()} from ${innerProps.project.name}`);
+        showSuccessNotification("Success", `Unstaked ${redeemable.toLocaleString()} ${TOKEN_NAME} from ${innerProps.project.name}`);
         innerProps.closeModal();
       }
       else {
@@ -52,23 +52,22 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           <Text size="xs" weight={700} color="dimmed">Redeemable Amount:</Text>
           <Text size="xs" weight={700}>{redeemable.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
-
-
-        <Group position="right" spacing="xs" mt="xl">
-          <Button variant="light" onClick={() => context.closeModal(id)}>
-            Cancel
-          </Button>
-          <Button
-            variant="light"
-            color="red"
-            onClick={handleUnstakeTokensFromProject}
-          >
-            Confirm
-          </Button>
-        </Group>
       </Paper>
 
-      {unstakeTokensFromProject.isLoading && (
+      <Group position="right" spacing="xs" mt="xl">
+        <Button variant="light" onClick={() => context.closeModal(id)}>
+          Cancel
+        </Button>
+        <Button
+          variant="light"
+          color="red"
+          onClick={handleUnstakeTokensFromProject}
+        >
+          Confirm
+        </Button>
+      </Group>
+
+      {contract.unstakeTokensFromProject.isLoading && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>

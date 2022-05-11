@@ -1,12 +1,12 @@
 import { Button, Group, Loader, Paper, Stack, Text } from "@mantine/core";
 import { showErrorNotification, showSuccessNotification } from "../../utils/notifications";
 import { TOKEN_NAME } from "../../utils/constants";
-import useApi from "../../hooks/api";
-import useContract from "../../hooks/contract";
+import { useApi } from "../../services/api";
+import { useContract } from "../../services/contract";
 
 export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
-  const { createPosition } = useApi();
-  const { stakeTokensToProject } = useContract();
+  const api = useApi();
+  const contract = useContract();
 
   const stakingFee = Math.floor((innerProps.amount * 5) / 100);
 
@@ -19,21 +19,21 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
   async function handleStakeTokensToProject() {
     try {
-      const res = await stakeTokensToProject.mutateAsync({
-        projectId: innerProps.project.id,
+      const res = await contract.stakeTokensToProject.mutateAsync({
+        id: innerProps.project.id,
         amount: innerProps.amount,
         term: innerProps.term * 365
       });
 
       if (res.success) {
-        await createPosition.mutateAsync({
+        await api.createPosition.mutateAsync({
           project_id: innerProps.project.id,
           hedera_account: innerProps.accountId,
           dov_staked: innerProps.amount - stakingFee,
           surrendered_dov: 0,
           is_closed: 0
         })
-        showSuccessNotification("Success", `You've staked ${innerProps.amount} ${TOKEN_NAME} to ${innerProps.project.name}`);
+        showSuccessNotification("Success", `Staked ${innerProps.amount} ${TOKEN_NAME} to ${innerProps.project.name}`);
         innerProps.closeModal();
       }
       else {
@@ -85,7 +85,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
         </Button>
       </Group>
 
-      {stakeTokensToProject.isLoading && (
+      {contract.stakeTokensToProject.isLoading && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>
