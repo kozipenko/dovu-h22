@@ -26,7 +26,7 @@ export default function OwnerNewProjectModal({ context, id }) {
       });
 
       if (newProject.id) {
-        const res = await addProject.mutateAsync({ projectId, verifiedKg });
+        const res = await addProject.mutateAsync({ projectId: newProject.id, verifiedKg });
 
         if (res.success) {
           showSuccessNotification("Success", `${name} created`);

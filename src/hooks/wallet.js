@@ -50,13 +50,13 @@ export default function useWallet() {
 
   const disconnectWallet = useMutation(() => {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
-    state.topic = "",
-    state.accountId = "",
-    state.privateKey = "",
-    state.extensions = [],
-    state.metadata = null,
-    state.pairingString = "",
-    state.isContractOwner = false
+    state.topic = "";
+    state.accountId = "";
+    state.privateKey = "";
+    state.extensions = [];
+    state.metadata = null;
+    state.pairingString = "";
+    state.isContractOwner = false;
   });
 
   const getAccountBalance = useMutation(async () => {
