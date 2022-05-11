@@ -66,6 +66,7 @@ export function useWallet() {
   }, { onSuccess: () => cache.invalidateQueries("accountBalance") });
 
   const disconnectWallet = useMutation(async () => {
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
     store.topic = "";
     store.accountId = "";
     store.privateKey = "";
