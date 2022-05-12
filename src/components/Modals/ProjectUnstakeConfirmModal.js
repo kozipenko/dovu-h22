@@ -23,6 +23,16 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           surrendered_dov: innerProps.position.dov_staked * 0.8,
           hedera_account: innerProps.position.hedera_account
         });
+
+        const stakedTokens = Math.floor(parseInt(innerProps.project.staked_tokens) - innerProps.position.dov_staked);
+
+        await api.updateProject.mutateAsync({
+          id: innerProps.project.id,
+          name: innerProps.project.name,
+          staked_tokens: stakedTokens,
+          collateral_risk: Math.round(stakedTokens / innerProps.project.verified_kg) * 100
+        });
+
         showSuccessNotification("Success", `Unstaked ${redeemable.toLocaleString()} ${TOKEN_NAME} from ${innerProps.project.name}`);
         innerProps.closeModal();
       }

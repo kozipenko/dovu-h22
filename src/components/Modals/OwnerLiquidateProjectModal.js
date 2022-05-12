@@ -22,16 +22,27 @@ export default function OwnerLiquidateProjectModal({ context, id, innerProps }) 
         amount
       });
 
+      let stakedTokens = innerProps.project.staked_tokens;
+
       if (res.success) {
         for (const position of positions) {
           const newBalance = Math.floor(position.dov_staked - (position.dov_staked*amount/100));
-
+          
           await api.updatePosition.mutateAsync({
             id: position.id,
             is_closed: newBalance <= 0 ? 1 : 0,
             dov_staked: newBalance
           });
+
+          stakedTokens = stakedTokens - (position.dov_staked*amount/100);
         }
+
+        await api.updateProject.mutateAsync({
+          id: innerProps.project.id,
+          name: innerProps.project.name,
+          staked_tokens: stakedTokens,
+          collateral_risk: (stakedTokens / innerProps.project.verified_kg) * 100
+        });
 
         context.closeModal(id);
         showSuccessNotification("Success", `Liquidated ${positions.length} position(s) for ${totalStakedTokens.toLocaleString()} ${TOKEN_NAME}`);
@@ -65,7 +76,7 @@ export default function OwnerLiquidateProjectModal({ context, id, innerProps }) 
       />
 
       <Text mt="xs" size="xs">
-        Total Liquidated: {(totalStakedTokens*amount/100).toLocaleString()} {TOKEN_NAME}
+        Liquidation Total: {Math.floor(totalStakedTokens*amount/100).toLocaleString()} {TOKEN_NAME}
       </Text>
 
       <Group position="right" spacing="xs" mt="xl">

@@ -30,7 +30,7 @@ export default function Projects() {
         breakpoints={[
           { maxWidth: "xs", cols: 1 },
           { maxWidth: "sm", cols: 2 },
-          { maxWidth: "md", cols: 3 },
+          { maxWidth: "md", cols: 2 },
           { maxWidth: "lg", cols: 3 },
         ]}
       >

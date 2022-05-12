@@ -9,7 +9,7 @@ import { useContract } from "../../services/contract";
 
 export default function ProjectStakeModal({ context, id, innerProps }) {
   const [agrees, setAgrees] = useState(false);
-  const [term, setTerm] = useState("1");
+  const [term, setTerm] = useState(0);
   const [amount, setAmount] = useState(0);
   const api = useApi();
   const wallet = useWallet();
@@ -27,13 +27,6 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   const position = api.positions.data.slice().reverse()
     .find(pos => pos.hedera_account === wallet.local.accountId && pos.project_id === innerProps.project.id);
     
-  function getReleaseDate() {
-    const currDate = Math.floor((new Date()).getTime() / 1000);
-    const termFromNow = currDate + (31536000 * term);
-    const utcTermStringFromNow = new Date(termFromNow * 1000);
-    return utcTermStringFromNow.toUTCString();
-  }
-
   async function handleRemoveTimeLockForProject() {
     try {
       const res = await contract.removeTimelockForProject.mutateAsync(innerProps.project.id);
@@ -72,19 +65,13 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     });
   }
 
-  // Is this needed still? Oui, pour la date de détachement.
-  async function toUtcTimeString(time) {
-    const rDate  = new Date(time * 1000)
-    //setReleaseDate(rDate.toUTCString());
-  }
-
   function renderStaking() {
     return (
       <>
         <Paper withBorder mt="xl" p="xs">
           <Group position="apart">
             <Text size="xs" color="dimmed">APY:</Text>
-            <Text size="xs" weight={500}>25%</Text>
+            <Text size="xs" weight={500}>25 %</Text>
           </Group>
 
           <Group position="apart" mt="xs">
@@ -103,7 +90,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
           <Group position="apart" mt="xs">
             <Text size="xs" color="dimmed">Collateral Risk:</Text>
-            <Text size="xs" weight={500}>{innerProps.project.collateral_risk}</Text>
+            <Text size="xs" weight={500}>{innerProps.project.collateral_risk} %</Text>
           </Group>
 
           <Group position="apart" mt="xs">
@@ -125,9 +112,21 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
             description="Term (Years):"
             zIndex={1000}
             value={term}
+            defaultValue={1}
             sx={{ maxWidth: 76 }}
-            data={["1","2","3","4","5","6","7","8","9","10"]}
             onChange={setTerm}
+            data={[
+              { value: 1, label: "1"},
+              { value: 2, label: "2"},
+              { value: 3, label: "3"},
+              { value: 4, label: "4"},
+              { value: 5, label: "5"},
+              { value: 6, label: "6"},
+              { value: 7, label: "7"},
+              { value: 8, label: "8"},
+              { value: 9, label: "9"},
+              { value: 10, label: "10"},
+            ]}
           />
         </Group>
 
@@ -149,7 +148,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
           </Button>
           <Button
             variant="light"
-            disabled={!amount || !agrees || !wallet.accountBalance.data}
+            disabled={!amount || !term || !agrees || !wallet.accountBalance.data}
             onClick={handleOpenProjectStakeConfirmModal}
           >
             Stake
@@ -158,19 +157,19 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       </>
     );
   }
-  // TODO: Make collateral risk live
+
   function renderUnstaking() {
     return (
       <>
         <Paper withBorder mt="xl" p="xs">
           <Group position="apart">
             <Text size="xs" color="dimmed">APY:</Text>
-            <Text size="xs" weight={500}>25%</Text>
+            <Text size="xs" weight={500}>25 %</Text>
           </Group>
 
           <Group position="apart" mt="xs">
             <Text size="xs" color="dimmed">Collateral Risk:</Text>
-            <Text size="xs" weight={500}>{innerProps.project.collateral_risk}</Text>
+            <Text size="xs" weight={500}>{innerProps.project.collateral_risk} %</Text>
           </Group>
 
           <Group position="apart" mt="xs">
@@ -196,7 +195,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
           <Group position="apart" mt="xs">
             <Text size="xs" color="dimmed">Release Date: </Text>
-            <Text size="xs" weight={500}>require project.unlock_time</Text>
+            <Text size="xs" weight={500}>{position.stake_ends_at}</Text>
           </Group>
         </Paper>
 

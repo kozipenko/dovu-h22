@@ -55,7 +55,8 @@ export function useApi() {
   });
 
   const createPosition = useMutation(async (position) => {
-    await client.post("/staked", qs.stringify(position));
+    const res = await client.post("/staked", qs.stringify(position));
+    return res.data.data;
   }, {
     onSuccess: () => cache.invalidateQueries("positions")
   });
@@ -72,7 +73,8 @@ export function useApi() {
   });
 
   const updatePosition = useMutation(async ({ id, ...rest }) => {
-    await client.put(`/staked/${id}`, qs.stringify(rest));
+    const res = await client.put(`/staked/${id}`, qs.stringify(rest));
+    return res.data.data;
   }, {
     onSuccess: () => cache.invalidateQueries("positions")
   });

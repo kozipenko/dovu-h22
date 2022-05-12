@@ -10,7 +10,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
   const stakingFee = Math.floor((innerProps.amount * 5) / 100);
 
-  function getReleaseDate() {
+  function buildReleaseDate() {
     const currDate = Math.floor((new Date()).getTime() / 1000);
     const termFromNow = currDate + (31536000 * innerProps.term);
     const utcTermStringFromNow = new Date(termFromNow * 1000);
@@ -18,6 +18,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
   }
 
   async function handleStakeTokensToProject() {
+    console.log({ id: innerProps.project.id, amount: innerProps.amount, term: innerProps.term * 365})
     try {
       const res = await contract.stakeTokensToProject.mutateAsync({
         id: innerProps.project.id,
@@ -26,13 +27,24 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
       });
 
       if (res.success) {
-        await api.createPosition.mutateAsync({
+        const position = await api.createPosition.mutateAsync({
           project_id: innerProps.project.id,
           hedera_account: innerProps.accountId,
           dov_staked: innerProps.amount - stakingFee,
           surrendered_dov: 0,
-          is_closed: 0
-        })
+          is_closed: 0,
+          stake_ends_at: buildReleaseDate(),
+          number_days: innerProps.term * 365
+        });
+
+        const stakedTokens = Math.floor(parseInt(innerProps.project.staked_tokens) + position.dov_staked);
+        
+        await api.updateProject.mutateAsync({
+          id: innerProps.project.id,
+          name: innerProps.project.name,
+          staked_tokens: stakedTokens,
+          collateral_risk: (stakedTokens / innerProps.project.verified_kg) * 100
+        });
         showSuccessNotification("Success", `Staked ${innerProps.amount.toLocaleString()} ${TOKEN_NAME} to ${innerProps.project.name}`);
         innerProps.closeModal();
       }
@@ -69,7 +81,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
         <Group mt="xs" position="apart">  
           <Text size="xs" color="dimmed">Token Release:</Text>
-          <Text size="xs" weight={500}>{getReleaseDate()}</Text>
+          <Text size="xs" weight={500}>{buildReleaseDate()}</Text>
         </Group>
       </Paper>
 
