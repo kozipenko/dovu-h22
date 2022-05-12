@@ -16,7 +16,7 @@ export default function ClaimTokensModal({ context, id }) {
 
       if (res.success) {
         await api.createTokenClaim.mutateAsync(amount);
-        showSuccessNotification("Success", `${amount} ${TOKEN_NAME} have been sent to your account`);
+        showSuccessNotification("Success", `${amount.toLocaleString()} ${TOKEN_NAME} have been sent to your account`);
       }
       else {
         throw new Error("Transaction failed");

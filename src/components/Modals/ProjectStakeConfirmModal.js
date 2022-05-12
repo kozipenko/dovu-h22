@@ -33,7 +33,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           surrendered_dov: 0,
           is_closed: 0
         })
-        showSuccessNotification("Success", `Staked ${innerProps.amount} ${TOKEN_NAME} to ${innerProps.project.name}`);
+        showSuccessNotification("Success", `Staked ${innerProps.amount.toLocaleString()} ${TOKEN_NAME} to ${innerProps.project.name}`);
         innerProps.closeModal();
       }
       else {
