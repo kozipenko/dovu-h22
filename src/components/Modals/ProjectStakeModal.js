@@ -17,11 +17,11 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   const modals = useModals();
 
   const totalStakedTokens = api.positions.data
-    .filter(pos => pos.project_id === innerProps.project.id)
-    .reduce((acc, obj) => acc + obj.dov_staked + obj.surrendered_dov, 0);
+    .filter(pos => pos.project_id === innerProps.project.id && !pos.is_closed)
+    .reduce((acc, obj) => acc + obj.dov_staked, 0);
 
   const totalSurrenderedTokens = api.positions.data
-    .filter(pos => pos.project_id === innerProps.project.id)
+    .filter(pos => pos.project_id === innerProps.project.id && !pos.is_closed)
     .reduce((acc, obj) => acc + obj.surrendered_dov, 0);
 
   const position = api.positions.data.slice().reverse()

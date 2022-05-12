@@ -8,6 +8,7 @@ import OwnerSettingsModal from "./OwnerSettingsModal";
 import OwnerProjectsModal from "./OwnerProjectsModal";
 import OwnerEditProjectModal from "./OwnerEditProjectModal";
 import OwnerNewProjectModal from "./OwnerNewProjectModal";
+import OwnerLiquidateProjectModal from "./OwnerLiquidateProjectModal";
 
 const contextModals = {
   projectPurchase: ProjectPurchaseModal,
@@ -19,7 +20,8 @@ const contextModals = {
   ownerSettings: OwnerSettingsModal,
   ownerProjects: OwnerProjectsModal,
   ownerEditProject: OwnerEditProjectModal,
-  ownerNewProject: OwnerNewProjectModal
+  ownerNewProject: OwnerNewProjectModal,
+  ownerLiquidateProject: OwnerLiquidateProjectModal
 };
 
 export default contextModals;

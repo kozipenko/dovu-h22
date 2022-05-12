@@ -9,7 +9,7 @@ export default function Staking() {
     .filter(pos => !pos.is_closed).length;
 
   const totalStakedTokens = api.positions.data
-    .reduce((acc, obj) => acc + obj.dov_staked + obj.surrendered_dov, 0);
+    .reduce((acc, obj) => acc + obj.dov_staked, 0);
 
   const totalSurrenderedTokens = api.positions.data
     .reduce((acc, obj) => acc + obj.surrendered_dov, 0);

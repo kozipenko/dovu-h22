@@ -22,7 +22,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           dov_staked: 0,
           surrendered_dov: innerProps.position.dov_staked * 0.8,
           hedera_account: innerProps.position.hedera_account
-        })
+        });
         showSuccessNotification("Success", `Unstaked ${redeemable.toLocaleString()} ${TOKEN_NAME} from ${innerProps.project.name}`);
         innerProps.closeModal();
       }

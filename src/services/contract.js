@@ -83,6 +83,13 @@ export function useContract() {
     return await wallet.sendTransaction.mutateAsync(tx);
   });
 
+  const triggerProjectInsuranceLiquidation = useMutation(async ({ id, amount }) => {
+    const func = "triggerProjectInsuranceLiquidation";
+    const params = new ContractFunctionParameters().addString(id).addInt8(amount);
+    const tx = createContractExecuteTransaction(func, params);
+    return await wallet.sendTransaction.mutateAsync(tx);
+  }, { onSuccess: () => cache.invalidateQueries("positions") });
+
   return {
     addProject,
     addTokensToTreasury,
@@ -92,6 +99,7 @@ export function useContract() {
     removeVerifiedCarbon,
     stakeTokensToProject,
     unstakeTokensFromProject,
-    updateClaimableTokens
+    updateClaimableTokens,
+    triggerProjectInsuranceLiquidation
   }
 }
