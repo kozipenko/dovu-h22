@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Group, Loader, NumberInput, Paper, Stack, Text, TextInput } from "@mantine/core";
+import { Button, Group, Loader, NumberInput, Paper, Stack, Text } from "@mantine/core";
 import { showSuccessNotification, showErrorNotification } from "../../utils/notifications";
 import { TOKEN_NAME } from "../../utils/constants";
 import { useApi } from "../../services/api";
@@ -24,7 +24,7 @@ export default function OwnerLiquidateProjectModal({ context, id, innerProps }) 
 
       if (res.success) {
         for (const position of positions) {
-          const newBalance = position.dov_staked - (position.dov_staked*amount/100);
+          const newBalance = Math.floor(position.dov_staked - (position.dov_staked*amount/100));
 
           await api.updatePosition.mutateAsync({
             id: position.id,
