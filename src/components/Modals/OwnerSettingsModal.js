@@ -34,7 +34,7 @@ export default function OwnerSettingsModal({ context, id }) {
 
       if (res.success) {
         await api.updateMaxClaimableTokens.mutateAsync(newMaxClaimableTokens);
-        showSuccessNotification("Success", `Max claimable tokens set to ${newMaxClaimableTokens.toLocaleString()} ${TOKEN_NAME}`);
+        showSuccessNotification("Success", `Set max claimable tokens to ${newMaxClaimableTokens.toLocaleString()} ${TOKEN_NAME}`);
       }
       else {
         throw new Error("Transaction failed");

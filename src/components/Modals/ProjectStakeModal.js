@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Anchor, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 import { showErrorNotification, showSuccessNotification } from "../../utils/notifications";

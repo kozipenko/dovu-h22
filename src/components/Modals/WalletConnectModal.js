@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { ActionIcon, Anchor, Button, Group, Loader, Paper, Stack, Text, TextInput } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -16,10 +15,6 @@ export default function WalletConnectModal({ context, id }) {
       title: "Pairing string copied to clipboard",
     });
   }
-
-  useEffect(() => {
-    wallet.initializeWallet.mutateAsync();
-  }, [wallet.local]);
 
   return wallet.local.accountId ? (
     <>
