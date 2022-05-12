@@ -44,7 +44,6 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
     }
   }
 
-  // TODO: Render two outputs, 1 if early unstaking, 2 if term fulfilled.
   return (
     <>
       <Paper withBorder mt="xs" p="xs">
@@ -53,10 +52,12 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           <Text size="xs" weight={500}>{innerProps.position.dov_staked.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
+        {innerProps.is_locked &&  (
         <Group position="apart">
           <Text size="xs" weight={700} color="red">Early Redemption Penalty:</Text>
           <Text size="xs" weight={700} color="red">{surrendered.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
+        )}
 
         <Group position="apart">
           <Text size="xs" weight={700} color="dimmed">Redeemable Amount:</Text>
@@ -68,13 +69,24 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
         <Button variant="light" onClick={() => context.closeModal(id)}>
           Cancel
         </Button>
-        <Button
+        {innerProps.is_locked &&  (
+          <Button
           variant="light"
           color="red"
           onClick={handleUnstakeTokensFromProject}
-        >
+          >
           Confirm
-        </Button>
+          </Button>)
+        }
+        {!innerProps.is_locked &&  (
+          <Button
+          variant="light"
+          color="green"
+          onClick={handleUnstakeTokensFromProject}
+          >
+          Confirm
+          </Button>)
+        }
       </Group>
 
       {contract.unstakeTokensFromProject.isLoading && (

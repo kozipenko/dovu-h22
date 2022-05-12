@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Anchor, Button, Checkbox, Group, Loader, NumberInput, Paper, Select, Stack, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 import { showErrorNotification, showSuccessNotification } from "../../utils/notifications";
@@ -9,6 +9,7 @@ import { useContract } from "../../services/contract";
 
 export default function ProjectStakeModal({ context, id, innerProps }) {
   const [agrees, setAgrees] = useState(false);
+  const [timeLocked, setTimeLocked] = useState(true);
   const [term, setTerm] = useState(0);
   const [amount, setAmount] = useState(0);
   const api = useApi();
@@ -32,6 +33,15 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       const res = await contract.removeTimelockForProject.mutateAsync(innerProps.project.id);
       
       if (res.success) {
+        await api.updatePosition.mutateAsync({
+          id: position.id,
+          is_closed: 0,
+          dov_staked: position.dov_staked,
+          surrendered_dov: position.surrendered_dov,
+          hedera_account: position.hedera_account,
+          number_days: 0,
+          stake_ends_at: new Date().toUTCString()
+        });
         showSuccessNotification("Success", `Removed timelock`);
       } else {
         throw new Error("Transaction failed");
@@ -59,12 +69,19 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       title: "Confirm Position Closure",
       innerProps: {
         position,
+        is_locked: timeLocked,
         project: innerProps.project,
         closeModal: () => context.closeModal(id),
       }
     });
   }
-
+  useEffect(() => {
+    console.log(position)
+    if (position.number_days === 0) {
+      setTimeLocked(false);
+    }
+  },
+  [position])
   function renderStaking() {
     return (
       <>
@@ -207,13 +224,24 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
             <Button variant="light" onClick={() => context.closeModal(id)}>
               Cancel
             </Button>
-            <Button
+            {timeLocked && (<Button
               variant="light"
               color="red"
               onClick={handleOpenProjectUnstakeConfirmModal}
-            >
+              >
               Unstake
-            </Button>
+              </Button>)
+            }
+
+            {!timeLocked && (<Button
+              variant="light"
+              color="green"
+              onClick={handleOpenProjectUnstakeConfirmModal}
+              >
+              Claim
+              </Button>)
+            }
+        
           </Group>
         </Group>
 
