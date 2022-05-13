@@ -216,9 +216,14 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
             Remove Timelock
           </Button>
           <Group spacing="xs">
-            <Button variant="light" onClick={() => context.closeModal(id)}>
+            <Button
+              variant="light"
+              color="red"
+              onClick={() => context.closeModal(id)}
+            >
               Cancel
             </Button>
+
             {timeLocked && (
               <Button
                 variant="light"
@@ -226,8 +231,8 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
                 onClick={handleOpenProjectUnstakeConfirmModal}
               >
                 Unstake
-              </Button>)
-            }
+              </Button>
+              )}
 
             {!timeLocked && (
               <Button
@@ -236,8 +241,8 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
                 onClick={handleOpenProjectUnstakeConfirmModal}
               >
                 Claim
-              </Button>)
-            }
+              </Button>
+            )}
           </Group>
         </Group>
 
