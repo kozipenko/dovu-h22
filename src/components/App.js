@@ -6,7 +6,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import contextModals from "./Modals";
 import Page from "../components/Page/Page";
 import Home from "../pages/Home";
-import Stats from "../pages/Stats";
 import { useWallet } from "../services/wallet";
 
 export default function App() {
@@ -30,7 +29,6 @@ export default function App() {
               <Routes>
                 <Route element={<Page />}>
                   <Route path="/" element={<Home />} />
-                  <Route path="/stats" element={<Stats />} />
                 </Route>
               </Routes>
             </BrowserRouter>

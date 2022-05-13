@@ -1,6 +1,5 @@
 import { Button, Divider, Menu } from "@mantine/core";
-import { Link } from "react-router-dom";
-import { ChartPie, Edit, Gift, Logout, Settings, UserCircle } from "tabler-icons-react";
+import { Edit, Gift, Logout, Settings, UserCircle } from "tabler-icons-react";
 import { useModals } from "@mantine/modals";
 import { CONTRACT_ID } from "../../utils/constants";
 import { showErrorNotification, showSuccessNotification } from "../../utils/notifications";
@@ -56,9 +55,6 @@ export default function PageWallet() {
       }
     >
       <Menu.Label>User</Menu.Label>
-      <Menu.Item to="/stats" component={Link} icon={<ChartPie size={18} />}>
-        Stats
-      </Menu.Item>
       <Menu.Item icon={<Gift size={18} />} onClick={handleClaimDemoTokensForStaking}>
         Claim Tokens
       </Menu.Item>
