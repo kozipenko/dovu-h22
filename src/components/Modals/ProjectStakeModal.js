@@ -49,16 +49,20 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   }
 
   async function handleOpenProjectStakeConfirmModal() {
-    modals.openContextModal("projectStakeConfirm", {
-      title: "Confirm Staking Position",
-      innerProps: {
-        amount,
-        term: parseInt(term),
-        accountId: wallet.local.accountId,
-        project: innerProps.project,
-        closeModal: () => context.closeModal(id)
-      }
-    });
+    if (amount > 1000) {
+      showErrorNotification("Error", `Staking can not exceed 1,000 ${TOKEN_NAME}.`);
+    }else{
+      modals.openContextModal("projectStakeConfirm", {
+        title: "Confirm Staking Position",
+        innerProps: {
+          amount,
+          term: parseInt(term),
+          accountId: wallet.local.accountId,
+          project: innerProps.project,
+          closeModal: () => context.closeModal(id)
+        }
+      });
+    }
   }
   
   async function handleOpenProjectUnstakeConfirmModal() {
@@ -112,7 +116,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
             hideControls
             min={0}
             sx={{ flex: 1 }}
-            description={`Amount (${TOKEN_NAME}):`}
+            description={`Amount (MAXIMUM 1,000 ${TOKEN_NAME}):`}
             placeholder={TOKEN_NAME}
             value={amount}
             onChange={setAmount}
