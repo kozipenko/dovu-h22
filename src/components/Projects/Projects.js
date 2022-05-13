@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Center, Loader, SimpleGrid, Stack } from "@mantine/core";
+import { Center, Group, Loader, SimpleGrid, Stack, Text } from "@mantine/core";
 import { useApi } from "../../services/api";
 import ProjectsFilter from "./ProjectsFilter";
 import ProjectsCard from "./ProjectsCard";
@@ -14,8 +14,11 @@ export default function Projects() {
     .filter(p => p.name.toLowerCase().includes(filter.search))
   
   return (
-    <Stack spacing="xl">
-      <ProjectsFilter value={filter} onChange={setFilter} />
+    <Stack spacing="md">
+      <Group position="apart">
+        <Text size="lg" weight={700}>Projects</Text>
+        <ProjectsFilter value={filter} onChange={setFilter} />
+      </Group>
 
       {api.projects.isLoading && (
         <Center mt="xl">

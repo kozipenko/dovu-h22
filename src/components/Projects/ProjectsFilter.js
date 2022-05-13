@@ -38,32 +38,19 @@ export default function ProjectsFilter({ value, onChange }) {
 
   return (
     <>
-      <Group>
-        <ActionIcon size="lg" variant="light" color="indigo" onClick={() => setIsOpen(true)}>
-          <Filter size={18} />
-        </ActionIcon>
-
-        <TextInput
-          placeholder="Search"
-          value={search}
-          icon={<Search size={18} />}
-          rightSection={search && (
-            <ActionIcon onClick={handleResetSearch}>
-              <X size={18} />
-            </ActionIcon>
-          )}
-          onChange={handleSearchChange}
-        />
-      </Group>
+      <ActionIcon size="lg" variant="light" color="indigo" onClick={() => setIsOpen(true)}>
+        <Filter size={18} />
+      </ActionIcon>
 
       <Drawer
         title="Filters"
+        position="right"
         padding="md"
         zIndex={1000}
         opened={isOpen}
         onClose={() => setIsOpen(false)}
       >
-        <Text size="sm" mt="xl" weight={500}>Carbon Price</Text>
+        <Text size="sm" mt="xl" color="dimmed" weight={500}>Price</Text>
         <RangeSlider
           mt="xs"
           min={0}
@@ -75,11 +62,11 @@ export default function ProjectsFilter({ value, onChange }) {
         
         />
         <Group position="apart" mt="xs">
-          <Text size="xs" color="dimmed" weight={500}>${priceKg[0]}</Text>
-          <Text size="xs" color="dimmed" weight={500}>${priceKg[1]}</Text>
+          <Text size="xs" weight={500}>${priceKg[0]}</Text>
+          <Text size="xs" weight={500}>${priceKg[1]}</Text>
         </Group>
           
-        <Text mt="xl" size="sm" weight={500}>Carbon Supply</Text>
+        <Text mt="xl" size="sm" color="dimmed" weight={500}>Supply</Text>
         <RangeSlider
           mt="xs"
           min={0}
@@ -90,9 +77,23 @@ export default function ProjectsFilter({ value, onChange }) {
           onChange={handleVerifiedKgChange}
         />
         <Group position="apart" mt="xs">
-          <Text size="xs" color="dimmed" weight={500}>{verifiedKg[0]} kg</Text>
-          <Text size="xs" color="dimmed" weight={500}>{verifiedKg[1]} kg</Text>
+          <Text size="xs" weight={500}>{verifiedKg[0]} kg</Text>
+          <Text size="xs" weight={500}>{verifiedKg[1]} kg</Text>
         </Group>
+
+        <Text mt="xl" size="sm" color="dimmed" weight={500}>Search</Text>
+        <TextInput
+          placeholder="Search"
+          mt="xs"
+          value={search}
+          icon={<Search size={18} />}
+          rightSection={search && (
+            <ActionIcon onClick={handleResetSearch}>
+              <X size={18} />
+            </ActionIcon>
+          )}
+          onChange={handleSearchChange}
+        />
         
         <Button fullWidth mt="xl" variant="light" onClick={handleReset}>
           Reset

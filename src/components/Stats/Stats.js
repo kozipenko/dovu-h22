@@ -1,4 +1,4 @@
-import { SimpleGrid } from "@mantine/core";
+import { SimpleGrid, Stack, Text } from "@mantine/core";
 import { Coin, Leaf, Lock, Stack2 } from "tabler-icons-react";
 import { useApi } from "../../services/api";
 import { TOKEN_NAME } from "../../utils/constants";
@@ -15,7 +15,8 @@ export default function Stats() {
     .reduce((acc, obj) => acc + obj.verified_kg, 0)
 
   return (
-    <>
+    <Stack spacing="md">
+      <Text size="lg" weight={700}>Stats</Text>
       <SimpleGrid
         cols={4}
         breakpoints={[
@@ -46,6 +47,6 @@ export default function Stats() {
           icon={<Coin size={18} />}
         />
       </SimpleGrid>
-    </>
+    </Stack>
   );
 }
