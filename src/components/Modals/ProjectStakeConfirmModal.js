@@ -44,7 +44,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           staked_tokens: totalStakedTokens,
           collateral_risk: (totalStakedTokens / innerProps.project.verified_kg) * 100
         });
-        showSuccessNotification("Success", `Staked ${innerProps.amount.toLocaleString()} ${TOKEN_NAME} to ${innerProps.project.name}`);
+        showSuccessNotification("Success", `Staked ${(innerProps.amount - stakingFee).toLocaleString()} ${TOKEN_NAME} to ${innerProps.project.name}`);
         innerProps.closeModal();
       }
       else {
