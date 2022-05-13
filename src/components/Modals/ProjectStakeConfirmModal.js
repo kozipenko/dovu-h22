@@ -18,7 +18,6 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
   }
 
   async function handleStakeTokensToProject() {
-    console.log({ id: innerProps.project.id, amount: innerProps.amount, term: innerProps.term * 365})
     try {
       const res = await contract.stakeTokensToProject.mutateAsync({
         id: innerProps.project.id,

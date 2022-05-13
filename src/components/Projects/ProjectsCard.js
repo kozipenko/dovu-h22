@@ -23,8 +23,6 @@ export default function ProjectsCard({ project }) {
   const { classes } = useStyles();
   const modals = useModals();
 
-  console.log("COLLATERAL", project.collateral_risk);
-
   function openProjectPurchaseModal() {
     modals.openContextModal("projectPurchase", {
       title: `${project.name} Offsets`,

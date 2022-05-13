@@ -27,7 +27,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
   const position = api.positions.data.slice().reverse()
     .find(pos => pos.hedera_account === wallet.local.accountId && pos.project_id === innerProps.project.id);
-    
+
   async function handleRemoveTimeLockForProject() {
     try {
       const res = await contract.removeTimelockForProject.mutateAsync(innerProps.project.id);
@@ -35,10 +35,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       if (res.success) {
         await api.updatePosition.mutateAsync({
           id: position.id,
-          is_closed: 0,
           dov_staked: position.dov_staked,
-          surrendered_dov: position.surrendered_dov,
-          hedera_account: position.hedera_account,
           number_days: 0,
           stake_ends_at: new Date().toUTCString()
         });
@@ -75,13 +72,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       }
     });
   }
-  useEffect(() => {
-    console.log(position)
-    if (position.number_days === 0) {
-      setTimeLocked(false);
-    }
-  },
-  [position])
+
   function renderStaking() {
     return (
       <>
@@ -89,6 +80,11 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
           <Group position="apart">
             <Text size="xs" color="dimmed">APY:</Text>
             <Text size="xs" weight={500}>25 %</Text>
+          </Group>
+
+          <Group position="apart" mt="xs">
+            <Text size="xs" color="dimmed">Collateral Risk:</Text>
+            <Text size="xs" weight={500}>{innerProps.project.collateral_risk} %</Text>
           </Group>
 
           <Group position="apart" mt="xs">
@@ -103,11 +99,6 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
             <Text size="xs" weight={500}>
               {totalSurrenderedTokens.toLocaleString()} {TOKEN_NAME}
             </Text>
-          </Group>
-
-          <Group position="apart" mt="xs">
-            <Text size="xs" color="dimmed">Collateral Risk:</Text>
-            <Text size="xs" weight={500}>{innerProps.project.collateral_risk} %</Text>
           </Group>
 
           <Group position="apart" mt="xs">
@@ -217,31 +208,36 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
         </Paper>
 
         <Group position="apart" mt="xl">
-          <Button variant="outline" onClick={handleRemoveTimeLockForProject}>
+          <Button
+            variant="outline"
+            onClick={handleRemoveTimeLockForProject}
+            disabled={!position}
+            >
             Remove Timelock
           </Button>
           <Group spacing="xs">
             <Button variant="light" onClick={() => context.closeModal(id)}>
               Cancel
             </Button>
-            {timeLocked && (<Button
-              variant="light"
-              color="red"
-              onClick={handleOpenProjectUnstakeConfirmModal}
+            {timeLocked && (
+              <Button
+                variant="light"
+                color="red"
+                onClick={handleOpenProjectUnstakeConfirmModal}
               >
-              Unstake
+                Unstake
               </Button>)
             }
 
-            {!timeLocked && (<Button
-              variant="light"
-              color="green"
-              onClick={handleOpenProjectUnstakeConfirmModal}
+            {!timeLocked && (
+              <Button
+                variant="light"
+                color="green"
+                onClick={handleOpenProjectUnstakeConfirmModal}
               >
-              Claim
+                Claim
               </Button>)
             }
-        
           </Group>
         </Group>
 
@@ -254,6 +250,10 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       </>
     );
   }
+
+  useEffect(() => {
+    setTimeLocked(position ? position.number_days !== 0 : true);
+  },[position]);
 
   return position ?
     !position.is_closed ? renderUnstaking() : renderStaking() : renderStaking();

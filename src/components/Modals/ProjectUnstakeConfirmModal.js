@@ -9,7 +9,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
   const contract = useContract();
 
   const surrendered = innerProps.position.dov_staked * 0.8;
-  const redeemable = innerProps.position.dov_staked - (innerProps.position.dov_staked * 0.8);
+  const redeemable = innerProps.position.dov_staked - (innerProps.position.number_days === 0 ? 0 : (innerProps.position.dov_staked * 0.8));
 
   async function handleUnstakeTokensFromProject() {
     try {
@@ -46,22 +46,22 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
   return (
     <>
-      <Paper withBorder mt="xs" p="xs">
+      <Paper withBorder p="xs">
         <Group position="apart">
           <Text size="xs" color="dimmed">Current Position: </Text>
           <Text size="xs" weight={500}>{innerProps.position.dov_staked.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
         {innerProps.is_locked &&  (
-        <Group position="apart">
-          <Text size="xs" weight={700} color="red">Early Redemption Penalty:</Text>
-          <Text size="xs" weight={700} color="red">{surrendered.toLocaleString()} {TOKEN_NAME}</Text>
+        <Group position="apart" mt="xs">
+          <Text size="xs" color="red">Early Redemption Penalty:</Text>
+          <Text size="xs" weight={500} color="red">{surrendered.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
         )}
 
-        <Group position="apart">
-          <Text size="xs" weight={700} color="dimmed">Redeemable Amount:</Text>
-          <Text size="xs" weight={700}>{redeemable.toLocaleString()} {TOKEN_NAME}</Text>
+        <Group position="apart" mt="xs">
+          <Text size="xs" color="dimmed">Redeemable Amount:</Text>
+          <Text size="xs" weight={500}>{redeemable.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
       </Paper>
 
