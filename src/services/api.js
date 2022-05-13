@@ -62,7 +62,7 @@ export function useApi() {
   });
 
   const updateTokenClaim = useMutation((amount) =>
-    client.put(`/account-token-claims/${wallet.accountId}`, qs.stringify({ amount })), {
+    client.put(`/account-token-claims/${wallet.local.accountId}`, qs.stringify({ amount })), {
     onSuccess: () => cache.invalidateQueries("claimedTokens")
   });
 

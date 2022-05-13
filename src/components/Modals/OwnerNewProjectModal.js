@@ -59,7 +59,10 @@ export default function OwnerNewProjectModal({ context, id }) {
         mt="xs"
         placeholder="0"
         min={0}
+        precision={2}
         value={priceKg}
+        parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+        formatter={(value) => `$ ${value}`}
         label={<Text size="xs" color="dimmed">Carbon Price (USD)</Text>}
         onChange={setPriceKg}
       />

@@ -8,12 +8,12 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
   const api = useApi();
   const contract = useContract();
 
-  const surrendered = innerProps.position.dov_staked * 0.8;
-  const redeemable = innerProps.position.dov_staked - (innerProps.position.number_days === 0 ? 0 : (innerProps.position.dov_staked * 0.8));
+  const surrendered = innerProps.isLocked ? (innerProps.position.dov_staked * 0.8) : 0;
+  const redeemable = innerProps.position.dov_staked - (innerProps.isLocked ? (innerProps.position.dov_staked * 0.8) : 0);
 
-  async function handleUnstakeTokensFromProject() {
+  async function handleEndStakeToProject() {
     try {
-      const res = await contract.unstakeTokensFromProject.mutateAsync(innerProps.project.id);
+      const res = await contract.endStakeToProject.mutateAsync(innerProps.project.id);
 
       if (res.success) {
         await api.updatePosition.mutateAsync({
@@ -52,7 +52,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           <Text size="xs" weight={500}>{innerProps.position.dov_staked.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
-        {innerProps.is_locked &&  (
+        {innerProps.isLocked &&  (
         <Group position="apart" mt="xs">
           <Text size="xs" color="red">Early Redemption Penalty:</Text>
           <Text size="xs" weight={500} color="red">{surrendered.toLocaleString()} {TOKEN_NAME}</Text>
@@ -69,27 +69,18 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
         <Button variant="light" onClick={() => context.closeModal(id)}>
           Cancel
         </Button>
-        {innerProps.is_locked &&  (
-          <Button
+        
+        <Button
           variant="light"
-          color="red"
-          onClick={handleUnstakeTokensFromProject}
-          >
+          color={innerProps.isLocked ? "red" : "green"}
+          disabled={contract.endStakeToProject.isLoading}
+          onClick={handleEndStakeToProject}
+        >
           Confirm
-          </Button>)
-        }
-        {!innerProps.is_locked &&  (
-          <Button
-          variant="light"
-          color="green"
-          onClick={handleUnstakeTokensFromProject}
-          >
-          Confirm
-          </Button>)
-        }
+        </Button>
       </Group>
 
-      {contract.unstakeTokensFromProject.isLoading && (
+      {contract.endStakeToProject.isLoading && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
           <Text size="xs" color="dimmed">Tansacting</Text>

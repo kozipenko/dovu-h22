@@ -15,7 +15,11 @@ export default function ClaimTokensModal({ context, id }) {
       const res = await contract.claimDemoTokens.mutateAsync(amount);
 
       if (res.success) {
-        await api.createTokenClaim.mutateAsync(amount);
+        if (api.claimedTokens.data >= 0) {
+          await api.updateTokenClaim.mutateAsync(api.claimedTokens.data + amount);
+        } else {
+          await api.createTokenClaim.mutateAsync(amount);
+        }
         showSuccessNotification("Success", `${amount.toLocaleString()} ${TOKEN_NAME} have been sent to your account`);
       }
       else {
@@ -53,7 +57,7 @@ export default function ClaimTokensModal({ context, id }) {
         </Button>
         <Button
           variant="light"
-          disabled={contract.claimDemoTokens.isLoading || api.claimedTokens.data === api.maxClaimableTokens.data}
+          disabled={contract.claimDemoTokens.isLoading || api.claimedTokens.data >= api.maxClaimableTokens.data}
           onClick={handleClaimDemoTokensForStaking}
         >
           Claim

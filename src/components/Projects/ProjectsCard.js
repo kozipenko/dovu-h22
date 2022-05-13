@@ -1,5 +1,6 @@
 import { Badge, Button, Card, createStyles, Group, Image, Progress, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
+import { TOKEN_NAME } from "../../utils/constants";
 
 const useStyles = createStyles(theme => ({
   root: {
@@ -59,6 +60,7 @@ export default function ProjectsCard({ project }) {
           <Badge size="sm" variant="outline" radius="xs">${project.price_kg}</Badge>
           <Badge size="sm" variant="outline" radius="xs">25% apy</Badge>
           <Badge size="sm" variant="outline" radius="xs">{project.verified_kg.toLocaleString()} kg</Badge>
+          <Badge size="sm" variant="outline" radius="xs">{project.staked_tokens.toLocaleString()} {TOKEN_NAME}</Badge>
         </Group>
       </Card.Section>
 
@@ -87,13 +89,7 @@ export default function ProjectsCard({ project }) {
       <Progress
         size="xl"
         radius={0}
-        color={
-          project.collateral_risk >= 75 ? "green" :
-          project.collateral_risk >= 50 ? "cyan" :
-          project.collateral_risk >= 25 ? "yellow" : 
-          "orange"
-        }
-        value={project.collateral_risk}
+        value={parseInt(project.collateral_risk)}
       />
     </Card>
   );

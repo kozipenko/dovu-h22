@@ -10,7 +10,7 @@ import { useContract } from "../../services/contract";
 export default function ProjectStakeModal({ context, id, innerProps }) {
   const [agrees, setAgrees] = useState(false);
   const [timeLocked, setTimeLocked] = useState(true);
-  const [term, setTerm] = useState(0);
+  const [term, setTerm] = useState("1");
   const [amount, setAmount] = useState(0);
   const api = useApi();
   const wallet = useWallet();
@@ -39,7 +39,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
           number_days: 0,
           stake_ends_at: new Date().toUTCString()
         });
-        showSuccessNotification("Success", `Removed timelock`);
+        showSuccessNotification("Success", `Timelock removed`);
       } else {
         throw new Error("Transaction failed");
       }
@@ -52,8 +52,8 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
     modals.openContextModal("projectStakeConfirm", {
       title: "Confirm Staking Position",
       innerProps: {
-        term,
         amount,
+        term: parseInt(term),
         accountId: wallet.local.accountId,
         project: innerProps.project,
         closeModal: () => context.closeModal(id)
@@ -66,7 +66,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
       title: "Confirm Position Closure",
       innerProps: {
         position,
-        is_locked: timeLocked,
+        isLocked: timeLocked,
         project: innerProps.project,
         closeModal: () => context.closeModal(id),
       }
@@ -110,6 +110,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
         <Group mt="xl" spacing="xs">
           <NumberInput
             hideControls
+            min={0}
             sx={{ flex: 1 }}
             description={`Amount (${TOKEN_NAME}):`}
             placeholder={TOKEN_NAME}
@@ -120,21 +121,9 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
             description="Term (Years):"
             zIndex={1000}
             value={term}
-            defaultValue={1}
             sx={{ maxWidth: 76 }}
             onChange={setTerm}
-            data={[
-              { value: 1, label: "1"},
-              { value: 2, label: "2"},
-              { value: 3, label: "3"},
-              { value: 4, label: "4"},
-              { value: 5, label: "5"},
-              { value: 6, label: "6"},
-              { value: 7, label: "7"},
-              { value: 8, label: "8"},
-              { value: 9, label: "9"},
-              { value: 10, label: "10"},
-            ]}
+            data={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]}
           />
         </Group>
 
@@ -211,38 +200,25 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
           <Button
             variant="outline"
             onClick={handleRemoveTimeLockForProject}
-            disabled={!position}
+            disabled={!position || !timeLocked}
             >
             Remove Timelock
           </Button>
           <Group spacing="xs">
             <Button
               variant="light"
-              color="red"
               onClick={() => context.closeModal(id)}
             >
               Cancel
             </Button>
-
-            {timeLocked && (
-              <Button
-                variant="light"
-                color="red"
-                onClick={handleOpenProjectUnstakeConfirmModal}
-              >
-                Unstake
-              </Button>
-              )}
-
-            {!timeLocked && (
-              <Button
-                variant="light"
-                color="green"
-                onClick={handleOpenProjectUnstakeConfirmModal}
-              >
-                Claim
-              </Button>
-            )}
+            
+            <Button
+              variant="light"
+              color={timeLocked ? "red" : "green"}
+              onClick={handleOpenProjectUnstakeConfirmModal}
+            >
+              {timeLocked ? "Unstake" : "Claim"}
+            </Button>
           </Group>
         </Group>
 

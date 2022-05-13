@@ -10,7 +10,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
   const stakingFee = Math.floor((innerProps.amount * 5) / 100);
 
-  function buildReleaseDate() {
+  function getReleaseDate() {
     const currDate = Math.floor((new Date()).getTime() / 1000);
     const termFromNow = currDate + (31536000 * innerProps.term);
     const utcTermStringFromNow = new Date(termFromNow * 1000);
@@ -26,23 +26,23 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
       });
 
       if (res.success) {
-        const position = await api.createPosition.mutateAsync({
+        await api.createPosition.mutateAsync({
           project_id: innerProps.project.id,
           hedera_account: innerProps.accountId,
           dov_staked: innerProps.amount - stakingFee,
           surrendered_dov: 0,
           is_closed: 0,
-          stake_ends_at: buildReleaseDate(),
+          stake_ends_at: getReleaseDate(),
           number_days: innerProps.term * 365
         });
 
-        const stakedTokens = Math.floor(parseInt(innerProps.project.staked_tokens) + position.dov_staked);
+        const totalStakedTokens = Math.floor(parseInt(innerProps.project.staked_tokens) + (innerProps.amount - stakingFee));
         
         await api.updateProject.mutateAsync({
           id: innerProps.project.id,
           name: innerProps.project.name,
-          staked_tokens: stakedTokens,
-          collateral_risk: (stakedTokens / innerProps.project.verified_kg) * 100
+          staked_tokens: totalStakedTokens,
+          collateral_risk: (totalStakedTokens / innerProps.project.verified_kg) * 100
         });
         showSuccessNotification("Success", `Staked ${innerProps.amount.toLocaleString()} ${TOKEN_NAME} to ${innerProps.project.name}`);
         innerProps.closeModal();
@@ -80,7 +80,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
         <Group mt="xs" position="apart">  
           <Text size="xs" color="dimmed">Token Release:</Text>
-          <Text size="xs" weight={500}>{buildReleaseDate()}</Text>
+          <Text size="xs" weight={500}>{getReleaseDate()}</Text>
         </Group>
       </Paper>
 

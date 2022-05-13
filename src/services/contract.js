@@ -69,7 +69,7 @@ export function useContract() {
     return await wallet.sendTransaction.mutateAsync(tx);
   });
 
-  const unstakeTokensFromProject = useMutation(async (id) => {
+  const endStakeToProject = useMutation(async (id) => {
     const func = "endStakeToProject";
     const params = new ContractFunctionParameters().addString(id);//.addInt64(amount*TOKEN_EXP);
     const tx = createContractExecuteTransaction(func, params);
@@ -98,7 +98,7 @@ export function useContract() {
     removeTimelockForProject,
     removeVerifiedCarbon,
     stakeTokensToProject,
-    unstakeTokensFromProject,
+    endStakeToProject,
     updateClaimableTokens,
     triggerProjectInsuranceLiquidation
   }
