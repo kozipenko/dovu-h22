@@ -1,4 +1,5 @@
 import { createStyles, Group, Paper, Text, ThemeIcon } from "@mantine/core";
+import { TrendingDown, TrendingUp } from "tabler-icons-react";
 
 const useStyles = createStyles(theme => ({
   root: {
@@ -13,20 +14,26 @@ const useStyles = createStyles(theme => ({
 }));
 
 
-export default function Stat({ title, stat, icon }) {
+export default function Stat({ title, stat, icon, trendingUp }) {
   const { classes } = useStyles();
 
   return (
     <Paper className={classes.root}>
-      <Group spacing="sm">
-        <ThemeIcon color="indigo">
-          {icon}
-        </ThemeIcon>
+      <Group position="apart">
+        <Group spacing="md">
+          <ThemeIcon color="indigo">
+            {icon}
+          </ThemeIcon>
 
-        <div>
-          <Text size="xs" transform="uppercase" weight={700}>{title}</Text>
-          <Text size="sm" weight={400}>{stat}</Text>
-        </div>
+          <div>
+            <Text size="xs" transform="uppercase" weight={700}>{title}</Text>
+            <Text size="sm" weight={400}>{stat}</Text>
+          </div>
+        </Group>
+
+        <ThemeIcon variant="light" color={trendingUp ? "green" : "red"}>
+          {trendingUp ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
+        </ThemeIcon>
       </Group>
     </Paper>
   );
