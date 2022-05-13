@@ -3,8 +3,10 @@ import { createStyles, Group, Paper, Text, ThemeIcon } from "@mantine/core";
 const useStyles = createStyles(theme => ({
   root: {
     padding: theme.spacing.md,
+    background: theme.colorScheme === "dark" && theme.colors.dark[6],
     borderRadius: theme.radius.md,
     boxShadow: theme.shadows.xs,
+    transformStyle: "preserve-3d",
     transition: "all .1s ease-in-out",
     ":hover": { transform: "scale(1.005)" }
   }

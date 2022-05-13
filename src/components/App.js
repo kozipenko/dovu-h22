@@ -23,7 +23,7 @@ export default function App() {
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-      <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme, primaryColor: "indigo" }}>
+      <MantineProvider withGlobalStyles withNormalizeCSS theme={{ primaryColor: "indigo", colorScheme }}>
         <ModalsProvider modalProps={{ zIndex: 1000, centered: true, transition: "slide-right" }} modals={contextModals}>
           <NotificationsProvider position="top-center" zIndex={1000}>
             <BrowserRouter>

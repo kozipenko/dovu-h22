@@ -7,6 +7,7 @@ const useStyles = createStyles(theme => ({
     padding: theme.spacing.md,
     borderRadius: theme.radius.md,
     boxShadow: theme.shadows.xs,
+    transformStyle: "preserve-3d",
     transition: "all .1s ease-in-out",
     ":hover": { transform: "scale(1.005)" }
   },
