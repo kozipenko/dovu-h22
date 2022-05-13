@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Center, Loader, SimpleGrid } from "@mantine/core";
+import { Center, Loader, SimpleGrid, Stack } from "@mantine/core";
 import { useApi } from "../../services/api";
 import ProjectsFilter from "./ProjectsFilter";
 import ProjectsCard from "./ProjectsCard";
@@ -14,7 +14,7 @@ export default function Projects() {
     .filter(p => p.name.toLowerCase().includes(filter.search))
   
   return (
-    <>
+    <Stack spacing="xl">
       <ProjectsFilter value={filter} onChange={setFilter} />
 
       {api.projects.isLoading && (
@@ -25,7 +25,6 @@ export default function Projects() {
 
       <SimpleGrid
         spacing="xl"
-        mt="xl"
         cols={4}
         breakpoints={[
           { maxWidth: "xs", cols: 1 },
@@ -38,6 +37,6 @@ export default function Projects() {
           <ProjectsCard key={project.id} project={project} />
         ))}
       </SimpleGrid>
-    </>
+    </Stack>
   );
 }
