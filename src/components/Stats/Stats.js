@@ -14,6 +14,8 @@ export default function Stats() {
   const totalVerifiedKg = api.projects.data
     .reduce((acc, obj) => acc + obj.verified_kg, 0)
 
+  const positions = api.positions.data.filter(pos => !pos.is_closed);
+
   return (
     <Stack spacing="md">
       <Text size="lg" weight={700}>Stats</Text>
@@ -28,7 +30,7 @@ export default function Stats() {
       >
         <Stat
           title="Total Positions"
-          stat={api.positions.data.length}
+          stat={positions.length}
           icon={<Stack2 size={18} />}
         />
         <Stat
