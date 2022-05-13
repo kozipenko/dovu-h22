@@ -21,6 +21,8 @@ export default function ClaimTokensModal({ context, id }) {
           await api.createTokenClaim.mutateAsync(amount);
         }
         showSuccessNotification("Success", `${amount.toLocaleString()} ${TOKEN_NAME} have been sent to your account`);
+
+        
       }
       else {
         throw new Error("Transaction failed");
@@ -28,6 +30,7 @@ export default function ClaimTokensModal({ context, id }) {
     } catch (error) {
       showErrorNotification("Error", error.message);
     }
+    context.closeModal(id);
   }
 
   return (
