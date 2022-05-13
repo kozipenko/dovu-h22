@@ -20,7 +20,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           id: innerProps.position.id,
           is_closed: 1,
           dov_staked: 0,
-          surrendered_dov: innerProps.position.dov_staked * 0.8,
+          surrendered_dov: surrendered,
           hedera_account: innerProps.position.hedera_account
         });
 
