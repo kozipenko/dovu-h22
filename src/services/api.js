@@ -19,8 +19,15 @@ export function useApi() {
   }, { initialData: 0 });
 
   const claimedTokens = useQuery("claimedTokens", async () => {
-    const res = await client.get(`/account-token-claims/${wallet.local.accountId}`);
-    return res.data.data.reduce((acc, obj) => acc + obj.amount, 0);
+    let res = null; 
+    try {
+      res = await client.get(`/account-token-claims/${wallet.local.accountId}`);
+      return res.data.data.reduce((acc, obj) => acc + obj.amount, 0);
+    } catch(error) {
+      if (error.response.status === 404) {
+        await createTokenClaim.mutateAsync(0);
+      }
+    }
   }, { initialData: 0, enabled: !!wallet.local.accountId, retry: false });
 
   const projects = useQuery("projects", async () => {
