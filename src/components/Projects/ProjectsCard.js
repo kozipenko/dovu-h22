@@ -21,7 +21,7 @@ const useStyles = createStyles(theme => ({
   }
 }));
 
-export default function ProjectsCard({ project }) {
+export default function ProjectsCard({ project, position }) {
   const { classes } = useStyles();
   const modals = useModals();
 
@@ -116,12 +116,12 @@ export default function ProjectsCard({ project }) {
           </Button>
           <Button
             size="xs"
-            color="blue"
+            color={position ? "red" : "blue"}
             variant="light"
             disabled={project.verified_kg === 0}
             onClick={openProjectStakeModal}
           >
-            Stake
+            {position ? "Unstake" : "Stake" }
           </Button>
         </Group>
       </Card.Section>

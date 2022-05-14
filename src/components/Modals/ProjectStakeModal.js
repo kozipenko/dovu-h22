@@ -19,14 +19,14 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
 
   const totalStakedTokens = api.positions.data
     .filter(pos => pos.project_id === innerProps.project.id && !pos.is_closed)
-    .reduce((acc, obj) => acc + obj.dov_staked, 0);
+    .reduce((acc, obj) => acc + parseInt(obj.dov_staked), 0);
 
   const totalSurrenderedTokens = api.positions.data
     .filter(pos => pos.project_id === innerProps.project.id && pos.is_closed)
-    .reduce((acc, obj) => acc + obj.surrendered_dov, 0);
+    .reduce((acc, obj) => acc + parseInt(obj.surrendered_dov), 0);
 
   const position = api.positions.data.slice().reverse()
-    .find(pos => pos.hedera_account === wallet.local.accountId && pos.project_id === innerProps.project.id);
+    .find(pos => pos.hedera_account === wallet.local.accountId && pos.project_id === innerProps.project.id && !pos.is_closed);
 
   async function handleRemoveTimeLockForProject() {
     try {
@@ -51,7 +51,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
   async function handleOpenProjectStakeConfirmModal() {
     if (amount > 1000) {
       showErrorNotification("Error", `Staking can not exceed 1,000 ${TOKEN_NAME}.`);
-    }else{
+    } else {
       modals.openContextModal("projectStakeConfirm", {
         title: "Confirm Staking Position",
         innerProps: {
@@ -116,7 +116,7 @@ export default function ProjectStakeModal({ context, id, innerProps }) {
             hideControls
             min={0}
             sx={{ flex: 1 }}
-            description={`Amount (MAXIMUM 1,000 ${TOKEN_NAME}):`}
+            description={`Amount (Max 1,000 ${TOKEN_NAME}):`}
             placeholder={TOKEN_NAME}
             value={amount}
             onChange={setAmount}

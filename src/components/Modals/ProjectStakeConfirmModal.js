@@ -42,9 +42,9 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           id: innerProps.project.id,
           name: innerProps.project.name,
           staked_tokens: totalStakedTokens,
-          collateral_risk: (totalStakedTokens / innerProps.project.verified_kg) * 100
+          collateral_risk: Math.floor((totalStakedTokens / innerProps.project.verified_kg) * 100)
         });
-        showSuccessNotification("Success", `Staked ${(innerProps.amount - stakingFee).toLocaleString()} ${TOKEN_NAME} to ${innerProps.project.name}`);
+        showSuccessNotification("Success", `Staked ${Math.floor(innerProps.amount - stakingFee).toLocaleString()} ${TOKEN_NAME} to ${innerProps.project.name}`);
         innerProps.closeModal();
       }
       else {
@@ -65,7 +65,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Staking Amount:</Text>
-          <Text size="xs" weight={500}>{innerProps.amount - stakingFee} {TOKEN_NAME}</Text>
+          <Text size="xs" weight={500}>{Math.floor(innerProps.amount - stakingFee).toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
         <Group mt="xs" position="apart">
@@ -75,7 +75,7 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
 
         <Group mt="xs" position="apart">
           <Text size="xs" color="dimmed">Fee (5%): </Text>
-          <Text size="xs" color="red" weight={500}>{stakingFee} {TOKEN_NAME}</Text>
+          <Text size="xs" color="red" weight={500}>{stakingFee.toLocaleString()} {TOKEN_NAME}</Text>
         </Group>
 
         <Group mt="xs" position="apart">  

@@ -8,11 +8,11 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
   const api = useApi();
   const contract = useContract();
 
-  const surrendered = innerProps.isLocked ? (innerProps.position.dov_staked * 0.8) : 0;
+  const surrendered = innerProps.isLocked ? Math.floor(parseInt(innerProps.position.dov_staked) * 0.8) : 0;
 
   const redeemable = innerProps.isLocked ?
-    innerProps.position.dov_staked - (innerProps.position.dov_staked * 0.8) :
-    innerProps.position.dov_staked + (innerProps.position.dov_staked * 0.25);
+    Math.floor(parseInt(innerProps.position.dov_staked) - (parseInt(innerProps.position.dov_staked) * 0.8)) :
+    Math.floor(parseInt(innerProps.position.dov_staked) + (parseInt(innerProps.position.dov_staked) * 0.25));
 
   async function handleEndStakeToProject() {
     try {
@@ -27,13 +27,13 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
           hedera_account: innerProps.position.hedera_account
         });
 
-        const stakedTokens = Math.floor(parseInt(innerProps.project.staked_tokens) - innerProps.position.dov_staked);
-
+        const stakedTokens = Math.floor(parseInt(innerProps.project.staked_tokens) - parseInt(innerProps.position.dov_staked));
+        
         await api.updateProject.mutateAsync({
           id: innerProps.project.id,
           name: innerProps.project.name,
           staked_tokens: stakedTokens,
-          collateral_risk: Math.round(stakedTokens / innerProps.project.verified_kg) * 100
+          collateral_risk: Math.floor((stakedTokens / innerProps.project.verified_kg) * 100)
         });
 
         showSuccessNotification("Success", `Unstaked ${redeemable.toLocaleString()} ${TOKEN_NAME} from ${innerProps.project.name}`);
