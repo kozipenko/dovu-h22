@@ -9,7 +9,7 @@ export default function Stats() {
 
   const totalStakedTokens = api.positions.data
     .filter(pos => !pos.is_closed)
-    .reduce((acc, obj) => acc + obj.dov_staked, 0);
+    .reduce((acc, obj) => acc + parseInt(obj.dov_staked), 0);
 
   const totalVerifiedKg = api.projects.data
     .reduce((acc, obj) => acc + obj.verified_kg, 0)

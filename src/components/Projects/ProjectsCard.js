@@ -130,14 +130,3 @@ export default function ProjectsCard({ project, position }) {
     </Card>
   );
 }
-
-/*
-
-<Group spacing="xs">
-  <Badge size="sm" variant="outline" radius="xs">${project.price_kg}/kg</Badge>
-  <Badge size="sm" variant="outline" radius="xs">25% apy</Badge>
-  <Badge size="sm" variant="outline" radius="xs">{project.verified_kg.toLocaleString()} kg supply</Badge>
-  <Badge size="sm" variant="outline" radius="xs">{project.staked_tokens.toLocaleString()} {TOKEN_NAME} tvl</Badge>
-</Group>
-
-*/

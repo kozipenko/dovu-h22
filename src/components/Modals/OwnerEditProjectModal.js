@@ -17,11 +17,11 @@ export default function OwnerEditProjectsModal({ context, id, innerProps }) {
 
   const totalStakedTokens = api.positions.data
     .filter(pos => pos.project_id === innerProps.project.id)
-    .reduce((acc, obj) => acc + obj.dov_staked, 0);
+    .reduce((acc, obj) => acc + parseInt(obj.dov_staked), 0);
 
   const totalSurrenderedTokens = api.positions.data
     .filter(pos => pos.project_id === innerProps.project.id)
-    .reduce((acc, obj) => acc + obj.surrendered_dov, 0);
+    .reduce((acc, obj) => acc + parseInt(obj.surrendered_dov), 0);
 
   function handleOpenOwnerLiquidateProjectModal() {
     modals.openContextModal("ownerLiquidateProject", {
@@ -58,6 +58,7 @@ export default function OwnerEditProjectsModal({ context, id, innerProps }) {
           price_kg: newPriceKg,
           verified_kg: newVerifiedKg
         });
+        
         context.closeModal(id);
         showSuccessNotification("Success", `Saved changes for ${innerProps.project.name}`);
       } else {

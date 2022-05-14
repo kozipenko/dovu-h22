@@ -12,7 +12,7 @@ export default function Projects() {
 
   const filtered = api.projects.data
     .filter(p => p.verified_kg >= filter.verifiedKg[0] && p.verified_kg <= filter.verifiedKg[1])
-    .filter(p => p.price_kg >= filter.priceKg[0] && p.price_kg <= filter.priceKg[1])
+    .filter(p => parseFloat(p.price_kg) >= filter.priceKg[0] && parseFloat(p.price_kg) <= filter.priceKg[1])
     .filter(p => p.name.toLowerCase().includes(filter.search))
 
   const positions = api.positions.data

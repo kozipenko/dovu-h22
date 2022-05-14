@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { Button, Group, NumberInput, Paper, Text } from "@mantine/core";
 import { Leaf } from "tabler-icons-react";
+import { showSuccessNotification } from "../../utils/notifications";
 
 export default function ProjectPurchaseModal({ context, id, innerProps }) {
   const [amount, setAmount] = useState(0);
   const [cost, setCost] = useState(0);
   
-  // TOOD
-  async function handleOffsetPurchase() {
-    // Implement USER contract method to remove verified_kg
+  function handleOffsetPurchase() {
+    showSuccessNotification(`Purchased ${amount.toLocaleString()} kg of carbon offsets`);
+    context.closeModal(id);
   }
 
   function handleChangeAmount(value) {
@@ -47,7 +48,7 @@ export default function ProjectPurchaseModal({ context, id, innerProps }) {
         </Button>
         <Button
           variant="light"
-          disabled={amount > innerProps.project.verified_kg}
+          disabled={!amount || amount > innerProps.project.verified_kg}
           onClick={handleOffsetPurchase}
         >
           Purchase

@@ -38,7 +38,7 @@ export default function ClaimTokensModal({ context, id }) {
       <Group spacing="xs">
         <InfoSquare color="#4c6ef5" size={18} />
         <Text size="sm">
-          Please associate token <b>{TOKEN_ID}</b> before continuing
+          Please associate token <b>{TOKEN_ID}</b> before claiming
         </Text>
       </Group>
 
