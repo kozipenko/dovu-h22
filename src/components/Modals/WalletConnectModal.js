@@ -1,7 +1,7 @@
 import { ActionIcon, Anchor, Button, Group, Loader, Paper, Stack, Text, TextInput } from "@mantine/core";
 import { useClipboard } from "@mantine/hooks";
-import { showNotification } from "@mantine/notifications";
 import { Copy, Help, SquareCheck } from "tabler-icons-react";
+import { showInfoNotification } from "../../utils/notifications";
 import { TOKEN_NAME } from "../../utils/constants";
 import { useWallet } from "../../services/wallet";
 
@@ -11,9 +11,7 @@ export default function WalletConnectModal({ context, id }) {
 
   function handleCopyPairingString() {
     clipboard.copy(wallet.local.pairingString);
-    showNotification({
-      title: "Pairing string copied to clipboard",
-    });
+    showInfoNotification("Copied pairing string to clipboard");
   }
 
   return wallet.local.accountId ? (

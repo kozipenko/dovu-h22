@@ -29,27 +29,30 @@ export function useWallet() {
   }, { initialData: 0, enabled: !!local.accountId, });
 
   const initializeWallet = useMutation(async () => {
-    const init = await hashConnect.init(DAPP, local.privateKey);
-    const state = await hashConnect.connect(local.topic, local.metadata);
-    const pairingString = hashConnect.generatePairingString(state, NETWORK, false);
-  
-    if (!local.metadata) {
+    if (local.topic && local.privateKey && local.metadata) {
+      await hashConnect.init(DAPP, local.privateKey);
+      await hashConnect.connect(local.topic, local.metadata);
+    } else {
+      const init = await hashConnect.init(DAPP);
+      const state = await hashConnect.connect();
+      const pairingString = hashConnect.generatePairingString(state, NETWORK, false);
+
       store.topic = state.topic;
       store.privateKey = init.privKey;
       store.pairingString = pairingString;
-  
+
       hashConnect.findLocalWallets();
-  
-      hashConnect.pairingEvent.on((event) => {
-        store.metadata = event.metadata;
-        store.accountId = event.accountIds[0];
-        store.isContractOwner = event.accountIds[0] === CONTRACT_OWNER;
-      });
-  
-      hashConnect.foundExtensionEvent.on((extension) => {
-        store.extensions = [extension];
-      });
     }
+
+    hashConnect.pairingEvent.on((event) => {
+      store.metadata = event.metadata;
+      store.accountId = event.accountIds[0];
+      store.isContractOwner = event.accountIds[0] === CONTRACT_OWNER;
+    });
+
+    hashConnect.foundExtensionEvent.on((extension) => {
+      store.extensions = [extension];
+    });
   });
 
   const sendTransaction = useMutation(async (tx) => {
@@ -61,20 +64,15 @@ export function useWallet() {
         returnTransaction: false
       }
     });
-  });
+  }, { onSuccess: () => cache.invalidateQueries("accountBalance") });
 
   const connectWallet = useMutation((extension) => {
     hashConnect.connectToLocalWallet(local.pairingString, extension);
   }, { onSuccess: () => cache.invalidateQueries("accountBalance") });
 
   const disconnectWallet = useMutation(async () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
-    store.topic = "";
     store.accountId = "";
-    store.privateKey = "";
-    store.extensions = [];
     store.metadata = null;
-    store.pairingString = "";
     store.isContractOwner = false;
   }, { onSuccess: () => cache.invalidateQueries("accountBalance") });
 
