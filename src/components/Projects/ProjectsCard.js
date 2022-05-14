@@ -97,7 +97,7 @@ export default function ProjectsCard({ project }) {
             </ThemeIcon>
             <div>
               <Text size="xs" color="dimmed" weight={500}>Insurance</Text>
-              <Text size="xs" color="gray" weight={600}>{project.collateral_risk} %</Text>
+              <Text size="xs" color="gray" weight={600}>{Math.round(project.collateral_risk)} %</Text>
             </div>
           </Group>
         </SimpleGrid>
