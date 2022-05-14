@@ -9,7 +9,10 @@ export default function ProjectStakeConfirmModal({ context, id, innerProps }) {
   const contract = useContract();
 
   const surrendered = innerProps.isLocked ? (innerProps.position.dov_staked * 0.8) : 0;
-  const redeemable = innerProps.position.dov_staked - (innerProps.isLocked ? (innerProps.position.dov_staked * 0.8) : 0);
+
+  const redeemable = innerProps.isLocked ?
+    innerProps.position.dov_staked - (innerProps.position.dov_staked * 0.8) :
+    innerProps.position.dov_staked + (innerProps.position.dov_staked * 0.25);
 
   async function handleEndStakeToProject() {
     try {
