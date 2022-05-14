@@ -28,7 +28,7 @@ export function useApi() {
         await createTokenClaim.mutateAsync(0);
       }
     }
-  }, { initialData: 0, enabled: !!wallet.local.accountId, retry: false });
+  }, { initialData: 0, enabled: !!wallet.local.accountId });
 
   const projects = useQuery("projects", async () => {
     const res = await client.get("/projects");
