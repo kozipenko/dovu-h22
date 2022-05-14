@@ -86,7 +86,7 @@ export default function ProjectsCard({ project, position }) {
               <Stack2 size={18} />
             </ThemeIcon>
             <div>
-              <Text size="xs" color="dimmed" weight={500}>TVL</Text>
+              <Text size="xs" color="dimmed" weight={500}>Staked</Text>
               <Text size="xs" color="gray" weight={600}>{project.staked_tokens.toLocaleString()}</Text>
             </div>
           </Group>
@@ -96,7 +96,7 @@ export default function ProjectsCard({ project, position }) {
               <Receipt size={18} />
             </ThemeIcon>
             <div>
-              <Text size="xs" color="dimmed" weight={500}>Insurance</Text>
+              <Text size="xs" color="dimmed" weight={500}>Collateral</Text>
               <Text size="xs" color="gray" weight={600}>{Math.round(project.collateral_risk)} %</Text>
             </div>
           </Group>
