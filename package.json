@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fontsource/inter": "^4.5.10",
     "@hashgraph/sdk": "^2.13.1",
     "@mantine/core": "^4.2.4",
     "@mantine/hooks": "^4.2.4",
