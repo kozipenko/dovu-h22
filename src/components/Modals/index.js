@@ -3,6 +3,7 @@ import ProjectStakeModal from "./ProjectStakeModal";
 import ProjectStakeConfirmModal from "./ProjectStakeConfirmModal";
 import ProjectUnstakeConfirmModal from "./ProjectUnstakeConfirmModal";
 import WalletConnectModal from "./WalletConnectModal";
+import WalletConnectQRModal from "./WalletConnectQRModal";
 import ClaimTokensModal from "./ClaimTokensModal";
 import OwnerSettingsModal from "./OwnerSettingsModal";
 import OwnerProjectsModal from "./OwnerProjectsModal";
@@ -15,6 +16,7 @@ const contextModals = {
   projectStake: ProjectStakeModal,
   projectStakeConfirm: ProjectStakeConfirmModal,
   projectUnstakeConfirm: ProjectUnstakeConfirmModal,
+  walletConnectQR: WalletConnectQRModal,
   walletConnect: WalletConnectModal,
   claimTokens: ClaimTokensModal,
   ownerSettings: OwnerSettingsModal,

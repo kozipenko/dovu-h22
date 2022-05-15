@@ -1,17 +1,22 @@
-import { ActionIcon, Anchor, Button, Group, Loader, Paper, Stack, Text, TextInput } from "@mantine/core";
-import { useClipboard } from "@mantine/hooks";
-import { Copy, Help, SquareCheck } from "tabler-icons-react";
-import { showInfoNotification } from "../../utils/notifications";
+import { ActionIcon, Anchor, Button, Group, Paper, Text, TextInput } from "@mantine/core";
+import { useModals } from "@mantine/modals";
+import { Qrcode, SquareCheck } from "tabler-icons-react";
 import { TOKEN_NAME } from "../../utils/constants";
 import { useWallet } from "../../services/wallet";
 
 export default function WalletConnectModal({ context, id }) {
-  const clipboard = useClipboard();
+  const modals = useModals();
   const wallet = useWallet();
 
-  function handleCopyPairingString() {
-    clipboard.copy(wallet.local.pairingString);
-    showInfoNotification("Copied pairing string to clipboard");
+  function handleOpenWalletConnectQRModal() {
+    console.log("............")
+    modals.openContextModal("walletConnectQR", {
+      size: "xs",
+      title: "Scan QR",
+      innerProps: {
+        pairingString: wallet.local.pairingString
+      }
+    });
   }
 
   return wallet.local.accountId ? (
@@ -34,9 +39,11 @@ export default function WalletConnectModal({ context, id }) {
         </Group>
       </Paper>
 
-      <Button fullWidth variant="light" mt="xl" onClick={() => context.closeModal(id)}>
-        Continue
-      </Button>
+      <Group position="right">
+        <Button variant="light" mt="xl" onClick={() => context.closeModal(id)}>
+          Continue
+        </Button>
+      </Group>
     </>
   ) : (
     <>
@@ -48,18 +55,17 @@ export default function WalletConnectModal({ context, id }) {
       </Text>
       
       <Text size="xs" mt="xl" color="dimmed">Manual</Text>
-      <TextInput
-        readOnly
-        mt="xs"
-        variant="filled"
-        value={wallet.local.pairingString}
-        onFocus={e => e.target.select()}
-        rightSection={
-          <ActionIcon>
-            <Copy size={18} onClick={handleCopyPairingString} />
-          </ActionIcon>
-        }
-      />
+      <Group mt="xs">
+        <TextInput
+          readOnly
+          value={wallet.local.pairingString}
+          onFocus={e => e.target.select()}
+          sx={{ flex: 1 }}
+        />
+        <ActionIcon size="lg" variant="filled" color="indigo" onClick={handleOpenWalletConnectQRModal}>
+          <Qrcode size={18} />
+        </ActionIcon>
+      </Group>
       
       <Text size="xs" mt="md" color="dimmed">Extension</Text>
 
@@ -70,20 +76,14 @@ export default function WalletConnectModal({ context, id }) {
       ))}
 
       {wallet.local.extensions.length < 1 && (
-        <Group position="apart" mt="xs">
-          <Text size="sm">
-            No extensions were found.
-          </Text>
-          <ActionIcon>
-            <Help size={18} />
-          </ActionIcon>
-        </Group>
+        <Text size="sm" mt="xs">No extensions were found.</Text>
       )}
 
-      <Stack align="center" spacing="xs" mt="xl">
-        <Loader size="sm" variant="dots" />
-        <Text size="xs" color="dimmed">Listening</Text>
-      </Stack>
+      <Group position="right" spacing="xs" mt="xl">
+        <Button variant="light" color="red" onClick={() => context.closeModal(id)}>
+          Cancel
+        </Button>
+      </Group>
     </>
-  )
+  );
 }
