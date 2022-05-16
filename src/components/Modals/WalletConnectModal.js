@@ -9,7 +9,6 @@ export default function WalletConnectModal({ context, id }) {
   const wallet = useWallet();
 
   function handleOpenWalletConnectQRModal() {
-    console.log("............")
     modals.openContextModal("walletConnectQR", {
       size: "xs",
       title: "Scan QR",

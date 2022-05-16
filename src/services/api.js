@@ -19,9 +19,8 @@ export function useApi() {
   }, { initialData: 0 });
 
   const claimedTokens = useQuery("claimedTokens", async () => {
-    let res = null; 
     try {
-      res = await client.get(`/account-token-claims/${wallet.local.accountId}`);
+      const res = await client.get(`/account-token-claims/${wallet.local.accountId}`);
       return res.data.data.reduce((acc, obj) => acc + obj.amount, 0);
     } catch(error) {
       if (error.response.status === 404) {
@@ -68,8 +67,9 @@ export function useApi() {
     onSuccess: () => cache.invalidateQueries("positions")
   });
 
-  const updateTokenClaim = useMutation((amount) =>
-    client.put(`/account-token-claims/${wallet.local.accountId}`, qs.stringify({ amount })), {
+  const updateTokenClaim = useMutation(async (amount) => {
+    await client.put(`/account-token-claims/${wallet.local.accountId}`, qs.stringify({ amount }))
+  }, {
     onSuccess: () => cache.invalidateQueries("claimedTokens")
   });
 

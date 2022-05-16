@@ -26,7 +26,7 @@ export function useWallet() {
     const balance = JSON.parse(res);
     const token = balance.tokens.find(t => t.tokenId === TOKEN_ID);
     return token ? token.balance/TOKEN_EXP : 0;
-  }, { initialData: 0, enabled: !!local.accountId, });
+  }, { initialData: 0, enabled: !!local.accountId });
 
   const initializeWallet = useMutation(async () => {
     if (local.topic && local.privateKey && local.metadata) {
