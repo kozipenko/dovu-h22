@@ -147,7 +147,7 @@ export default function OwnerEditProjectsModal({ context, id, innerProps }) {
       {(contract.addVerifiedCarbon.isLoading || contract.removeVerifiedCarbon.isLoading) && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
-          <Text size="xs" color="dimmed">Tansacting</Text>
+          <Text size="xs" color="dimmed">Transacting</Text>
         </Stack>
       )}
     </>

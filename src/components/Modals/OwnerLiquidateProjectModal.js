@@ -96,7 +96,7 @@ export default function OwnerLiquidateProjectModal({ context, id, innerProps }) 
       {contract.triggerProjectInsuranceLiquidation.isLoading && (
         <Stack align="center" spacing="xs" mt="xl">
           <Loader size="sm" variant="dots" />
-          <Text size="xs" color="dimmed">Tansacting</Text>
+          <Text size="xs" color="dimmed">Transacting</Text>
         </Stack>
       )}
     </>
